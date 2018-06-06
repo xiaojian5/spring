@@ -14,7 +14,6 @@ public class BeanFactoryPostProcessorTest implements BeanFactoryPostProcessor
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException
     {
-
         System.out.println("1.调用BeanFactoryPostProcessor的postProcessBeanFactory()方法");
         System.out.println();
         System.out.println("1.postProcessBeanFactory()方法在工厂处理器后，ApplicationContext容器初始化中refresh()中调用");
