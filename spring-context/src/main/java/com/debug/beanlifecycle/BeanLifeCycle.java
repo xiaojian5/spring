@@ -75,12 +75,7 @@ public class BeanLifeCycle implements InitializingBean, DisposableBean, Applicat
         System.out.println();
     }
 
-    @Override
-    public void setBeanClassLoader(ClassLoader classLoader)
-    {
-        System.out.println("执行setBeanClassLoader,ClassLoader Name = " + classLoader.getClass().getName());
-        System.out.println();
-    }
+
 
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException
@@ -97,6 +92,12 @@ public class BeanLifeCycle implements InitializingBean, DisposableBean, Applicat
         System.out.println();
     }
 
+    @Override
+    public void setBeanClassLoader(ClassLoader classLoader)
+    {
+        System.out.println("执行setBeanClassLoader,ClassLoader Name = " + classLoader.getClass().getName());
+        System.out.println();
+    }
 
     /**
      * 这里继承了EnvironmentAware类，具体可参看AbstractApplicationContext的prepareBeanFactory方法里面有具体注册
