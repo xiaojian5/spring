@@ -54,26 +54,28 @@ public class BeanLifeCycle implements InitializingBean, DisposableBean, Applicat
 
 
     /**
-     * 通过<bean>的init-method属性指定的初始化方法
-     *
-     * @throws Exception
-     */
-    public void initMethod() throws Exception
-    {
-        System.out.println("12.执行xml文件中配置的init-method()");
-        System.out.println();
-    }
-
-    /**
      * 通过<bean>的destroy-method属性指定的销毁方法
      *
      * @throws Exception
      */
     public void destroyMethod() throws Exception
     {
-        System.out.println("17.执行xml文件中配置的destroy-method()方法");
+        System.out.println("17.执行配置的destroy-method()方法");
         System.out.println();
     }
+
+    /**
+     * 通过<bean>的init-method属性指定的初始化方法
+     *
+     * @throws Exception
+     */
+    public void initMethod() throws Exception
+    {
+        System.out.println("12.BeanLifyCycle执行配置的init-method()");
+        System.out.println();
+    }
+
+
 
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException
