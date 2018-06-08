@@ -18,6 +18,9 @@ public class InstanceBeanPostProcessor implements InstantiationAwareBeanPostProc
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException
     {
+        /**
+         * 注意步骤2和步骤10的函数名是相同的，这里对postProcessBeforeInitialization函数进行了重载。
+         */
         System.out.println("10.调用InstantiationAwareBeanPostProcessor中的postProcessBeforeInitialization()方法, beanName = " + beanName);
         System.out.println();
         return bean;
