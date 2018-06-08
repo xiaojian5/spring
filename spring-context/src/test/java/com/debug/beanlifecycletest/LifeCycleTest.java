@@ -8,7 +8,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 /**
  * @author: Shawn Chen
  * @date: 2018/6/6
- * @description:
+ * @description:Bean生命周期调试
  */
 public class LifeCycleTest
 {
