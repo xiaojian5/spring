@@ -549,7 +549,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
-				//该函数中会对bean进行初始化，利用发射技术。
+				//该函数中会对bean进行初始化，利用反射技术。
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
