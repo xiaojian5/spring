@@ -139,8 +139,10 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 			throws BeansException {
 
 		super(parent);
+		System.out.println("#1.配置资源文件:"+configLocations[0]);
 		setConfigLocations(configLocations);
 		if (refresh) {
+			System.out.println("#2.进入核心函数:AbstractApplicationContext#refresh");
 			refresh();
 		}
 	}

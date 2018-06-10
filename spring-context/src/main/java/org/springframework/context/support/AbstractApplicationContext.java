@@ -516,9 +516,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
 			// Prepare this context for refreshing.
+			System.out.println("#3.设置上下文活动标志active（会先将上下文标志设置为false），还有进行一些环境配置。");
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
+			System.out.println("#4.核心函数AbstractApplicationContext#obtainFreshBeanFactory，功能解析xml，创建BeanFactory");
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
@@ -547,6 +549,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
+				//该函数中会对bean进行初始化，利用发射技术。
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
