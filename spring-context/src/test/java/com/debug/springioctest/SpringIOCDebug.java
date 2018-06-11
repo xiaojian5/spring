@@ -9,7 +9,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 /**
  * @author: Shawn Chen
  * @date: 2018/6/6
- * @description:spring IOC调试
+ * @description:spring IOC调试初始化过程调试
  */
 public class SpringIoCDebug
 {
