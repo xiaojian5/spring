@@ -12,7 +12,7 @@ import com.debug.basebean.User;
  * @date: 2018/6/6
  * @description:spring IOC调试初始化过程调试
  */
-class SpringIoCDebug
+public class IoCDebug
 {
     @Test
     public void testIOC()
