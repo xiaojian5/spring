@@ -28,6 +28,8 @@ import org.castor.xml.XMLProperties;
 import org.exolab.castor.xml.XercesXMLSerializerFactory;
 import org.junit.Test;
 import org.mockito.InOrder;
+import org.springframework.oxm.jaxb.test.Flights;
+import org.springframework.oxm.xstream.Flight;
 import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;

@@ -1,17 +1,18 @@
 package com.debug.springioctest;
 
 
-import com.debug.basebean.User;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.debug.basebean.User;
 
 /**
  * @author: Shawn Chen
  * @date: 2018/6/6
  * @description:spring IOC调试初始化过程调试
  */
-public class SpringIoCDebug
+class SpringIoCDebug
 {
     @Test
     public void testIOC()
