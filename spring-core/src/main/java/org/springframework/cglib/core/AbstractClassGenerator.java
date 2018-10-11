@@ -161,11 +161,11 @@ abstract public class AbstractClassGenerator<T> implements ClassGenerator {
 		this.namePrefix = namePrefix;
 	}
 
-	final protected String getClassName() {
+	public final String getClassName() {
 		return className;
 	}
 
-	private void setClassName(String className) {
+	public void setClassName(String className) {
 		this.className = className;
 	}
 
@@ -351,7 +351,7 @@ abstract public class AbstractClassGenerator<T> implements ClassGenerator {
 					// ignore
 				}
 			}
-			byte[] b = strategy.generate(this);
+			byte[] b = strategy.generate((org.springframework.cglib.core.ClassGenerator) this);
 			String className = ClassNameReader.getClassName(new ClassReader(b));
 			ProtectionDomain protectionDomain = getProtectionDomain();
 			synchronized (classLoader) { // just in case
