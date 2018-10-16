@@ -516,11 +516,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
 			// Prepare this context for refreshing.
-			System.out.println("#3.设置上下文活动标志active（会先将上下文标志设置为false），还有进行一些环境配置。");
+			System.out.println("设置上下文活动标志active（会先将上下文标志设置为false），还有进行一些环境配置。");
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
-			System.out.println("#4.核心函数AbstractApplicationContext#obtainFreshBeanFactory，功能解析xml，创建BeanFactory");
+			System.out.println("核心函数AbstractApplicationContext#obtainFreshBeanFactory，功能解析xml，创建BeanFactory");
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
@@ -1255,6 +1255,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	@Nullable
 	protected BeanFactory getInternalParentBeanFactory() {
+		System.out.println("当前getParent()返回为空："+getParent());
 		return (getParent() instanceof ConfigurableApplicationContext) ?
 				((ConfigurableApplicationContext) getParent()).getBeanFactory() : getParent();
 	}

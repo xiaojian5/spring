@@ -182,6 +182,7 @@ public class DefaultResourceLoader implements ResourceLoader {
 	 * @see org.springframework.web.context.support.XmlWebApplicationContext#getResourceByPath
 	 */
 	protected Resource getResourceByPath(String path) {
+		System.out.println("在DefaultResourceLoader中通过构造函数将xml资源转换成Resource");
 		return new ClassPathContextResource(path, getClassLoader());
 	}
 

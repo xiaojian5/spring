@@ -326,6 +326,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 					"Detected cyclic loading of " + encodedResource + " - check your import definitions!");
 		}
 		try {
+			System.out.println("XmlBeanDefinitionReader的loadBeanDefinitions(EncodedResource encodedResource)中间Resource转化成InputStream流，进行读取操作");
 			InputStream inputStream = encodedResource.getResource().getInputStream();
 			try {
 				InputSource inputSource = new InputSource(inputStream);

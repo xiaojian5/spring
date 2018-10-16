@@ -123,9 +123,9 @@ public class CastorMarshallerTests extends AbstractMarshallerTests<CastorMarshal
 	@Override
 	protected Object createFlights() {
 		Flight flight = new Flight();
-		flight.setNumber(42L);
+//		flight.setNumber(42L);
 		Flights flights = new Flights();
-		flights.addFlight(flight);
+//		flights.addFlight(flight);
 		return flights;
 	}
 

@@ -6,7 +6,7 @@
        http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="user" class="com.debug.basebean.User"
-          p:name="IoC" p:gender="保密"/>
+          p:name="测试用例" p:gender="性别"/>
 
     <!--<context:component-scan base-package="com.debug.spring"/>-->
 </beans>

@@ -2,6 +2,7 @@ package com.debug.springioctest;
 
 
 import org.junit.Test;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

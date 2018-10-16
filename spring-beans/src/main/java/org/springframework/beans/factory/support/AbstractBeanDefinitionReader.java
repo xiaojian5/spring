@@ -85,6 +85,7 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 		this.registry = registry;
 
 		// Determine ResourceLoader to use.
+		System.out.println("在AbstractBeanDefinitionReader构造函数中，判断是否有ResourceLoader可用");
 		if (this.registry instanceof ResourceLoader) {
 			this.resourceLoader = (ResourceLoader) this.registry;
 		}
@@ -181,6 +182,8 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 
 	@Override
 	public int loadBeanDefinitions(Resource... resources) throws BeanDefinitionStoreException {
+		System.out.println("在AbstractBeanDefinitionReader#loadBeanDefinitions方法中（重载方法，参数为Resource）得到" +
+				"加载资源文件的个数，也就是beanxml文件的个数");
 		Assert.notNull(resources, "Resource array must not be null");
 		int counter = 0;
 		for (Resource resource : resources) {
@@ -219,6 +222,7 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 		if (resourceLoader instanceof ResourcePatternResolver) {
 			// Resource pattern matching available.
 			try {
+				System.out.println("在AbstractBeanDefinitionReader中将xml资源转换成Resource");
 				Resource[] resources = ((ResourcePatternResolver) resourceLoader).getResources(location);
 				int loadCount = loadBeanDefinitions(resources);
 				if (actualResources != null) {
