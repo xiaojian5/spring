@@ -789,6 +789,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
 			throws BeanDefinitionStoreException {
 
+		System.out.println("DefaultListableBeanFactory#registerBeanDefinition,将beanName放入beanDefinitionMap中" +
+				"key为beanName，value为beanDefinition");
 		Assert.hasText(beanName, "Bean name must not be empty");
 		Assert.notNull(beanDefinition, "BeanDefinition must not be null");
 

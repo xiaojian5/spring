@@ -145,6 +145,8 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		}
 
 		preProcessXml(root);
+		System.out.println("DefaultBeanDefinitionDocumentReader#doRegisterBeanDefinitions函数中进行解析" +
+				"主要函数parseBeanDefinitions通过BeanDefinitionParserDelegate进行解析");
 		parseBeanDefinitions(root, this.delegate);
 		postProcessXml(root);
 
@@ -186,6 +188,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	}
 
 	private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) {
+		System.out.println("DefaultBeanDefinitionDocumentReader#parseDefaultElement函数，根据标签类型进行元素的解析");
 		if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
 			importBeanDefinitionResource(ele);
 		}
@@ -302,6 +305,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * and registering it with the registry.
 	 */
 	protected void processBeanDefinition(Element ele, BeanDefinitionParserDelegate delegate) {
+		System.out.println("DefaultBeanDefinitionDocumentReader#processBeanDefinition进行解析，返回BeanDefinitionHolder");
 		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);
 		if (bdHolder != null) {
 			bdHolder = delegate.decorateBeanDefinitionIfRequired(ele, bdHolder);

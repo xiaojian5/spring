@@ -69,11 +69,13 @@ public class DefaultDocumentLoader implements DocumentLoader {
 	public Document loadDocument(InputSource inputSource, EntityResolver entityResolver,
 			ErrorHandler errorHandler, int validationMode, boolean namespaceAware) throws Exception {
 
-		System.out.println("在DefaultDocumentLoader中的loadDocument方法中创建一个DocumentBuilderFactory进行XML文件的解析");
+		System.out.println("在DefaultDocumentLoader中的loadDocument方法中创建一个DocumentBuilderFactory进行XML文件的解析，" +
+				"在生成DocumnetBuilderFactory时会设置其校验方式");
 		DocumentBuilderFactory factory = createDocumentBuilderFactory(validationMode, namespaceAware);
 		if (logger.isDebugEnabled()) {
 			logger.debug("Using JAXP provider [" + factory.getClass().getName() + "]");
 		}
+		System.out.println("生成DocumentBuilder进行xml文件的解析，在生成对该对象时会设置实体类解析器，错误机制处理handler");
 		DocumentBuilder builder = createDocumentBuilder(factory, entityResolver, errorHandler);
 		return builder.parse(inputSource);
 	}
