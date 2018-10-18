@@ -757,6 +757,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 					}
 				}
 				else {
+					System.out.println("在DefaultListableBeanFactory#preInstantiateSingletons中实现bean的初始化，会调用AbstractBeanFactory的getBean方法");
 					getBean(beanName);
 				}
 			}

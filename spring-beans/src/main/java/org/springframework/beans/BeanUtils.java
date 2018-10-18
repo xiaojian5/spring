@@ -157,6 +157,8 @@ public abstract class BeanUtils {
             /**
              * 这里通过反射实例化类
              */
+			System.out.println("通过BeanUtils#instantiateClass反射生成bean");
+			System.out.println("最终通过Constructor#newInstance方法生成bean");
             Object object= ctor.newInstance(args);
 			return (KotlinDetector.isKotlinType(ctor.getDeclaringClass()) ?
 					KotlinDelegate.instantiateClass(ctor, args) : ctor.newInstance(args));
