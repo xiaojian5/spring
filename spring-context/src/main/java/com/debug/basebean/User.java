@@ -1,33 +1,31 @@
 package com.debug.basebean;
 
+import org.springframework.stereotype.Repository;
+
 /**
  * @author: Shawn Chen
  * @date: 2018/6/6
  * @description:
  */
-public class User
-{
-    private String name;
+@Repository
+public class User {
+	private String name;
 
-    private String gender;
+	private String gender;
 
-    public String getName()
-    {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name)
-    {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getGender()
-    {
-        return gender;
-    }
+	public String getGender() {
+		return gender;
+	}
 
-    public void setGender(String gender)
-    {
-        this.gender = gender;
-    }
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
 }

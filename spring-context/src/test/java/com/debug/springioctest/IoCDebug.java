@@ -13,19 +13,43 @@ import com.debug.basebean.User;
  * @date: 2018/6/6
  * @description:spring IOC调试初始化过程调试
  */
-public class IoCDebug
-{
-    @Test
-    public void testIOC()
-    {
-        ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/User.xml");
+public class IoCDebug {
 
-        User user = (User) context.getBean("user");
+	/**
+	 * xml形式注入bean
+	 */
+	@Test
+	public void testIOC() {
+		System.out.println("xml形式注入bean调试过程");
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/User.xml");
 
-        System.out.println("class name:"+user.getClass().getName());
+		User user = (User) context.getBean("user");
 
-        System.out.println("name属性:" + user.getName());
-        System.out.println("gender属性:" + user.getGender());
+		System.out.println("class name:" + user.getClass().getName());
 
-    }
+		System.out.println("name属性:" + user.getName());
+		System.out.println("gender属性:" + user.getGender());
+
+	}
+
+	/**
+	 * 注解扫描形式注入bean
+	 */
+	@Test
+	public void testIOCAnnotation() {
+		System.out.println("注解扫描形式注入bean的调试过程");
+
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/beanlifecycle_annotation.xml");
+
+		User user = (User) context.getBean("user");
+
+		user.setName("注解");
+		user.setGender("保密");
+
+		System.out.println("class name:" + user.getClass().getName());
+
+		System.out.println("name属性:" + user.getName());
+		System.out.println("gender属性:" + user.getGender());
+
+	}
 }
