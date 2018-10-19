@@ -313,6 +313,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 	 * @see #convertClassLoaderURL
 	 */
 	protected Resource[] findAllClassPathResources(String location) throws IOException {
+		System.out.println("PathMatchingResourcePatternResolver#findAllClassPathResources将包路径转换为Resource");
 		String path = location;
 		if (path.startsWith("/")) {
 			path = path.substring(1);
@@ -487,6 +488,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 	 * @see org.springframework.util.PathMatcher
 	 */
 	protected Resource[] findPathMatchingResources(String locationPattern) throws IOException {
+		System.out.println("PathmatchingResourcePatternResolver#findPathMatchingResources扫描包下的类");
 		String rootDirPath = determineRootDir(locationPattern);
 		String subPattern = locationPattern.substring(rootDirPath.length());
 		Resource[] rootDirResources = getResources(rootDirPath);
@@ -784,6 +786,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 			logger.debug("Searching directory [" + dir.getAbsolutePath() +
 					"] for files matching pattern [" + fullPattern + "]");
 		}
+		System.out.println("PathMatchingResourcePatternResolver#doRetrieveMatchingFiles找到包下所有class文件（dir.listFiles()）");
 		File[] dirContents = dir.listFiles();
 		if (dirContents == null) {
 			if (logger.isWarnEnabled()) {

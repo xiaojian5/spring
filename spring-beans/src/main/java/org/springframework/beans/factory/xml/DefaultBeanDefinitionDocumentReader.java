@@ -174,10 +174,11 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 				if (node instanceof Element) {
 					Element ele = (Element) node;
 					if (delegate.isDefaultNamespace(ele)) {
+						System.out.println("xml初始化ioc容器形式走该分支parseDefaultElement(ele, delegate)");
 						parseDefaultElement(ele, delegate);
 					}
 					else {
-						System.out.println("注解形式走该分支delegate.parseCustomElement(ele);");
+						System.out.println("注解扫描形式走该分支delegate.parseCustomElement(ele);");
 						delegate.parseCustomElement(ele);
 					}
 				}
