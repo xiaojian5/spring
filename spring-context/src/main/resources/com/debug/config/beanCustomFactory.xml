@@ -5,6 +5,6 @@
 
 	<bean id="person" class="com.debug.basebean.Person" init-method="init"/>
 
-	<bean id="customBeanFactoryPostProcessor" class="com.debug.CustomFactroy.CustomBeanFactoryPostProcessor"/>
-
+	<bean id="customBeanFactoryPostProcessor" class="com.debug.CustomPostProcessor.CustomBeanFactoryPostProcessor"/>
+    <bean id="customBeanPostProcessor" class="com.debug.CustomPostProcessor.CustomBeanPostProcessor"/>
 </beans>

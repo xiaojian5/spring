@@ -16,14 +16,12 @@ public class Person {
 		System.out.println("*********Person init()开始*********");
 		showInfo();
 		System.out.println("*********Person init()结束*********");
-		System.out.println();
 	}
 
 	public Person() {
 		System.out.println("*********Person Construtor()开始*********");
 		showInfo();
 		System.out.println("*********Person Construtor()结束*********");
-		System.out.println();
 	}
 
 	public String getName() {
