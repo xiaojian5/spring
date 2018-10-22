@@ -518,6 +518,8 @@ public class BeanDefinitionParserDelegate {
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
 
+			System.out.println("BeanDefinitionParserDelegate#parseBeanDefinitionElement中会对xml中的相关标签进行解析" +
+					"meta标签、lookup方法、replaceMethod、构造函数等");
 			parseMetaElements(ele, bd);
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
