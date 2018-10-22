@@ -20,7 +20,9 @@ public class IoCDebug {
 	 */
 	@Test
 	public void testIOC() {
+
 		System.out.println("xml形式注入bean调试过程开始");
+
 		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/User.xml");
 
 		User user = (User) context.getBean("user");
@@ -29,6 +31,7 @@ public class IoCDebug {
 
 		System.out.println("name属性:" + user.getName());
 		System.out.println("gender属性:" + user.getGender());
+
 		System.out.println("xml形式注入bean调试过程结束");
 	}
 
@@ -37,6 +40,7 @@ public class IoCDebug {
 	 */
 	@Test
 	public void testIOCAnnotation() {
+
 		System.out.println("注解扫描形式注入bean的调试过程开始");
 
 		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/beanlifecycle_annotation.xml");
