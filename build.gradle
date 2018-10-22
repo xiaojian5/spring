@@ -43,7 +43,7 @@ configure(allprojects) { project ->
 
 	ext.aspectjVersion       = "1.9.1"
 	ext.freemarkerVersion    = "2.3.28"
-	ext.groovyVersion        = "2.5.0-rc-3"
+	ext.groovyVersion        = "2.5.0"
 	ext.hsqldbVersion        = "2.4.0"
 	ext.jackson2Version      = "2.9.5"
 	ext.jettyVersion         = "9.4.10.v20180503"
@@ -248,6 +248,9 @@ configure(rootProject) {
 		imports {
 			mavenBom "io.projectreactor:reactor-bom:${reactorVersion}"
 		}
+		dependencies {
+			dependency "io.projectreactor.netty:reactor-netty:0.8.0.BUILD-SNAPSHOT"
+		}
 		resolutionStrategy {
 			cacheChangingModulesFor 0, 'seconds'
 		}
@@ -282,9 +285,9 @@ configure(rootProject) {
 		archives distZip
 	}
 
-	task wrapper(type: Wrapper) {
+	wrapper {
 		description = "Generates gradlew[.bat] scripts"
-		gradleVersion = '4.6'
+		gradleVersion = '4.8'
 
 		doLast() {
 			def gradleOpts = "-XX:MaxMetaspaceSize=1024m -Xmx1024m"
