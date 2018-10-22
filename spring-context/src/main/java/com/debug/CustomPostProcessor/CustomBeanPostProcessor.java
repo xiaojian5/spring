@@ -30,6 +30,7 @@ public class CustomBeanPostProcessor implements BeanPostProcessor {
 		if ("person".equals(beanName)) {
 			Person person = (Person) bean;
 			person.setName("修改测试姓名");
+			person.setAge(999);
 		}
 		System.out.println("*********Bean实例化之后执行（end）*********");
 		return bean;

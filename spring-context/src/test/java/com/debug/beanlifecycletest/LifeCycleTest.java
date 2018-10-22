@@ -50,6 +50,10 @@ public class LifeCycleTest {
 
 		person.showInfo();
 
+		System.out.println("BeanFactoryPostProcessor的执行顺序在构造函数之前");
+		System.out.println("BeanPostProcessor#postProcessBeforeInitialization的在构造函数之后，init-method方法之前执行");
+		System.out.println("BeanPostProcessor#postProcessAfterInitialization的在init-method方法之后执行");
+
 	}
 
 }
