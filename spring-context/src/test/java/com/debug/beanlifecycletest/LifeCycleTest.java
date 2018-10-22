@@ -44,7 +44,7 @@ public class LifeCycleTest {
 	public void beanFactroyTest() {
 		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/beanCustomFactory.xml");
 
-		//构造函数执行两次是因为在使用反射实例化对象的时候多了一行相同的代码
+		//构造函数执行两次是因为在使用反射实例化对象的时候多了一行相同的代码，现在在源码中间该行代码屏蔽了
 		//  Object object= ctor.newInstance(args);
 		Person person = (Person) context.getBean("person");
 
