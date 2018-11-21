@@ -14,19 +14,20 @@ import com.debug.basebean.User;
 public class AopTest {
 
 	/**
-	 * aop测试
+	 * 基于配置形式的aop增强测试
 	 */
 	@Test
-	public void testAop() {
+	public void testXmlAop() {
 
 		System.out.println("Aop调试开始");
 
-		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/User.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/xmlaop.xml");
 
 		User user = (User) context.getBean("user");
 
 		user.sayHello();
 
+		System.out.println();
 		System.out.println("Aop调试结束");
 
 	}
