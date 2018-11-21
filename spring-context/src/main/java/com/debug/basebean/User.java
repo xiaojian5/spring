@@ -13,6 +13,10 @@ public class User {
 
 	private String gender;
 
+	public void sayHello() {
+		System.out.println("Hello Aop");
+	}
+
 	public String getName() {
 		return name;
 	}

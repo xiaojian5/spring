@@ -179,6 +179,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 					}
 					else {
 						System.out.println("注解扫描形式走该分支delegate.parseCustomElement(ele);");
+						System.out.println("如果开启了aop:aspectj-autoproxy，也会走该分支，生产AspectJAutoProxyBeanDefinitionParser解析器");
 						delegate.parseCustomElement(ele);
 					}
 				}
