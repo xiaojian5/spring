@@ -19,7 +19,7 @@ public class AopTest {
 	@Test
 	public void testXmlAop() {
 
-		System.out.println("Aop调试开始");
+		System.out.println("xml配置形式Aop调试开始");
 
 		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/xmlaop.xml");
 
@@ -28,7 +28,26 @@ public class AopTest {
 		user.sayHello();
 
 		System.out.println();
-		System.out.println("Aop调试结束");
+		System.out.println("xml配置形式Aop调试结束");
+
+	}
+
+	/**
+	 * 基于注解形式的aop测试
+	 */
+	@Test
+	public void testAnnotationAop() {
+
+		System.out.println("注解形式Aop调试开始");
+
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/annotationaop.xml");
+
+		User user = (User) context.getBean("user");
+
+		user.sayHello();
+
+		System.out.println();
+		System.out.println("注解形式Aop调试结束");
 
 	}
 }

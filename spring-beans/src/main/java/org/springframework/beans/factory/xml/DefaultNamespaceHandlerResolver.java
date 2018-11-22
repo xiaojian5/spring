@@ -115,7 +115,7 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 	@Override
 	@Nullable
 	public NamespaceHandler resolve(String namespaceUri) {
-		System.out.println("注解形式：得到默认的解析空间处理器（9个），然后取出当前空间处理器");
+		System.out.println("通过标签uri从默认的解析空间处理器（9个）取出当前空间处理器");
 		Map<String, Object> handlerMappings = getHandlerMappings();
 		Object handlerOrClassName = handlerMappings.get(namespaceUri);
 		if (handlerOrClassName == null) {
@@ -150,6 +150,7 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 	}
 
 	/**
+	 * 正常run流程调用getHandlerMappings时，handlerMappings还未被赋值，走正常流程，当debug时会开启另一个线程对其进行赋值
 	 * Load the specified NamespaceHandler mappings lazily.
 	 */
 	private Map<String, Object> getHandlerMappings() {
@@ -180,8 +181,14 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 	}
 
 
+	/**
+	 * 在debug时handlerMapping的初始化在这里实现，这里会另起一个线程进行初始化，所以当debug的时候是进不了断点
+	 * @return
+	 */
 	@Override
 	public String toString() {
+		System.out.print("只有debug时这里才会出现打印：");
+		System.out.println("在debug时,如果在DefaultNamespaceHandlerResover初始化前打了断点,handlerMapping的初始化在这里实现，这里会另起一个线程进行初始化，所以当debug的时候是进不了断点");
 		return "NamespaceHandlerResolver using mappings " + getHandlerMappings();
 	}
 

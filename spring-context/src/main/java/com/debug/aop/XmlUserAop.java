@@ -14,4 +14,9 @@ public class XmlUserAop {
 		System.out.println();
 		System.out.println("利用xml配置形式进行前置增强");
 	}
+
+	public void afterAdvice() {
+		System.out.println();
+		System.out.println("利用xml配置形式进行后置增强");
+	}
 }

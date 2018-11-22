@@ -21,8 +21,11 @@
 
 		<!--配置切面-->
 		<aop:aspect ref="xmlUserAop">
-            <!--配置前置增强-->
+			<!--配置前置增强-->
 			<aop:before method="beforeAdvice" pointcut-ref="allpoint"/>
+
+			<!--配置后置增强-->
+			<aop:after method="afterAdvice" pointcut-ref="allpoint"/>
 		</aop:aspect>
 
 	</aop:config>
