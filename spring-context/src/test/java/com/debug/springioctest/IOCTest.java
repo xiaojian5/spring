@@ -39,7 +39,7 @@ public class IOCTest {
 	 * 注解扫描形式注入bean
 	 */
 	@Test
-	public void testIOCAnnotation() {
+	public void testAnnotationIOC() {
 
 		System.out.println("注解扫描形式注入bean的调试过程开始");
 
