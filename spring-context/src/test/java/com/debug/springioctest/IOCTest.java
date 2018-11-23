@@ -13,13 +13,13 @@ import com.debug.basebean.User;
  * @date: 2018/6/6
  * @description:spring IOC调试初始化过程调试
  */
-public class IoCDebug {
+public class IOCTest {
 
 	/**
 	 * xml形式注入bean
 	 */
 	@Test
-	public void testIOC() {
+	public void testXmlIOC() {
 
 		System.out.println("xml形式注入bean调试过程开始");
 
