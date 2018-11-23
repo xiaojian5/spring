@@ -516,7 +516,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
 			// Prepare this context for refreshing.
-			System.out.println("设置上下文活动标志active（会先将上下文标志设置为false），还有进行一些环境配置。");
+			System.out.println("设置上下文活动标志active（会先将上下文标志设置为true），还有进行一些环境配置。");
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
