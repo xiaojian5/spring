@@ -182,7 +182,7 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 
 	@Override
 	public int loadBeanDefinitions(Resource... resources) throws BeanDefinitionStoreException {
-		System.out.println("在AbstractBeanDefinitionReader#loadBeanDefinitions方法中（重载方法，参数为Resource）得到" +
+		System.out.println("在AbstractBeanDefinitionReader#loadBeanDefinitions方法中（参数为Resource）得到" +
 				"加载资源文件的个数，也就是beanxml文件的个数");
 		Assert.notNull(resources, "Resource array must not be null");
 		int counter = 0;
