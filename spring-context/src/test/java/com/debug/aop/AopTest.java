@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.debug.basebean.User;
+import com.debug.basebean.MultiConditionBean;
 
 /**
  * @author: dengxin.chen
@@ -23,7 +23,7 @@ public class AopTest {
 
 		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/xmlaop.xml");
 
-		User user = (User) context.getBean("user");
+		MultiConditionBean user = (MultiConditionBean) context.getBean("multiConditionBean");
 
 		user.sayHello();
 
@@ -42,7 +42,7 @@ public class AopTest {
 
 		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/annotationaop.xml");
 
-		User user = (User) context.getBean("user");
+		MultiConditionBean user = (MultiConditionBean) context.getBean("multiConditionBean");
 
 		user.sayHello();
 

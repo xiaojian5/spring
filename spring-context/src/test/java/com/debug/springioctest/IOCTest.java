@@ -2,11 +2,10 @@ package com.debug.springioctest;
 
 
 import org.junit.Test;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.debug.basebean.User;
+import com.debug.basebean.MultiConditionBean;
 
 /**
  * @author: Shawn Chen
@@ -23,14 +22,14 @@ public class IOCTest {
 
 		System.out.println("xml形式注入bean调试过程开始");
 
-		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/User.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/MultiCondition.xml");
 
-		User user = (User) context.getBean("user");
+		MultiConditionBean multiConditionBean = (MultiConditionBean) context.getBean("multiConditionBean");
 
-		System.out.println("class name:" + user.getClass().getName());
+		System.out.println("class name:" + multiConditionBean.getClass().getName());
 
-		System.out.println("name属性:" + user.getName());
-		System.out.println("gender属性:" + user.getGender());
+		System.out.println("name属性:" + multiConditionBean.getName());
+		System.out.println("gender属性:" + multiConditionBean.getGender());
 
 		System.out.println("xml形式注入bean调试过程结束");
 	}
@@ -45,7 +44,7 @@ public class IOCTest {
 
 		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/beanlifecycle_annotation.xml");
 
-		User user = (User) context.getBean("user");
+		MultiConditionBean user = (MultiConditionBean) context.getBean("multiConditionBean");
 
 		user.setName("注解");
 		user.setGender("保密");

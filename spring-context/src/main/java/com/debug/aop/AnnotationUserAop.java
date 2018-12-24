@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AnnotationUserAop {
 
-	@Pointcut("execution(* com.debug.basebean.User.sayHello(..))")
+	@Pointcut("execution(* com.debug.basebean.MultiConditionBean.sayHello(..))")
 	private void pointcutMethod() {
 
 	}
