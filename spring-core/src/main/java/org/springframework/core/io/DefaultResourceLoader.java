@@ -45,6 +45,10 @@ import org.springframework.util.StringUtils;
  * @see FileSystemResourceLoader
  * @see org.springframework.context.support.ClassPathXmlApplicationContext
  */
+
+/**
+ * ResourceLoader的默认实现
+ */
 public class DefaultResourceLoader implements ResourceLoader {
 
 	@Nullable
@@ -139,11 +143,18 @@ public class DefaultResourceLoader implements ResourceLoader {
 		this.resourceCaches.clear();
 	}
 
-
+	/**
+	 * 这里为ResourceLoader的核心方法，这里对其提供了实现，它的子类并未覆盖该方法，因此ResourceLoader的资源加载策略
+	 * 就由DefaultResourceLoader提供
+	 *
+	 * @param location the resource location
+	 * @return
+	 */
 	@Override
 	public Resource getResource(String location) {
 		Assert.notNull(location, "Location must not be null");
 
+		// 首先通过ProtocolResolver来加载资源
 		for (ProtocolResolver protocolResolver : this.protocolResolvers) {
 			Resource resource = protocolResolver.resolve(location, this);
 			if (resource != null) {
@@ -151,6 +162,7 @@ public class DefaultResourceLoader implements ResourceLoader {
 			}
 		}
 
+		// 如果资源以"/"开头，然后解析资源返回ClassPathContextResource类型的资源
 		if (location.startsWith("/")) {
 			return getResourceByPath(location);
 		}
@@ -182,7 +194,6 @@ public class DefaultResourceLoader implements ResourceLoader {
 	 * @see org.springframework.web.context.support.XmlWebApplicationContext#getResourceByPath
 	 */
 	protected Resource getResourceByPath(String path) {
-		System.out.println("在DefaultResourceLoader中通过构造函数将xml资源转换成Resource");
 		return new ClassPathContextResource(path, getClassLoader());
 	}
 

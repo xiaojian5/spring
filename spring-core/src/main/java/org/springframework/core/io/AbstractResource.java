@@ -41,6 +41,10 @@ import org.springframework.util.ResourceUtils;
  * @author Juergen Hoeller
  * @since 28.12.2003
  */
+
+/**
+ * Resouce的默认实现，如果自己要实现Resource，直接继承AbstractResource类即可，不用去自己实现Resource接口
+ */
 public abstract class AbstractResource implements Resource {
 
 	/**
@@ -119,6 +123,12 @@ public abstract class AbstractResource implements Resource {
 	 * This implementation throws a FileNotFoundException, assuming
 	 * that the resource cannot be resolved to an absolute file path.
 	 */
+	/**
+	 * 具体如何获得文件交由子类实现
+	 *
+	 * @return
+	 * @throws IOException
+	 */
 	@Override
 	public File getFile() throws IOException {
 		throw new FileNotFoundException(getDescription() + " cannot be resolved to absolute file path");
@@ -140,6 +150,12 @@ public abstract class AbstractResource implements Resource {
 	 * content length. Subclasses will almost always be able to provide
 	 * a more optimal version of this, e.g. checking a File length.
 	 * @see #getInputStream()
+	 */
+	/**
+	 * 注意这里是获取资源内容的实际长度
+	 *
+	 * @return
+	 * @throws IOException
 	 */
 	@Override
 	public long contentLength() throws IOException {
