@@ -180,8 +180,8 @@ import org.springframework.util.StringUtils;
  */
 
 /**
- * 为 ResourcePatternResolver 最常用的子类<br/>
- * 它除了支持 ResourceLoader 和 ResourcePatternResolver 新增的 "classpath*:" 前缀外，还支持 Ant 风格的路径匹配模式。
+ * 它是ResourcePatternResolver最常用的子类<br/>
+ * 它除了支持ResourceLoader和ResourcePatternResolver新增的 "classpath*:" 前缀外，还支持Ant风格的路径匹配模式。
  */
 public class PathMatchingResourcePatternResolver implements ResourcePatternResolver {
 
@@ -202,19 +202,21 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 		}
 	}
 
-
+	// 内置资源加载器
 	private final ResourceLoader resourceLoader;
-
+	// Ant路径匹配器
 	private PathMatcher pathMatcher = new AntPathMatcher();
 
 
 	/**
+	 * 如果实例化时，不指定资源加载器，则就使用DefaultResourceLoader作为资源加载器
 	 * Create a new PathMatchingResourcePatternResolver with a DefaultResourceLoader.
 	 * <p>ClassLoader access will happen via the thread context class loader.
 	 *
 	 * @see org.springframework.core.io.DefaultResourceLoader
 	 */
 	public PathMatchingResourcePatternResolver() {
+		// 不指定资源加载器，则使用默认的
 		this.resourceLoader = new DefaultResourceLoader();
 	}
 
@@ -241,7 +243,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 	public PathMatchingResourcePatternResolver(@Nullable ClassLoader classLoader) {
 		this.resourceLoader = new DefaultResourceLoader(classLoader);
 	}
-
+	// 从PathMatchingResourcePatternResolver的构造函数可以看出，如果我们不指定资源加载器，则还是使用DefaultResourceLoader来加载资源
 
 	/**
 	 * Return the ResourceLoader that this pattern resolver works with.
@@ -274,9 +276,15 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 		return this.pathMatcher;
 	}
 
-
+	/**
+	 * 通过location得到Resource，这里直接委托给相应的ResourceLoader
+	 *
+	 * @param location the resource location
+	 * @return
+	 */
 	@Override
 	public Resource getResource(String location) {
+		// 如果未指定资源记载器，则还是使用默认的，这里就委派给DefaultResourceLoader
 		return getResourceLoader().getResource(location);
 	}
 
@@ -290,15 +298,24 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 	@Override
 	public Resource[] getResources(String locationPattern) throws IOException {
 		Assert.notNull(locationPattern, "Location pattern must not be null");
+
+		// 以"classpath*:"开头的location
 		if (locationPattern.startsWith(CLASSPATH_ALL_URL_PREFIX)) {
 			// a class path resource (multiple resources for same name possible)
+
+			// #1.isPattern函数的入参为路径
+			// #2.所以这里判断路径是否包含通配符 如com.develop.resource.*
 			if (getPathMatcher().isPattern(locationPattern.substring(CLASSPATH_ALL_URL_PREFIX.length()))) {
 				// a class path resource pattern
+			    // 这里通过通配符返回Resource[]
 				return findPathMatchingResources(locationPattern);
+			// 路径不包含通配符
 			} else {
 				// all class path resources with the given name
+				// 通过给定的路径，找到所有匹配的资源
 				return findAllClassPathResources(locationPattern.substring(CLASSPATH_ALL_URL_PREFIX.length()));
 			}
+			// 不以"classpath*:"
 		} else {
 			// Generally only look for a pattern after a prefix here,
 			// and on Tomcat only after the "*/" separator for its "war:" protocol.
