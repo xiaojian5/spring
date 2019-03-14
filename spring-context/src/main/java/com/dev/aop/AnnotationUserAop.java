@@ -1,4 +1,4 @@
-package com.debug.aop;
+package com.dev.aop;
 
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AnnotationUserAop {
 
-	@Pointcut("execution(* com.debug.basebean.MultiConditionBean.sayHello(..))")
+	@Pointcut("execution(* com.dev.basebean.MultiConditionBean.sayHello(..))")
 	private void pointcutMethod() {
 
 	}

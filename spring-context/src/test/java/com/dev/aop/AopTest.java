@@ -1,10 +1,10 @@
-package com.debug.aop;
+package com.dev.aop;
 
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.debug.basebean.MultiConditionBean;
+import com.dev.basebean.MultiConditionBean;
 
 /**
  * @author: dengxin.chen
@@ -21,7 +21,7 @@ public class AopTest {
 
 		System.out.println("xml配置形式Aop调试开始");
 
-		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/xmlaop.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/dev/config/aop_xml.xml");
 
 		MultiConditionBean user = (MultiConditionBean) context.getBean("multiConditionBean");
 
@@ -40,7 +40,7 @@ public class AopTest {
 
 		System.out.println("注解形式Aop调试开始");
 
-		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/annotationaop.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/dev/config/aop_annotation.xml");
 
 		MultiConditionBean user = (MultiConditionBean) context.getBean("multiConditionBean");
 

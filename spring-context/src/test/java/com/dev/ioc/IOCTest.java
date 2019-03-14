@@ -1,11 +1,11 @@
-package com.debug.springioctest;
+package com.dev.ioc;
 
 
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.debug.basebean.MultiConditionBean;
+import com.dev.basebean.MultiConditionBean;
 
 /**
  * @author: Shawn Chen
@@ -22,7 +22,7 @@ public class IOCTest {
 
 		System.out.println("xml形式注入bean调试过程开始");
 
-		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/MultiCondition.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/dev/config/multicondition.xml");
 
 		MultiConditionBean multiConditionBean = (MultiConditionBean) context.getBean("multiConditionBean");
 
@@ -42,7 +42,7 @@ public class IOCTest {
 
 		System.out.println("注解扫描形式注入bean的调试过程开始");
 
-		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/beanlifecycle_annotation.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/dev/config/beanlife_annotation.xml");
 
 		MultiConditionBean user = (MultiConditionBean) context.getBean("multiConditionBean");
 

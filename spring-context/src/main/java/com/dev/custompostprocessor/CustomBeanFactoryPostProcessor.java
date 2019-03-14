@@ -1,4 +1,4 @@
-package com.debug.custompostprocessor;
+package com.dev.custompostprocessor;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;

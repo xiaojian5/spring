@@ -3,8 +3,8 @@
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="person" class="com.debug.basebean.Person" init-method="init"/>
+	<bean id="person" class="com.dev.basebean.Person" init-method="init"/>
 
-	<bean id="customBeanFactoryPostProcessor" class="com.debug.custompostprocessor.CustomBeanFactoryPostProcessor"/>
-    <bean id="customBeanPostProcessor" class="com.debug.custompostprocessor.CustomBeanPostProcessor"/>
+	<bean id="customBeanFactoryPostProcessor" class="com.dev.custompostprocessor.CustomBeanFactoryPostProcessor"/>
+    <bean id="customBeanPostProcessor" class="com.dev.custompostprocessor.CustomBeanPostProcessor"/>
 </beans>

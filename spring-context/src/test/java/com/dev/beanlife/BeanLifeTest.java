@@ -1,7 +1,7 @@
-package com.debug.beanlifecycletest;
+package com.dev.beanlife;
 
-import com.debug.basebean.Person;
-import com.debug.beanlifecycle.BeanLifeCycle;
+import com.dev.basebean.Person;
+import com.dev.beanlifecycle.BeanLifeCycle;
 
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -12,16 +12,16 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @date: 2018/6/6
  * @description:Bean生命周期调试
  */
-public class LifeCycleTest {
+public class BeanLifeTest {
 
 	@Test
-	public void testBeanLifeCycle() {
+	public void testBeanLife() {
 
 		System.out.println("Bean生命周期：");
 		System.out.println("Spring容器初始化");
 		System.out.println("=====================================");
 
-		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/beanlifecycle.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/dev/config/beanlife_xml.xml");
 
 		System.out.println("Spring容器初始化完毕");
 		System.out.println("=====================================");
@@ -41,8 +41,8 @@ public class LifeCycleTest {
 	}
 
 	@Test
-	public void beanFactroyTest() {
-		ApplicationContext context = new ClassPathXmlApplicationContext("com/debug/config/beanCustomFactory.xml");
+	public void testBeanFactroy() {
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/dev/config/beancustomfactory.xml");
 
 		//构造函数执行两次是因为在使用反射实例化对象的时候多了一行相同的代码，现在在源码中间该行代码屏蔽了
 		//  Object object= ctor.newInstance(args);

@@ -8,16 +8,16 @@
 	<!--完全使用配置的模式实现aop-->
 	<aop:aspectj-autoproxy/>
 
-	<bean id="user" class="com.debug.basebean.MultiConditionBean"
+	<bean id="multiConditionBean" class="com.dev.basebean.MultiConditionBean"
 		  p:name="测试用例" p:gender="性别"/>
 
-	<bean id="xmlUserAop" class="com.debug.aop.XmlUserAop"/>
+	<bean id="xmlUserAop" class="com.dev.aop.XmlUserAop"/>
 
 	<!--aop配置-->
 	<aop:config>
 
 		<!--配置切入点-->
-		<aop:pointcut id="allpoint" expression="execution(* com.debug.basebean.MultiConditionBean.sayHello(..))"/>
+		<aop:pointcut id="allpoint" expression="execution(* com.dev.basebean.MultiConditionBean.sayHello(..))"/>
 
 		<!--配置切面-->
 		<aop:aspect ref="xmlUserAop">

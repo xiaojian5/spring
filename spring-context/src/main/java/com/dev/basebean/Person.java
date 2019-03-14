@@ -1,4 +1,4 @@
-package com.debug.basebean;
+package com.dev.basebean;
 
 /**
  * @author: dengxin.chen

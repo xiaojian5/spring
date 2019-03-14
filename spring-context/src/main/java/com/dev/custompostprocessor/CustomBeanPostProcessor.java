@@ -1,9 +1,9 @@
-package com.debug.custompostprocessor;
+package com.dev.custompostprocessor;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
-import com.debug.basebean.Person;
+import com.dev.basebean.Person;
 
 /**
  * @author: dengxin.chen
