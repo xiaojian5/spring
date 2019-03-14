@@ -269,6 +269,7 @@ public abstract class ResourceUtils {
 	 */
 	public static boolean isFileURL(URL url) {
 		String protocol = url.getProtocol();
+		// 这里会判断location的协议类型：file/vfsfile/vfs
 		return (URL_PROTOCOL_FILE.equals(protocol) || URL_PROTOCOL_VFSFILE.equals(protocol) ||
 				URL_PROTOCOL_VFS.equals(protocol));
 	}

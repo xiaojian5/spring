@@ -57,14 +57,12 @@ public abstract class AbstractResource implements Resource {
 		// Try file existence: can we find the file in the file system?
 		try {
 			return getFile().exists();
-		}
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			// Fall back to stream existence: can we open the stream?
 			try {
 				getInputStream().close();
 				return true;
-			}
-			catch (Throwable isEx) {
+			} catch (Throwable isEx) {
 				return false;
 			}
 		}
@@ -113,13 +111,13 @@ public abstract class AbstractResource implements Resource {
 		URL url = getURL();
 		try {
 			return ResourceUtils.toURI(url);
-		}
-		catch (URISyntaxException ex) {
+		} catch (URISyntaxException ex) {
 			throw new NestedIOException("Invalid URI [" + url + "]", ex);
 		}
 	}
 
 	/**
+	 * 具体如何获得文件交由子类实现
 	 * This implementation throws a FileNotFoundException, assuming
 	 * that the resource cannot be resolved to an absolute file path.
 	 */
@@ -146,9 +144,11 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 注意这里是获取资源内容的实际长度
 	 * This implementation reads the entire InputStream to calculate the
 	 * content length. Subclasses will almost always be able to provide
 	 * a more optimal version of this, e.g. checking a File length.
+	 *
 	 * @see #getInputStream()
 	 */
 	/**
@@ -168,12 +168,10 @@ public abstract class AbstractResource implements Resource {
 				size += read;
 			}
 			return size;
-		}
-		finally {
+		} finally {
 			try {
 				is.close();
-			}
-			catch (IOException ex) {
+			} catch (IOException ex) {
 			}
 		}
 	}
@@ -181,6 +179,7 @@ public abstract class AbstractResource implements Resource {
 	/**
 	 * This implementation checks the timestamp of the underlying File,
 	 * if available.
+	 *
 	 * @see #getFileForLastModifiedCheck()
 	 */
 	@Override
@@ -196,10 +195,11 @@ public abstract class AbstractResource implements Resource {
 	/**
 	 * Determine the File to use for timestamp checking.
 	 * <p>The default implementation delegates to {@link #getFile()}.
+	 *
 	 * @return the File to use for timestamp checking (never {@code null})
 	 * @throws FileNotFoundException if the resource cannot be resolved as
-	 * an absolute file path, i.e. is not available in a file system
-	 * @throws IOException in case of general resolution/reading failures
+	 *                               an absolute file path, i.e. is not available in a file system
+	 * @throws IOException           in case of general resolution/reading failures
 	 */
 	protected File getFileForLastModifiedCheck() throws IOException {
 		return getFile();
@@ -227,6 +227,7 @@ public abstract class AbstractResource implements Resource {
 
 	/**
 	 * This implementation returns the description of this resource.
+	 *
 	 * @see #getDescription()
 	 */
 	@Override
@@ -236,16 +237,18 @@ public abstract class AbstractResource implements Resource {
 
 	/**
 	 * This implementation compares description strings.
+	 *
 	 * @see #getDescription()
 	 */
 	@Override
 	public boolean equals(Object obj) {
 		return (obj == this ||
-			(obj instanceof Resource && ((Resource) obj).getDescription().equals(getDescription())));
+				(obj instanceof Resource && ((Resource) obj).getDescription().equals(getDescription())));
 	}
 
 	/**
 	 * This implementation returns the description's hash code.
+	 *
 	 * @see #getDescription()
 	 */
 	@Override

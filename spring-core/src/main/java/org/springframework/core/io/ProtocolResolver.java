@@ -29,6 +29,10 @@ import org.springframework.lang.Nullable;
  * @since 4.3
  * @see DefaultResourceLoader#addProtocolResolver
  */
+
+/**
+ * 用户自定义协议资源解决策略
+ */
 @FunctionalInterface
 public interface ProtocolResolver {
 
@@ -39,6 +43,13 @@ public interface ProtocolResolver {
 	 * @param resourceLoader the associated resource loader
 	 * @return a corresponding {@code Resource} handle if the given location
 	 * matches this resolver's protocol, or {@code null} otherwise
+	 */
+	/**
+	 * 使用指定的ResourceLoader，解析指定的location
+	 * 若成功则返回对应的Resource
+	 * @param location
+	 * @param resourceLoader
+	 * @return
 	 */
 	@Nullable
 	Resource resolve(String location, ResourceLoader resourceLoader);

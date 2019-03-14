@@ -45,11 +45,19 @@ import org.springframework.core.io.ResourceLoader;
  * JAR files or classes directories can contain multiple files of the same name.
  *
  * @author Juergen Hoeller
- * @since 1.0.2
  * @see org.springframework.core.io.Resource
  * @see org.springframework.core.io.ResourceLoader
  * @see org.springframework.context.ApplicationContext
  * @see org.springframework.context.ResourceLoaderAware
+ * @since 1.0.2
+ */
+
+/**
+ * ResourcePatternResolver：资源模式解析接口，继承ResourceLoader<br/>
+ * 由于Resource#getResource方法一次只能根据location返回一个Resource，并不能进行多匹配，当需要加载多个资源时
+ * 就捉襟见肘了，除了循环没有其他办法<br/>
+ * ResourcePatternResolver相当于对getResource的扩展，可根据location返回多个Resource，这里就解决classpath*:
+ * 下资源多加载的问题
  */
 public interface ResourcePatternResolver extends ResourceLoader {
 
@@ -58,15 +66,19 @@ public interface ResourcePatternResolver extends ResourceLoader {
 	 * This differs from ResourceLoader's classpath URL prefix in that it
 	 * retrieves all matching resources for a given name (e.g. "/beans.xml"),
 	 * for example in the root of all deployed JAR files.
+	 *
 	 * @see org.springframework.core.io.ResourceLoader#CLASSPATH_URL_PREFIX
 	 */
+	// 注意这里的前缀是classpath*:与ResourceLoader中classpath:是不一样的
 	String CLASSPATH_ALL_URL_PREFIX = "classpath*:";
 
 	/**
+	 * 这里通过一个location返回多个Resource对象，实现类路径下多配置文件的加载
 	 * Resolve the given location pattern into Resource objects.
 	 * <p>Overlapping resource entries that point to the same physical
 	 * resource should be avoided, as far as possible. The result should
 	 * have set semantics.
+	 *
 	 * @param locationPattern the location pattern to resolve
 	 * @return the corresponding Resource objects
 	 * @throws IOException in case of I/O errors
