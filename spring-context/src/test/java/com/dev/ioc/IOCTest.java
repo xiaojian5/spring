@@ -21,8 +21,8 @@ public class IOCTest {
 	public void testXmlIOC() {
 
 		System.out.println("xml形式注入bean调试过程开始");
-
-		ApplicationContext context = new ClassPathXmlApplicationContext("com/dev/config/multicondition.xml");
+		// classpath*:com/dev/config/*
+		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:com/dev/config/multicondition.xml");
 
 		MultiConditionBean multiConditionBean = (MultiConditionBean) context.getBean("multiConditionBean");
 
