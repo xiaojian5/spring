@@ -112,7 +112,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	private boolean namespaceAware = false;
 
 	/**
-	 * documentReader 的类
+	 * documentReader的类，创建BeanDefinitionDocumentReader使用，使用默认值
 	 *
 	 * @see #createBeanDefinitionDocumentReader()
 	 */
@@ -559,9 +559,13 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see BeanDefinitionDocumentReader#registerBeanDefinitions
 	 */
 	public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
+		// #1.创建BeanDefinitionDocumentReader对象
 		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
+		// #2.获取已注册过的BeanDefinition对象个数
 		int countBefore = getRegistry().getBeanDefinitionCount();
+		// #3.创建XmlReaderContext对象，并注册BeanDefinition
 		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
+		// 返回新注册的BeanDefinition对象个数
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
 
