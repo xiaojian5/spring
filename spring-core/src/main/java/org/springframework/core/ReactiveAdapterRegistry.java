@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2018 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,8 @@ import org.springframework.util.ReflectionUtils;
  * {@code Observable}, and others.
  *
  * <p>By default, depending on classpath availability, adapters are registered
- * for Reactor, RxJava 1, RxJava 2 types, {@link CompletableFuture}, and Java 9+
- * Flow.Publisher.
+ * for Reactor, RxJava 1, RxJava 2 types, {@link CompletableFuture}, Java 9+
+ * {@code Flow.Publisher} and Kotlin Coroutines {@code Deferred}.
  *
  * @author Rossen Stoyanchev
  * @author Sebastien Deleuze
@@ -63,40 +63,37 @@ public class ReactiveAdapterRegistry {
 	 */
 	public ReactiveAdapterRegistry() {
 
+		ClassLoader classLoader = ReactiveAdapterRegistry.class.getClassLoader();
+
 		// Reactor
 		boolean reactorRegistered = false;
-		try {
+		if (ClassUtils.isPresent("reactor.core.publisher.Flux", classLoader)) {
 			new ReactorRegistrar().registerAdapters(this);
 			reactorRegistered = true;
-		}
-		catch (Throwable ex) {
-			// Ignore
 		}
 		this.reactorPresent = reactorRegistered;
 
 		// RxJava1
-		try {
+		if (ClassUtils.isPresent("rx.Observable", classLoader) &&
+				ClassUtils.isPresent("rx.RxReactiveStreams", classLoader)) {
 			new RxJava1Registrar().registerAdapters(this);
-		}
-		catch (Throwable ex) {
-			// Ignore
 		}
 
 		// RxJava2
-		try {
+		if (ClassUtils.isPresent("io.reactivex.Flowable", classLoader)) {
 			new RxJava2Registrar().registerAdapters(this);
-		}
-		catch (Throwable ex) {
-			// Ignore
 		}
 
 		// Java 9+ Flow.Publisher
-		try {
+		if (ClassUtils.isPresent("java.util.concurrent.Flow.Publisher", classLoader)) {
 			new ReactorJdkFlowAdapterRegistrar().registerAdapter(this);
 		}
-		catch (Throwable ex) {
-			// Ignore for the time being...
-			// We can fall back on "reactive-streams-flow-bridge" (once released)
+		// If not present, do nothing for the time being...
+		// We can fall back on "reactive-streams-flow-bridge" (once released)
+
+		// Coroutines
+		if (ClassUtils.isPresent("kotlinx.coroutines.Deferred", classLoader)) {
+			CoroutinesRegistrarKt.registerAdapter(this);
 		}
 	}
 
@@ -118,7 +115,7 @@ public class ReactiveAdapterRegistry {
 	public void registerReactiveType(ReactiveTypeDescriptor descriptor,
 			Function<Object, Publisher<?>> toAdapter, Function<Publisher<?>, Object> fromAdapter) {
 
-		if (reactorPresent) {
+		if (this.reactorPresent) {
 			this.adapters.add(new ReactorAdapter(descriptor, toAdapter, fromAdapter));
 		}
 		else {
@@ -149,27 +146,27 @@ public class ReactiveAdapterRegistry {
 		if (clazz == null) {
 			return null;
 		}
-
-		return this.adapters.stream()
-				.filter(adapter -> adapter.getReactiveType() == clazz)
-				.findFirst()
-				.orElseGet(() ->
-						this.adapters.stream()
-								.filter(adapter -> adapter.getReactiveType().isAssignableFrom(clazz))
-								.findFirst()
-								.orElse(null));
+		for(ReactiveAdapter adapter : this.adapters) {
+			if (adapter.getReactiveType() == clazz) {
+				return adapter;
+			}
+		}
+		for(ReactiveAdapter adapter : this.adapters) {
+			if (adapter.getReactiveType().isAssignableFrom(clazz)) {
+				return adapter;
+			}
+		}
+		return null;
 	}
 
 
 	/**
 	 * Return a shared default {@code ReactiveAdapterRegistry} instance, lazily
 	 * building it once needed.
-	 *
 	 * <p><b>NOTE:</b> We highly recommend passing a long-lived, pre-configured
 	 * {@code ReactiveAdapterRegistry} instance for customization purposes.
 	 * This accessor is only meant as a fallback for code paths that want to
 	 * fall back on a default instance if one isn't provided.
-	 *
 	 * @return the shared {@code ReactiveAdapterRegistry} instance (never {@code null})
 	 * @since 5.0.2
 	 */
@@ -191,7 +188,6 @@ public class ReactiveAdapterRegistry {
 	private static class ReactorRegistrar {
 
 		void registerAdapters(ReactiveAdapterRegistry registry) {
-
 			// Register Flux and Mono before Publisher...
 
 			registry.registerReactiveType(
@@ -279,22 +275,29 @@ public class ReactiveAdapterRegistry {
 
 	private static class ReactorJdkFlowAdapterRegistrar {
 
-		void registerAdapter(ReactiveAdapterRegistry registry) throws Exception {
+		void registerAdapter(ReactiveAdapterRegistry registry) {
 			// TODO: remove reflection when build requires JDK 9+
-			Class<?> type = ClassUtils.forName("java.util.concurrent.Flow.Publisher", getClass().getClassLoader());
-			Method toFluxMethod = getMethod("flowPublisherToFlux", type);
-			Method toFlowMethod = getMethod("publisherToFlowPublisher", Publisher.class);
-			Object emptyFlow = ReflectionUtils.invokeMethod(toFlowMethod, null, Flux.empty());
 
-			registry.registerReactiveType(
-					ReactiveTypeDescriptor.multiValue(type, () -> emptyFlow),
-					source -> (Publisher<?>) ReflectionUtils.invokeMethod(toFluxMethod, null, source),
-					publisher -> ReflectionUtils.invokeMethod(toFlowMethod, null, publisher)
-			);
-		}
+			try {
+				String publisherName = "java.util.concurrent.Flow.Publisher";
+				Class<?> publisherClass = ClassUtils.forName(publisherName, getClass().getClassLoader());
 
-		private static Method getMethod(String name, Class<?> argumentType) throws NoSuchMethodException {
-			return reactor.adapter.JdkFlowAdapter.class.getMethod(name, argumentType);
+				String adapterName = "reactor.adapter.JdkFlowAdapter";
+				Class<?> flowAdapterClass = ClassUtils.forName(adapterName,  getClass().getClassLoader());
+
+				Method toFluxMethod = flowAdapterClass.getMethod("flowPublisherToFlux", publisherClass);
+				Method toFlowMethod = flowAdapterClass.getMethod("publisherToFlowPublisher", Publisher.class);
+				Object emptyFlow = ReflectionUtils.invokeMethod(toFlowMethod, null, Flux.empty());
+
+				registry.registerReactiveType(
+						ReactiveTypeDescriptor.multiValue(publisherClass, () -> emptyFlow),
+						source -> (Publisher<?>) ReflectionUtils.invokeMethod(toFluxMethod, null, source),
+						publisher -> ReflectionUtils.invokeMethod(toFlowMethod, null, publisher)
+				);
+			}
+			catch (Throwable ex) {
+				// Ignore
+			}
 		}
 	}
 
