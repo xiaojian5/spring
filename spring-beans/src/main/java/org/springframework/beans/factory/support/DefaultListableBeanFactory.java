@@ -1090,6 +1090,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		throw new NoSuchBeanDefinitionException(requiredType);
 	}
 
+	@Override
+	public Object resolveBeanByName(String name, DependencyDescriptor descriptor) throws BeansException {
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Nullable
 	private <T> NamedBeanHolder<T> resolveNamedBean(

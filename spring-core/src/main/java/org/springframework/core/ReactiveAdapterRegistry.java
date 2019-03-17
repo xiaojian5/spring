@@ -93,7 +93,7 @@ public class ReactiveAdapterRegistry {
 
 		// Coroutines
 		if (ClassUtils.isPresent("kotlinx.coroutines.Deferred", classLoader)) {
-			CoroutinesRegistrarKt.registerAdapter(this);
+//			CoroutinesRegistrarKt.registerAdapter(this);
 		}
 	}
 
