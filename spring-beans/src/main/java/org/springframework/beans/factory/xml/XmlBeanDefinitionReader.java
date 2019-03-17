@@ -291,9 +291,11 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 		if (this.entityResolver == null) {
 			// Determine default EntityResolver to use.
 			ResourceLoader resourceLoader = getResourceLoader();
+			// 如果ResourceLoader不为null，则根据指定的ResourceLoader实例化一个EntityResolver
 			if (resourceLoader != null) {
 				this.entityResolver = new ResourceEntityResolver(resourceLoader);
 			} else {
+				// 否则交由DelegatingEntityResolver来创建EntityResolver，将EntityResolver委托给BeansDtdResolver和PluggableSchemaResolver
 				this.entityResolver = new DelegatingEntityResolver(getBeanClassLoader());
 			}
 		}

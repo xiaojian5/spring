@@ -32,9 +32,13 @@ import org.springframework.util.Assert;
  * @author Rob Harrop
  * @author Juergen Hoeller
  * @author Rick Evans
- * @since 2.0
  * @see BeansDtdResolver
  * @see PluggableSchemaResolver
+ * @since 2.0
+ */
+
+/**
+ * 实现EntityResolver接口，然后分别代理dtd的BeansDtdResolver和xml schemas的PluggableSchemaResolver
  */
 public class DelegatingEntityResolver implements EntityResolver {
 
@@ -51,6 +55,7 @@ public class DelegatingEntityResolver implements EntityResolver {
 
 
 	/**
+	 * 通过构造函数进行代理<br/>
 	 * Create a new DelegatingEntityResolver that delegates to
 	 * a default {@link BeansDtdResolver} and a default {@link PluggableSchemaResolver}.
 	 * <p>Configures the {@link PluggableSchemaResolver} with the supplied
@@ -77,14 +82,16 @@ public class DelegatingEntityResolver implements EntityResolver {
 	}
 
 
+
 	@Override
 	@Nullable
 	public InputSource resolveEntity(String publicId, @Nullable String systemId) throws SAXException, IOException {
 		if (systemId != null) {
+			// DTD模式
 			if (systemId.endsWith(DTD_SUFFIX)) {
 				return this.dtdResolver.resolveEntity(publicId, systemId);
-			}
-			else if (systemId.endsWith(XSD_SUFFIX)) {
+			// XSD模式
+			} else if (systemId.endsWith(XSD_SUFFIX)) {
 				return this.schemaResolver.resolveEntity(publicId, systemId);
 			}
 		}

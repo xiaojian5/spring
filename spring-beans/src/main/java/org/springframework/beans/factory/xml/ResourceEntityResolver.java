@@ -47,9 +47,13 @@ import org.springframework.lang.Nullable;
  * will be interpreted relative to the application context too.
  *
  * @author Juergen Hoeller
- * @since 31.07.2003
  * @see org.springframework.core.io.ResourceLoader
  * @see org.springframework.context.ApplicationContext
+ * @since 31.07.2003
+ */
+
+/**
+ * 继承DelegatingEntityResolver类，通过resourceLoader来解析实体
  */
 public class ResourceEntityResolver extends DelegatingEntityResolver {
 
@@ -61,44 +65,63 @@ public class ResourceEntityResolver extends DelegatingEntityResolver {
 	/**
 	 * Create a ResourceEntityResolver for the specified ResourceLoader
 	 * (usually, an ApplicationContext).
+	 *
 	 * @param resourceLoader the ResourceLoader (or ApplicationContext)
-	 * to load XML entity includes with
+	 *                       to load XML entity includes with
 	 */
 	public ResourceEntityResolver(ResourceLoader resourceLoader) {
 		super(resourceLoader.getClassLoader());
 		this.resourceLoader = resourceLoader;
 	}
 
-
+	/**
+	 * 解析实体
+	 *
+	 * @param publicId 被引用的外部实体的公共标识符，如果没有提供，可设置为null
+	 * @param systemId 被引用的外部实体的系统标识符 eg:http://www.springframework.org/schema/spring-beans.xsd
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 */
 	@Override
 	@Nullable
 	public InputSource resolveEntity(String publicId, @Nullable String systemId) throws SAXException, IOException {
+		// 调用父类[DelegatingEntityResolver]的方法，进行解析
 		InputSource source = super.resolveEntity(publicId, systemId);
+		// 如果解析失败，才通过resourceLoader进行解析
 		if (source == null && systemId != null) {
 			String resourcePath = null;
 			try {
+				// 使用UTF-8解析systemId
 				String decodedSystemId = URLDecoder.decode(systemId, "UTF-8");
+				// 转换成URL字符串
 				String givenUrl = new URL(decodedSystemId).toString();
+				// 解析文件资源的相对路径（相对于根目录）
 				String systemRootUrl = new File("").toURI().toURL().toString();
 				// Try relative to resource base if currently in system root.
 				if (givenUrl.startsWith(systemRootUrl)) {
+					// 在这里取出相对路径
 					resourcePath = givenUrl.substring(systemRootUrl.length());
 				}
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				// Typically a MalformedURLException or AccessControlException.
 				if (logger.isDebugEnabled()) {
 					logger.debug("Could not resolve XML entity [" + systemId + "] against system root URL", ex);
 				}
 				// No URL (or no resolvable URL) -> try relative to resource base.
+				// 如果解析出现异常，则将全路径赋值给相对路径
 				resourcePath = systemId;
 			}
+			// 如果解析出的相对路径不为null
 			if (resourcePath != null) {
 				if (logger.isTraceEnabled()) {
 					logger.trace("Trying to locate XML entity [" + systemId + "] as resource [" + resourcePath + "]");
 				}
+				// 获取Resource资源
 				Resource resource = this.resourceLoader.getResource(resourcePath);
+				// 创建InputSource对象
 				source = new InputSource(resource.getInputStream());
+				// 设置publicId和systemId属性
 				source.setPublicId(publicId);
 				source.setSystemId(systemId);
 				if (logger.isDebugEnabled()) {
@@ -106,6 +129,7 @@ public class ResourceEntityResolver extends DelegatingEntityResolver {
 				}
 			}
 		}
+		// 父类方法解析成功，直接返回
 		return source;
 	}
 
