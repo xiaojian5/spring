@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,7 +62,6 @@ import org.springframework.util.CollectionUtils;
 public class PluggableSchemaResolver implements EntityResolver {
 
 	/**
-	 * 默认的schemas地址 {@link schemaMappingsLocation} <br/>
 	 * The location of the file that defines schema mappings.
 	 * Can be present in multiple JAR files.
 	 */
@@ -127,6 +126,10 @@ public class PluggableSchemaResolver implements EntityResolver {
 		if (systemId != null) {
 			// 获取Resource的位置
 			String resourceLocation = getSchemaMappings().get(systemId);
+			if (resourceLocation == null && systemId.startsWith("https:")) {
+				// Retrieve canonical http schema mapping even for https declaration
+				resourceLocation = getSchemaMappings().get("http:" + systemId.substring(6));
+			}
 			if (resourceLocation != null) {
 				// #1.创建ClassPathResource对象
 				Resource resource = new ClassPathResource(resourceLocation, this.classLoader);
@@ -135,17 +138,19 @@ public class PluggableSchemaResolver implements EntityResolver {
 					InputSource source = new InputSource(resource.getInputStream());
 					source.setPublicId(publicId);
 					source.setSystemId(systemId);
-					if (logger.isDebugEnabled()) {
-						logger.debug("Found XML schema [" + systemId + "] in classpath: " + resourceLocation);
+					if (logger.isTraceEnabled()) {
+						logger.trace("Found XML schema [" + systemId + "] in classpath: " + resourceLocation);
 					}
 					return source;
 				} catch (FileNotFoundException ex) {
 					if (logger.isDebugEnabled()) {
-						logger.debug("Couldn't find XML schema [" + systemId + "]: " + resource, ex);
+						logger.debug("Could not find XML schema [" + systemId + "]: " + resource, ex);
 					}
 				}
 			}
 		}
+
+		// Fall back to the parser's default behavior.
 		return null;
 	}
 
@@ -159,8 +164,8 @@ public class PluggableSchemaResolver implements EntityResolver {
 			synchronized (this) {
 				schemaMappings = this.schemaMappings;
 				if (schemaMappings == null) {
-					if (logger.isDebugEnabled()) {
-						logger.debug("Loading schema mappings from [" + this.schemaMappingsLocation + "]");
+					if (logger.isTraceEnabled()) {
+						logger.trace("Loading schema mappings from [" + this.schemaMappingsLocation + "]");
 					}
 					try {
 						// 以properties方式读取schemaMappingsLocation
@@ -190,7 +195,7 @@ public class PluggableSchemaResolver implements EntityResolver {
 
 	@Override
 	public String toString() {
-		return "EntityResolver using mappings " + getSchemaMappings();
+		return "EntityResolver using schema mappings " + getSchemaMappings();
 	}
 
 }

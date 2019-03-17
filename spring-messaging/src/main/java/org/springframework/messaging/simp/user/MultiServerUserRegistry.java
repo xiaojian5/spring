@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2018 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ public class MultiServerUserRegistry implements SimpUserRegistry, SmartApplicati
 	 * Create an instance wrapping the local user registry.
 	 */
 	public MultiServerUserRegistry(SimpUserRegistry localRegistry) {
-		Assert.notNull(localRegistry, "'localRegistry' is required.");
+		Assert.notNull(localRegistry, "'localRegistry' is required");
 		this.id = generateId();
 		this.localRegistry = localRegistry;
 		this.delegateApplicationEvents = this.localRegistry instanceof SmartApplicationListener;
@@ -545,7 +545,7 @@ public class MultiServerUserRegistry implements SimpUserRegistry, SmartApplicati
 	private class SessionLookup {
 
 		public Map<String, SimpSession> findSessions(String userName) {
-			Map<String, SimpSession> map = new HashMap<>(1);
+			Map<String, SimpSession> map = new HashMap<>(4);
 			SimpUser user = localRegistry.getUser(userName);
 			if (user != null) {
 				for (SimpSession session : user.getSessions()) {

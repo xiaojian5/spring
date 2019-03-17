@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.springframework.beans.factory.support;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -45,9 +46,9 @@ import org.springframework.util.Assert;
  * @since 11.12.2003
  * @see BeanDefinitionReaderUtils
  */
-public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable, BeanDefinitionReader {
+public abstract class AbstractBeanDefinitionReader implements BeanDefinitionReader, EnvironmentCapable {
 
-	/** Logger available to subclasses */
+	/** Logger available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	private final BeanDefinitionRegistry registry;
@@ -185,11 +186,11 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 		System.out.println("在AbstractBeanDefinitionReader#loadBeanDefinitions方法中（参数为Resource）得到" +
 				"加载资源文件的个数，也就是beanxml文件的个数");
 		Assert.notNull(resources, "Resource array must not be null");
-		int counter = 0;
+		int count = 0;
 		for (Resource resource : resources) {
-			counter += loadBeanDefinitions(resource);
+			count += loadBeanDefinitions(resource);
 		}
-		return counter;
+		return count;
 	}
 
 	@Override
@@ -216,7 +217,7 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 		ResourceLoader resourceLoader = getResourceLoader();
 		if (resourceLoader == null) {
 			throw new BeanDefinitionStoreException(
-					"Cannot import bean definitions from location [" + location + "]: no ResourceLoader available");
+					"Cannot load bean definitions from location [" + location + "]: no ResourceLoader available");
 		}
 
 		if (resourceLoader instanceof ResourcePatternResolver) {
@@ -224,16 +225,14 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 			try {
 				System.out.println("在AbstractBeanDefinitionReader中将xml资源转换成Resource");
 				Resource[] resources = ((ResourcePatternResolver) resourceLoader).getResources(location);
-				int loadCount = loadBeanDefinitions(resources);
+				int count = loadBeanDefinitions(resources);
 				if (actualResources != null) {
-					for (Resource resource : resources) {
-						actualResources.add(resource);
-					}
+					Collections.addAll(actualResources, resources);
 				}
-				if (logger.isDebugEnabled()) {
-					logger.debug("Loaded " + loadCount + " bean definitions from location pattern [" + location + "]");
+				if (logger.isTraceEnabled()) {
+					logger.trace("Loaded " + count + " bean definitions from location pattern [" + location + "]");
 				}
-				return loadCount;
+				return count;
 			}
 			catch (IOException ex) {
 				throw new BeanDefinitionStoreException(
@@ -243,25 +242,25 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 		else {
 			// Can only load single resources by absolute URL.
 			Resource resource = resourceLoader.getResource(location);
-			int loadCount = loadBeanDefinitions(resource);
+			int count = loadBeanDefinitions(resource);
 			if (actualResources != null) {
 				actualResources.add(resource);
 			}
-			if (logger.isDebugEnabled()) {
-				logger.debug("Loaded " + loadCount + " bean definitions from location [" + location + "]");
+			if (logger.isTraceEnabled()) {
+				logger.trace("Loaded " + count + " bean definitions from location [" + location + "]");
 			}
-			return loadCount;
+			return count;
 		}
 	}
 
 	@Override
 	public int loadBeanDefinitions(String... locations) throws BeanDefinitionStoreException {
 		Assert.notNull(locations, "Location array must not be null");
-		int counter = 0;
+		int count = 0;
 		for (String location : locations) {
-			counter += loadBeanDefinitions(location);
+			count += loadBeanDefinitions(location);
 		}
-		return counter;
+		return count;
 	}
 
 }

@@ -29,6 +29,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.ReactiveAdapterRegistry;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.lang.Nullable;
@@ -178,7 +179,7 @@ public class RequestMappingHandlerAdapter implements HandlerAdapter, Application
 
 	@Override
 	public boolean supports(Object handler) {
-		return HandlerMethod.class.equals(handler.getClass());
+		return handler instanceof HandlerMethod;
 	}
 
 	@Override
@@ -209,12 +210,15 @@ public class RequestMappingHandlerAdapter implements HandlerAdapter, Application
 
 		// Success and error responses may use different content types
 		exchange.getAttributes().remove(HandlerMapping.PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE);
+		if (!exchange.getResponse().isCommitted()) {
+			exchange.getResponse().getHeaders().remove(HttpHeaders.CONTENT_TYPE);
+		}
 
 		InvocableHandlerMethod invocable = this.methodResolver.getExceptionHandlerMethod(exception, handlerMethod);
 		if (invocable != null) {
 			try {
 				if (logger.isDebugEnabled()) {
-					logger.debug("Invoking @ExceptionHandler method: " + invocable.getMethod());
+					logger.debug(exchange.getLogPrefix() + "Using @ExceptionHandler " + invocable);
 				}
 				bindingContext.getModel().asMap().clear();
 				Throwable cause = exception.getCause();
@@ -227,7 +231,7 @@ public class RequestMappingHandlerAdapter implements HandlerAdapter, Application
 			}
 			catch (Throwable invocationEx) {
 				if (logger.isWarnEnabled()) {
-					logger.warn("Failed to invoke: " + invocable.getMethod(), invocationEx);
+					logger.warn(exchange.getLogPrefix() + "Failure in @ExceptionHandler " + invocable, invocationEx);
 				}
 			}
 		}

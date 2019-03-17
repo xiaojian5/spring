@@ -42,9 +42,9 @@ import org.springframework.lang.Nullable;
  * @see WritableResource
  * @see ContextResource
  * @see UrlResource
- * @see ClassPathResource
+ * @see FileUrlResource
  * @see FileSystemResource
- * @see PathResource
+ * @see ClassPathResource
  * @see ByteArrayResource
  * @see InputStreamResource
  * @since 28.12.2003
