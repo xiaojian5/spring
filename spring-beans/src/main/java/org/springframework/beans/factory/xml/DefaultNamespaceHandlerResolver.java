@@ -43,9 +43,13 @@ import org.springframework.util.CollectionUtils;
  *
  * @author Rob Harrop
  * @author Juergen Hoeller
- * @since 2.0
  * @see NamespaceHandler
  * @see DefaultBeanDefinitionDocumentReader
+ * @since 2.0
+ */
+
+/**
+ * 默认空间解析器
  */
 public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver {
 
@@ -120,11 +124,9 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 		Object handlerOrClassName = handlerMappings.get(namespaceUri);
 		if (handlerOrClassName == null) {
 			return null;
-		}
-		else if (handlerOrClassName instanceof NamespaceHandler) {
+		} else if (handlerOrClassName instanceof NamespaceHandler) {
 			return (NamespaceHandler) handlerOrClassName;
-		}
-		else {
+		} else {
 			String className = (String) handlerOrClassName;
 			try {
 				Class<?> handlerClass = ClassUtils.forName(className, this.classLoader);
@@ -137,12 +139,10 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 				namespaceHandler.init();
 				handlerMappings.put(namespaceUri, namespaceHandler);
 				return namespaceHandler;
-			}
-			catch (ClassNotFoundException ex) {
+			} catch (ClassNotFoundException ex) {
 				throw new FatalBeanException("Could not find NamespaceHandler class [" + className +
 						"] for namespace [" + namespaceUri + "]", ex);
-			}
-			catch (LinkageError err) {
+			} catch (LinkageError err) {
 				throw new FatalBeanException("Unresolvable class definition for NamespaceHandler class [" +
 						className + "] for namespace [" + namespaceUri + "]", err);
 			}
@@ -171,8 +171,7 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 						handlerMappings = new ConcurrentHashMap<>(mappings.size());
 						CollectionUtils.mergePropertiesIntoMap(mappings, handlerMappings);
 						this.handlerMappings = handlerMappings;
-					}
-					catch (IOException ex) {
+					} catch (IOException ex) {
 						throw new IllegalStateException(
 								"Unable to load NamespaceHandler mappings from location [" + this.handlerMappingsLocation + "]", ex);
 					}
@@ -189,8 +188,6 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 	 */
 	@Override
 	public String toString() {
-		System.out.print("只有debug时这里才会出现打印：");
-		System.out.println("在debug时,如果在DefaultNamespaceHandlerResover初始化前打了断点,handlerMapping的初始化在这里实现，这里会另起一个线程进行初始化，所以当debug的时候是进不了断点");
 		return "NamespaceHandlerResolver using mappings " + getHandlerMappings();
 	}
 

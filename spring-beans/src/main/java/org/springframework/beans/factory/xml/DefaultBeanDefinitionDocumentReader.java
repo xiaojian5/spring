@@ -90,7 +90,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	public static final String IMPORT_ELEMENT = "import";
 
 	/**
-	 * resource标签元素
+	 * resource属性 import标签的属性
 	 */
 	public static final String RESOURCE_ATTRIBUTE = "resource";
 
@@ -222,28 +222,35 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 					// 如果该节点使用默认命名空间，则执行默认解析
 					if (delegate.isDefaultNamespace(ele)) {
 						parseDefaultElement(ele, delegate);
-					// 如果该节点使用非默认命名空间，则执行自定义解析
+						// 如果该节点使用非默认命名空间，则执行自定义解析
 					} else {
 						System.out.println("如果开启了aop:aspectj-autoproxy，会走自定义解析，生成AspectJAutoProxyBeanDefinitionParser解析器");
 						delegate.parseCustomElement(ele);
 					}
 				}
 			}
-		// 否则使用自定义解析根节点
+			// 否则使用自定义解析根节点
 		} else {
 			delegate.parseCustomElement(root);
 		}
 	}
 
+	/**
+	 * 解析默认标签
+	 *
+	 * @param ele      当前元素节点
+	 * @param delegate BeanDefinition解析委托
+	 */
 	private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) {
-		System.out.println("DefaultBeanDefinitionDocumentReader#parseDefaultElement函数，根据标签类型进行元素的解析");
+		// import标签
 		if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
+			// 主要流程获取import标签的source属性，然后通过loadBeanDefinitions加载BeanDefinition
 			importBeanDefinitionResource(ele);
-		} else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) {
+		} else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) { // alias标签
 			processAliasRegistration(ele);
-		} else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) {
+		} else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) { // bean标签，主要解析标签
 			processBeanDefinition(ele, delegate);
-		} else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) {
+		} else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) { // beans标签
 			// recurse
 			doRegisterBeanDefinitions(ele);
 		}
@@ -254,20 +261,28 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * from the given resource into the bean factory.
 	 */
 	protected void importBeanDefinitionResource(Element ele) {
+		// 获取resource属性
 		String location = ele.getAttribute(RESOURCE_ATTRIBUTE);
+		// resource为空，则直接返回
 		if (!StringUtils.hasText(location)) {
 			getReaderContext().error("Resource location must not be empty", ele);
 			return;
 		}
 
+		// 解析系统属性
 		// Resolve system properties: e.g. "${user.dir}"
 		location = getReaderContext().getEnvironment().resolveRequiredPlaceholders(location);
 
+		// 实例化一个set集合，用于存储Resource集合
 		Set<Resource> actualResources = new LinkedHashSet<>(4);
 
+		/**
+		 * 判断location是相对路径还是绝对路径 默认为相对路径
+		 */
 		// Discover whether the location is an absolute or relative URI
 		boolean absoluteLocation = false;
 		try {
+			// 绝对路径判断
 			absoluteLocation = ResourcePatternUtils.isUrl(location) || ResourceUtils.toURI(location).isAbsolute();
 		} catch (URISyntaxException ex) {
 			// cannot convert to an URI, considering the location relative
@@ -275,8 +290,10 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		}
 
 		// Absolute or relative?
+		// 绝对路径
 		if (absoluteLocation) {
 			try {
+				// 添加配置文件地址的Resource到actualResources，并解析BeanDefinition
 				int importCount = getReaderContext().getReader().loadBeanDefinitions(location, actualResources);
 				if (logger.isDebugEnabled()) {
 					logger.debug("Imported " + importCount + " bean definitions from URL location [" + location + "]");
@@ -285,18 +302,25 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 				getReaderContext().error(
 						"Failed to import bean definitions from URL location [" + location + "]", ele, ex);
 			}
+			// 相对路径
 		} else {
 			// No URL -> considering resource location as relative to the current file.
 			try {
 				int importCount;
+				// 创建相对路径的Resource
 				Resource relativeResource = getReaderContext().getResource().createRelative(location);
+				// 存在
 				if (relativeResource.exists()) {
+					// 加载相对路径下的BeanDefinition，并将Resource加入actualResources中
 					importCount = getReaderContext().getReader().loadBeanDefinitions(relativeResource);
 					actualResources.add(relativeResource);
+					// 不存在
 				} else {
+					// 获取根路径
 					String baseLocation = getReaderContext().getResource().getURL().toString();
+					// 通过绝对路径来加载BeanDefinition
 					importCount = getReaderContext().getReader().loadBeanDefinitions(
-							StringUtils.applyRelativePath(baseLocation, location), actualResources);
+							StringUtils.applyRelativePath(baseLocation, location)/*计算绝对路径*/, actualResources);
 				}
 				if (logger.isDebugEnabled()) {
 					logger.debug("Imported " + importCount + " bean definitions from relative location [" + location + "]");
@@ -308,6 +332,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 						ele, ex);
 			}
 		}
+		// 解析成功后，进行监听器激活处理
 		Resource[] actResArray = actualResources.toArray(new Resource[0]);
 		getReaderContext().fireImportProcessed(location, actResArray, extractSource(ele));
 	}

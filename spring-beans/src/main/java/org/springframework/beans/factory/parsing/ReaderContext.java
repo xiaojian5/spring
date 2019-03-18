@@ -40,13 +40,14 @@ public class ReaderContext {
 
 	/**
 	 * Construct a new {@code ReaderContext}.
-	 * @param resource the XML bean definition resource
+	 *
+	 * @param resource        the XML bean definition resource
 	 * @param problemReporter the problem reporter in use
-	 * @param eventListener the event listener in use
+	 * @param eventListener   the event listener in use
 	 * @param sourceExtractor the source extractor in use
 	 */
 	public ReaderContext(Resource resource, ProblemReporter problemReporter,
-			ReaderEventListener eventListener, SourceExtractor sourceExtractor) {
+						 ReaderEventListener eventListener, SourceExtractor sourceExtractor) {
 
 		this.resource = resource;
 		this.problemReporter = problemReporter;
@@ -183,6 +184,8 @@ public class ReaderContext {
 	 * Fire an import-processed event.
 	 */
 	public void fireImportProcessed(String importedResource, Resource[] actualResources, @Nullable Object source) {
+		// private ReaderEventListener eventListener = new EmptyReaderEventListener();
+		// 该监听器的具体实现为空
 		this.eventListener.importProcessed(new ImportDefinition(importedResource, actualResources, source));
 	}
 
@@ -198,6 +201,7 @@ public class ReaderContext {
 
 	/**
 	 * Call the source extractor for the given source object.
+	 *
 	 * @param sourceCandidate the original source object
 	 * @return the source object to store, or {@code null} for none.
 	 * @see #getSourceExtractor()

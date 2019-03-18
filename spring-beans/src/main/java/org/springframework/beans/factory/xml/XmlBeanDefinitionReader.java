@@ -118,10 +118,19 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	private Class<?> documentReaderClass = DefaultBeanDefinitionDocumentReader.class;
 
+	/**
+	 * 问题记录器
+	 */
 	private ProblemReporter problemReporter = new FailFastProblemReporter();
 
+	/**
+	 * 读取事件监听器
+	 */
 	private ReaderEventListener eventListener = new EmptyReaderEventListener();
 
+	/**
+	 * 资源抽取器
+	 */
 	private SourceExtractor sourceExtractor = new NullSourceExtractor();
 
 	/**
@@ -563,7 +572,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
 		// #2.获取已注册过的BeanDefinition对象个数
 		int countBefore = getRegistry().getBeanDefinitionCount();
-		// #3.创建XmlReaderContext对象，并注册BeanDefinition
+		// #3.创建XmlReaderContext对象[主要为了关联命名空间处理器]，并注册BeanDefinition
 		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
 		// 返回新注册的BeanDefinition对象个数
 		return getRegistry().getBeanDefinitionCount() - countBefore;
@@ -581,6 +590,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	}
 
 	/**
+	 * 创建一个文档资源读取器<br/>
 	 * Create the {@link XmlReaderContext} to pass over to the document reader.
 	 */
 	public XmlReaderContext createReaderContext(Resource resource) {
@@ -589,12 +599,12 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	}
 
 	/**
+	 * 主要就是获得默认空间处理器，为后续解析标签做准备<br/>
 	 * Lazily create a default NamespaceHandlerResolver, if not set before.
 	 *
 	 * @see #createDefaultNamespaceHandlerResolver()
 	 */
 	public NamespaceHandlerResolver getNamespaceHandlerResolver() {
-		System.out.println("在XmlBeanDefinitionReader中会初始化默认空间处理器");
 		if (this.namespaceHandlerResolver == null) {
 			this.namespaceHandlerResolver = createDefaultNamespaceHandlerResolver();
 		}
