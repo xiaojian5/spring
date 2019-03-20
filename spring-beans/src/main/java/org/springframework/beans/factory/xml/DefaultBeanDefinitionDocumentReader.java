@@ -178,7 +178,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 				if (!getReaderContext().getEnvironment().acceptsProfiles(specifiedProfiles)) {
 					if (logger.isInfoEnabled()) {
 						logger.info("Skipped XML bean definition file due to specified profiles [" + profileSpec +
-								"] not matching: " + getReaderContext().getResource());
+											"] not matching: " + getReaderContext().getResource());
 					}
 					return;
 				}
@@ -246,17 +246,21 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
 			// 主要流程获取import标签的source属性，然后通过loadBeanDefinitions加载BeanDefinition
 			importBeanDefinitionResource(ele);
-		} else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) { // alias标签
+			// alias标签
+		} else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) {
 			processAliasRegistration(ele);
-		} else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) { // bean标签，主要解析标签
+			// bean标签，主要解析标签
+		} else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) {
 			processBeanDefinition(ele, delegate);
-		} else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) { // beans标签
+			// beans标签
+		} else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) {
 			// recurse
 			doRegisterBeanDefinitions(ele);
 		}
 	}
 
 	/**
+	 * 解析import标签<br/>
 	 * Parse an "import" element and load the bean definitions
 	 * from the given resource into the bean factory.
 	 */
@@ -329,7 +333,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 				getReaderContext().error("Failed to resolve current resource location", ele, ex);
 			} catch (BeanDefinitionStoreException ex) {
 				getReaderContext().error("Failed to import bean definitions from relative location [" + location + "]",
-						ele, ex);
+										 ele, ex);
 			}
 		}
 		// 解析成功后，进行监听器激活处理
@@ -357,28 +361,34 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 				getReaderContext().getRegistry().registerAlias(name, alias);
 			} catch (Exception ex) {
 				getReaderContext().error("Failed to register alias '" + alias +
-						"' for bean with name '" + name + "'", ele, ex);
+												 "' for bean with name '" + name + "'", ele, ex);
 			}
 			getReaderContext().fireAliasRegistered(name, alias, extractSource(ele));
 		}
 	}
 
 	/**
+	 * bean标签解析，为核心解析函数<br/>
 	 * Process the given bean element, parsing the bean definition
 	 * and registering it with the registry.
 	 */
 	protected void processBeanDefinition(Element ele, BeanDefinitionParserDelegate delegate) {
-		System.out.println("DefaultBeanDefinitionDocumentReader#processBeanDefinition进行解析，返回BeanDefinitionHolder");
+		// 进行bean标签解析
+		// 如果解析成功，则返回BeanDefinitionHolder，BeanDefinitionHolder为name和alias的BeanDefinition对象
+		// 如果解析失败，则返回null
 		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);
 		if (bdHolder != null) {
+			// 进行自定义标签处理，主要对bean标签的相关属性进行处理
 			bdHolder = delegate.decorateBeanDefinitionIfRequired(ele, bdHolder);
 			try {
+				// 注册BeanDefinition
 				// Register the final decorated instance.
 				BeanDefinitionReaderUtils.registerBeanDefinition(bdHolder, getReaderContext().getRegistry());
 			} catch (BeanDefinitionStoreException ex) {
 				getReaderContext().error("Failed to register bean definition with name '" +
-						bdHolder.getBeanName() + "'", ele, ex);
+												 bdHolder.getBeanName() + "'", ele, ex);
 			}
+			// 发出响应时间，通知监听器，已完成该bean标签的解析
 			// Send registration event.
 			getReaderContext().fireComponentRegistered(new BeanComponentDefinition(bdHolder));
 		}
