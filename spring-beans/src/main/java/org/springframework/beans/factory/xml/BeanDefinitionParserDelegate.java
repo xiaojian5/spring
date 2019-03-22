@@ -537,20 +537,28 @@ public class BeanDefinitionParserDelegate {
 		try {
 			// 创建承载属性的AbstractBeanDefinition对象
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
-
+			// 解析bean的各种默认属性
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
+			// 提取description
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
 
-			System.out.println("BeanDefinitionParserDelegate#parseBeanDefinitionElement中会对xml中的相关标签进行解析" +
-									   "meta标签、lookup方法、replaceMethod、构造函数等");
+			// 这里会解析bean标签内部的很多子元素，放入bd中
+
+			// #1.解析元数据 <meta/>
 			parseMetaElements(ele, bd);
+			// #2.解析lookup-method属性 <lookup-method/>
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
+			// #3.解析replace-method属性 <replace-method/>
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
 
+			// #4.解析构造函数参数 <constructor-arg/>
 			parseConstructorArgElements(ele, bd);
+			// #5.解析property子元素 <property/>
 			parsePropertyElements(ele, bd);
+			// #6.解析qualifier子元素 <qualifier/>
 			parseQualifierElements(ele, bd);
 
+			// 设置resource
 			bd.setResource(this.readerContext.getResource());
 			bd.setSource(extractSource(ele));
 
@@ -569,6 +577,7 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 对bean标签的属性做解析<br/>
 	 * Apply the attributes of the given bean element to the given bean * definition.
 	 *
 	 * @param ele            bean declaration element
@@ -578,8 +587,7 @@ public class BeanDefinitionParserDelegate {
 	 */
 	public AbstractBeanDefinition parseBeanDefinitionAttributes(Element ele, String beanName,
 																@Nullable BeanDefinition containingBean, AbstractBeanDefinition bd) {
-
-		System.out.println("BeanDefinitionParserDelegate#parseBeanDefinitionAttributes对默认属性进行解析");
+		// 如果有singleton属性则抛出异常，因为singleton属性已进行升级
 		if (ele.hasAttribute(SINGLETON_ATTRIBUTE)) {
 			error("Old 1.x 'singleton' attribute in use - upgrade to 'scope' declaration", ele);
 		} else if (ele.hasAttribute(SCOPE_ATTRIBUTE)) {
@@ -649,6 +657,7 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 创建AbstractBeanDefinition
 	 * Create a bean definition for the given class name and parent name.
 	 *
 	 * @param className  the name of the bean class

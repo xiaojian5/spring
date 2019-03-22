@@ -25,22 +25,30 @@ import org.springframework.lang.Nullable;
  * @author Rob Harrop
  * @since 2.0
  */
+
+/**
+ * 属性接入顶级接口
+ */
 public interface AttributeAccessor {
 
 	/**
+	 * 设置属性<br/>
 	 * Set the attribute defined by {@code name} to the supplied {@code value}.
 	 * If {@code value} is {@code null}, the attribute is {@link #removeAttribute removed}.
 	 * <p>In general, users should take care to prevent overlaps with other
 	 * metadata attributes by using fully-qualified names, perhaps using
 	 * class or package names as prefix.
-	 * @param name the unique attribute key
+	 *
+	 * @param name  the unique attribute key
 	 * @param value the attribute value to be attached
 	 */
 	void setAttribute(String name, @Nullable Object value);
 
 	/**
+	 * 获取属性<br/>
 	 * Get the value of the attribute identified by {@code name}.
 	 * Return {@code null} if the attribute doesn't exist.
+	 *
 	 * @param name the unique attribute key
 	 * @return the current value of the attribute, if any
 	 */
@@ -48,8 +56,10 @@ public interface AttributeAccessor {
 	Object getAttribute(String name);
 
 	/**
+	 * 移除属性<br/>
 	 * Remove the attribute identified by {@code name} and return its value.
 	 * Return {@code null} if no attribute under {@code name} is found.
+	 *
 	 * @param name the unique attribute key
 	 * @return the last value of the attribute, if any
 	 */
@@ -57,13 +67,16 @@ public interface AttributeAccessor {
 	Object removeAttribute(String name);
 
 	/**
+	 * 是否拥有属性<br/>
 	 * Return {@code true} if the attribute identified by {@code name} exists.
 	 * Otherwise return {@code false}.
+	 *
 	 * @param name the unique attribute key
 	 */
 	boolean hasAttribute(String name);
 
 	/**
+	 * 返回所有属性名称集合<br/>
 	 * Return the names of all attributes.
 	 */
 	String[] attributeNames();
