@@ -44,6 +44,7 @@ public abstract class AttributeAccessorSupport implements AttributeAccessor, Ser
 	@Override
 	public void setAttribute(String name, @Nullable Object value) {
 		Assert.notNull(name, "Name must not be null");
+		// 如果value不为null，则存储该值，否则通过name移除该值
 		if (value != null) {
 			this.attributes.put(name, value);
 		}
