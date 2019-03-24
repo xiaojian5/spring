@@ -378,7 +378,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		// 如果解析失败，则返回null
 		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);
 		if (bdHolder != null) {
-			// 进行自定义标签处理，主要对bean标签的相关属性进行处理
+			// 进行自定义标签处理，主要对bean标签的相关属性进行处理 如： p:name="测试用例"
 			bdHolder = delegate.decorateBeanDefinitionIfRequired(ele, bdHolder);
 			try {
 				// 注册BeanDefinition

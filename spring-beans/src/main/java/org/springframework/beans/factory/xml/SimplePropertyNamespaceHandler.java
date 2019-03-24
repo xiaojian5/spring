@@ -65,17 +65,29 @@ public class SimplePropertyNamespaceHandler implements NamespaceHandler {
 		return null;
 	}
 
+	/**
+	 * 对bean的属性进行装饰
+	 * @param node
+	 * @param definition the current bean definition
+	 * @param parserContext the object encapsulating the current state of the parsing process
+	 * @return
+	 */
 	@Override
 	public BeanDefinitionHolder decorate(Node node, BeanDefinitionHolder definition, ParserContext parserContext) {
+		// 如果当前节点是属性节点
 		if (node instanceof Attr) {
 			Attr attr = (Attr) node;
+			// 获取name、value属性
 			String propertyName = parserContext.getDelegate().getLocalName(attr);
 			String propertyValue = attr.getValue();
+			// 获取bean的propertyValues集合
 			MutablePropertyValues pvs = definition.getBeanDefinition().getPropertyValues();
+			// 如果已经存在属性了，则报错
 			if (pvs.contains(propertyName)) {
 				parserContext.getReaderContext().error("Property '" + propertyName + "' is already defined using " +
 						"both <property> and inline syntax. Only one approach may be used per property.", attr);
 			}
+			// 如果属性name以-ref结尾，则需要进行解析，否则直接加入MutablePropertyValues集合中
 			if (propertyName.endsWith(REF_SUFFIX)) {
 				propertyName = propertyName.substring(0, propertyName.length() - REF_SUFFIX.length());
 				pvs.add(Conventions.attributeNameToPropertyName(propertyName), new RuntimeBeanReference(propertyValue));
@@ -84,6 +96,7 @@ public class SimplePropertyNamespaceHandler implements NamespaceHandler {
 				pvs.add(Conventions.attributeNameToPropertyName(propertyName), propertyValue);
 			}
 		}
+		// 返回已经封装了property属性的BeanDefinitionHolder
 		return definition;
 	}
 

@@ -750,12 +750,15 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 解析property子元素<br/>
 	 * Parse property sub-elements of the given bean element.
 	 */
 	public void parsePropertyElements(Element beanEle, BeanDefinition bd) {
 		NodeList nl = beanEle.getChildNodes();
+		// 遍历子节点
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
+			// 找到property标签，通过parsePropertyElement进行解析
 			if (isCandidateElement(node) && nodeNameEquals(node, PROPERTY_ELEMENT)) {
 				parsePropertyElement((Element) node, bd);
 			}
@@ -763,12 +766,15 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 解析qualifier标签<br/>
 	 * Parse qualifier sub-elements of the given bean element.
 	 */
 	public void parseQualifierElements(Element beanEle, AbstractBeanDefinition bd) {
 		NodeList nl = beanEle.getChildNodes();
+		// 遍历节点
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
+			// 标签名为qualifier
 			if (isCandidateElement(node) && nodeNameEquals(node, QUALIFIER_ELEMENT)) {
 				parseQualifierElement((Element) node, bd);
 			}
@@ -863,6 +869,7 @@ public class BeanDefinitionParserDelegate {
 							valueHolder.setName(nameAttr);
 						}
 						valueHolder.setSource(extractSource(ele));
+						// 不允许重复指定相同参数
 						if (bd.getConstructorArgumentValues().hasIndexedArgumentValue(index)) {
 							error("Ambiguous constructor-arg entries for index " + index, ele);
 						} else {
@@ -875,10 +882,13 @@ public class BeanDefinitionParserDelegate {
 			} catch (NumberFormatException ex) {
 				error("Attribute 'index' of tag 'constructor-arg' must be an integer", ele);
 			}
+			// 没有index属性
 		} else {
 			try {
 				this.parseState.push(new ConstructorArgumentEntry());
+				// 解析ele对应属性元素
 				Object value = parsePropertyValue(ele, bd, null);
+				// 根据解析的元素构造一个ValueHolder对象
 				ConstructorArgumentValues.ValueHolder valueHolder = new ConstructorArgumentValues.ValueHolder(value);
 				if (StringUtils.hasLength(typeAttr)) {
 					valueHolder.setType(typeAttr);
@@ -887,6 +897,7 @@ public class BeanDefinitionParserDelegate {
 					valueHolder.setName(nameAttr);
 				}
 				valueHolder.setSource(extractSource(ele));
+				// 加入到genericArgumentValues集合中
 				bd.getConstructorArgumentValues().addGenericArgumentValue(valueHolder);
 			} finally {
 				this.parseState.pop();
@@ -895,24 +906,32 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 解析property子标签核心函数<br/>
 	 * Parse a property element.
 	 */
 	public void parsePropertyElement(Element ele, BeanDefinition bd) {
+		// 提取name属性
 		String propertyName = ele.getAttribute(NAME_ATTRIBUTE);
+		// 如果name属性无值，则报错
 		if (!StringUtils.hasLength(propertyName)) {
 			error("Tag 'property' must have a 'name' attribute", ele);
 			return;
 		}
+		// 同样对解析过程进行跟踪，记录日志，是否报错
 		this.parseState.push(new PropertyEntry(propertyName));
 		try {
+			// 如果存在相同的name，则报错
 			if (bd.getPropertyValues().contains(propertyName)) {
 				error("Multiple 'property' definitions for property '" + propertyName + "'", ele);
 				return;
 			}
+			// 解析属性值
 			Object val = parsePropertyValue(ele, bd, propertyName);
+			// 通过属性值构建PropertyValue对象
 			PropertyValue pv = new PropertyValue(propertyName, val);
 			parseMetaElements(ele, pv);
 			pv.setSource(extractSource(ele));
+			// 添加到propertyValueList集合中
 			bd.getPropertyValues().addPropertyValue(pv);
 		} finally {
 			this.parseState.pop();
@@ -920,29 +939,39 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 解析qualifier标签核心函数<br/>
 	 * Parse a qualifier element.
 	 */
 	public void parseQualifierElement(Element ele, AbstractBeanDefinition bd) {
+		// 提取type属性
 		String typeName = ele.getAttribute(TYPE_ATTRIBUTE);
+		// type属性为必须，若没有，则报错
 		if (!StringUtils.hasLength(typeName)) {
 			error("Tag 'qualifier' must have a 'type' attribute", ele);
 			return;
 		}
+		// 同样在解析过程中进行跟踪
 		this.parseState.push(new QualifierEntry(typeName));
 		try {
+			// 创建AutowireCandidateQualifier对象
 			AutowireCandidateQualifier qualifier = new AutowireCandidateQualifier(typeName);
 			qualifier.setSource(extractSource(ele));
+			// 提取value属性，并设置其属性值
 			String value = ele.getAttribute(VALUE_ATTRIBUTE);
 			if (StringUtils.hasLength(value)) {
 				qualifier.setAttribute(AutowireCandidateQualifier.VALUE_KEY, value);
 			}
+			// 遍历子节点
 			NodeList nl = ele.getChildNodes();
 			for (int i = 0; i < nl.getLength(); i++) {
 				Node node = nl.item(i);
+				// 找到attribute标签
 				if (isCandidateElement(node) && nodeNameEquals(node, QUALIFIER_ATTRIBUTE_ELEMENT)) {
 					Element attributeEle = (Element) node;
+					// 提取key、value属性
 					String attributeName = attributeEle.getAttribute(KEY_ATTRIBUTE);
 					String attributeValue = attributeEle.getAttribute(VALUE_ATTRIBUTE);
+					// key、value必须成对出现才能进行属性的设置，否则报错
 					if (StringUtils.hasLength(attributeName) && StringUtils.hasLength(attributeValue)) {
 						BeanMetadataAttribute attribute = new BeanMetadataAttribute(attributeName, attributeValue);
 						attribute.setSource(extractSource(attributeEle));
@@ -953,6 +982,7 @@ public class BeanDefinitionParserDelegate {
 					}
 				}
 			}
+			// 添加到qualifiers集合中
 			bd.addQualifier(qualifier);
 		} finally {
 			this.parseState.pop();
@@ -997,7 +1027,7 @@ public class BeanDefinitionParserDelegate {
 			error(elementName +
 					" is only allowed to contain either 'ref' attribute OR 'value' attribute OR sub-element", ele);
 		}
-        // 将ref属性构造为RuntimeBeanReference实例对象，并返回RuntimeBeanReference对象
+		// 将ref属性构造为RuntimeBeanReference实例对象，并返回RuntimeBeanReference对象
 		if (hasRefAttribute) {
 			String refName = ele.getAttribute(REF_ATTRIBUTE);
 			if (!StringUtils.hasText(refName)) {
@@ -1006,12 +1036,12 @@ public class BeanDefinitionParserDelegate {
 			RuntimeBeanReference ref = new RuntimeBeanReference(refName);
 			ref.setSource(extractSource(ele));
 			return ref;
-		// 将value属性构造为TypedStringValue对象，并返回
+			// 将value属性构造为TypedStringValue对象，并返回
 		} else if (hasValueAttribute) {
 			TypedStringValue valueHolder = new TypedStringValue(ele.getAttribute(VALUE_ATTRIBUTE));
 			valueHolder.setSource(extractSource(ele));
 			return valueHolder;
-		// 解析子元素 constructor-arg中有嵌套元素
+			// 解析子元素 constructor-arg中有嵌套元素
 		} else if (subElement != null) {
 			return parsePropertySubElement(subElement, bd);
 		} else {
@@ -1040,7 +1070,7 @@ public class BeanDefinitionParserDelegate {
 		// 如果标签元素不是默认空间，则走自定义分支进行解析
 		if (!isDefaultNamespace(ele)) {
 			return parseNestedCustomElement(ele, bd);
-		// 如果为bean标签
+			// 如果为bean标签
 		} else if (nodeNameEquals(ele, BEAN_ELEMENT)) {
 			BeanDefinitionHolder nestedBd = parseBeanDefinitionElement(ele, bd);
 			if (nestedBd != null) {
@@ -1395,35 +1425,65 @@ public class BeanDefinitionParserDelegate {
 		return TRUE_VALUE.equals(value);
 	}
 
+	/**
+	 * 解析自定义标签
+	 * @param ele
+	 * @return
+	 */
 	@Nullable
 	public BeanDefinition parseCustomElement(Element ele) {
 		return parseCustomElement(ele, null);
 	}
 
+	/**
+	 * 自定义标签解析核心函数
+	 * @param ele
+	 * @param containingBd
+	 * @return
+	 */
 	@Nullable
 	public BeanDefinition parseCustomElement(Element ele, @Nullable BeanDefinition containingBd) {
+		// 获取节点的namespaceUri
 		String namespaceUri = getNamespaceURI(ele);
 		if (namespaceUri == null) {
 			return null;
 		}
+		// 根据namespaceUri获取相应的NamespaceHandler
 		NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);
 		if (handler == null) {
 			error("Unable to locate Spring NamespaceHandler for XML schema namespace [" + namespaceUri + "]", ele);
 			return null;
 		}
+		// 调用自定义Handler进行处理
 		return handler.parse(ele, new ParserContext(this.readerContext, this, containingBd));
 	}
 
+	/**
+	 * 对bean的自定义标签进行解析
+	 *
+	 * @param ele
+	 * @param definitionHolder
+	 * @return
+	 */
 	public BeanDefinitionHolder decorateBeanDefinitionIfRequired(Element ele, BeanDefinitionHolder definitionHolder) {
 		return decorateBeanDefinitionIfRequired(ele, definitionHolder, null);
 	}
 
+	/**
+	 * bean自定义标签解析核心函数
+	 *
+	 * @param ele
+	 * @param definitionHolder
+	 * @param containingBd
+	 * @return
+	 */
 	public BeanDefinitionHolder decorateBeanDefinitionIfRequired(
 			Element ele, BeanDefinitionHolder definitionHolder, @Nullable BeanDefinition containingBd) {
 
-		System.out.println("BeanDefinitionParserDelegate#decorateBeanDefinitionIfRequired对自定义属性进行解析");
+		// 解析完成后的返回值，封装了其自定义属性的BeandefinitionHolder
 		BeanDefinitionHolder finalDefinition = definitionHolder;
 
+		// #1.遍历属性，查看是否有适用于装饰的属性
 		// Decorate based on custom attributes first.
 		NamedNodeMap attributes = ele.getAttributes();
 		for (int i = 0; i < attributes.getLength(); i++) {
@@ -1431,6 +1491,7 @@ public class BeanDefinitionParserDelegate {
 			finalDefinition = decorateIfRequired(node, finalDefinition, containingBd);
 		}
 
+		// #2.遍历子节点，查看是否有适用于装饰的子节点
 		// Decorate based on custom nested elements.
 		NodeList children = ele.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
@@ -1442,13 +1503,25 @@ public class BeanDefinitionParserDelegate {
 		return finalDefinition;
 	}
 
+	/**
+	 * 装饰对应的节点或属性，自定义标签解析的核心函数
+	 *
+	 * @param node
+	 * @param originalDef
+	 * @param containingBd
+	 * @return
+	 */
 	public BeanDefinitionHolder decorateIfRequired(
 			Node node, BeanDefinitionHolder originalDef, @Nullable BeanDefinition containingBd) {
 
+		// 首先获取自定义标签的命名空间
 		String namespaceUri = getNamespaceURI(node);
+		// 过滤掉默认的命名空间，因为这里是自定义空间的解析，默认命名空间上面已经进行了解析
 		if (namespaceUri != null && !isDefaultNamespace(namespaceUri)) {
+			// 通过命名空间获取对应的空间处理器
 			NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);
 			if (handler != null) {
+				// 进行装饰处理 在SimplePropertyNamespaceHandler处理器中
 				BeanDefinitionHolder decorated =
 						handler.decorate(node, originalDef, new ParserContext(this.readerContext, this, containingBd));
 				if (decorated != null) {
