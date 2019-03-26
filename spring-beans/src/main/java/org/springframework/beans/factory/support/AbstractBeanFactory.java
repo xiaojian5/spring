@@ -280,9 +280,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 							  @Nullable final Object[] args, boolean typeCheckOnly) throws BeansException {
 
 		// 返回bean名称，剥离工厂引用前缀
+		// 如果name是alias，则获取对应映射的beanName
 		final String beanName = transformedBeanName(name);
 		Object bean;
 
+		// 从缓存或实例工厂中获取Bean对象
 		// Eagerly check singleton cache for manually registered singletons.
 		Object sharedInstance = getSingleton(beanName);
 		if (sharedInstance != null && args == null) {
@@ -294,6 +296,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					logger.trace("Returning cached instance of singleton bean '" + beanName + "'");
 				}
 			}
+			// 完成FactoryBean的相关处理，并用来获取FactoryBean的处理结果
 			bean = getObjectForBeanInstance(sharedInstance, name, beanName, null);
 		} else {
 			// Fail if we're already creating this bean instance:
@@ -1137,6 +1140,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	//---------------------------------------------------------------------
 
 	/**
+	 * 返回beanName，剥离工厂引用前缀<br/>
 	 * Return the bean name, stripping out the factory dereference prefix if necessary,
 	 * and resolving aliases to canonical names.
 	 *
