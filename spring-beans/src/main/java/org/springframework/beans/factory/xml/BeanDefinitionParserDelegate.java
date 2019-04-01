@@ -1427,6 +1427,7 @@ public class BeanDefinitionParserDelegate {
 
 	/**
 	 * 解析自定义标签
+	 *
 	 * @param ele
 	 * @return
 	 */
@@ -1437,6 +1438,7 @@ public class BeanDefinitionParserDelegate {
 
 	/**
 	 * 自定义标签解析核心函数
+	 *
 	 * @param ele
 	 * @param containingBd
 	 * @return
@@ -1470,7 +1472,7 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
-	 * bean自定义标签解析核心函数
+	 * bean标签解析核心函数
 	 *
 	 * @param ele
 	 * @param definitionHolder
