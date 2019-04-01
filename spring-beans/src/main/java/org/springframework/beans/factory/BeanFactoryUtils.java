@@ -63,6 +63,7 @@ public abstract class BeanFactoryUtils {
 
 
 	/**
+	 * 判断beanName是否已&开头，如果已&开头则为工厂类的引用<br/>
 	 * Return whether the given name is a factory dereference
 	 * (beginning with the factory dereference prefix).
 	 *
