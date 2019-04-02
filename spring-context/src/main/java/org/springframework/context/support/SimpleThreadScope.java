@@ -48,8 +48,8 @@ import org.springframework.lang.Nullable;
  *
  * @author Arjen Poutsma
  * @author Juergen Hoeller
- * @since 3.0
  * @see org.springframework.web.context.request.RequestScope
+ * @since 3.0
  */
 public class SimpleThreadScope implements Scope {
 
@@ -66,10 +66,13 @@ public class SimpleThreadScope implements Scope {
 
 	@Override
 	public Object get(String name, ObjectFactory<?> objectFactory) {
+		// 获取scope缓存
 		Map<String, Object> scope = this.threadScope.get();
 		Object scopedObject = scope.get(name);
 		if (scopedObject == null) {
+			// 这里getObject也是进行方法回调
 			scopedObject = objectFactory.getObject();
+			// 加入缓存
 			scope.put(name, scopedObject);
 		}
 		return scopedObject;
@@ -85,7 +88,7 @@ public class SimpleThreadScope implements Scope {
 	@Override
 	public void registerDestructionCallback(String name, Runnable callback) {
 		logger.warn("SimpleThreadScope does not support destruction callbacks. " +
-				"Consider using RequestScope in a web environment.");
+							"Consider using RequestScope in a web environment.");
 	}
 
 	@Override
