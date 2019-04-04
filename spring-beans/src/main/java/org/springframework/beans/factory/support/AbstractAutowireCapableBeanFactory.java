@@ -1204,19 +1204,25 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @since 5.0
 	 */
 	protected BeanWrapper obtainFromSupplier(Supplier<?> instanceSupplier, String beanName) {
+		// 获得原创建的Bean的对象名
 		String outerBean = this.currentlyCreatedBean.get();
+		// 设置新的Bean对象名到currentlyCreatedBean中
 		this.currentlyCreatedBean.set(beanName);
 		Object instance;
 		try {
+			// 调用Supplier的get(),返回一个Bean对象
 			instance = instanceSupplier.get();
 		} finally {
+			// 设置原创建的Bean对象名到currentlyCreatedBean中
 			if (outerBean != null) {
 				this.currentlyCreatedBean.set(outerBean);
 			} else {
 				this.currentlyCreatedBean.remove();
 			}
 		}
+		// 创建BeanWrapper对象
 		BeanWrapper bw = new BeanWrapperImpl(instance);
+		// 初始化BeanWrapper
 		initBeanWrapper(bw);
 		return bw;
 	}
