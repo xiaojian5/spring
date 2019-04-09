@@ -1276,6 +1276,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
+	 * 使用默认构造函数创建bean对象<br/>
 	 * Instantiate the given bean using its default constructor.
 	 *
 	 * @param beanName the name of the bean
@@ -1286,13 +1287,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		try {
 			Object beanInstance;
 			final BeanFactory parent = this;
+			// 安全模式
 			if (System.getSecurityManager() != null) {
-				beanInstance = AccessController.doPrivileged((PrivilegedAction<Object>) () ->
-																	 getInstantiationStrategy().instantiate(mbd, beanName, parent),
+				// 获得InstantiationStrategy对象，并使用它创建bean对象
+				beanInstance = AccessController.doPrivileged((PrivilegedAction<Object>) () -> getInstantiationStrategy().instantiate(mbd, beanName, parent),
 															 getAccessControlContext());
 			} else {
+				// 获得InstantiationStrategy对象，并使用它创建bean对象
 				beanInstance = getInstantiationStrategy().instantiate(mbd, beanName, parent);
 			}
+			// 封装BeanWrapperImpl，并完成初始化
 			BeanWrapper bw = new BeanWrapperImpl(beanInstance);
 			initBeanWrapper(bw);
 			return bw;

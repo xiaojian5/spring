@@ -60,30 +60,37 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 	@Override
 	public Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner) {
 		// Don't override the class with CGLIB if no overrides.
+		// 没有覆盖，直接使用反射实例化即可
 		if (!bd.hasMethodOverrides()) {
 			Constructor<?> constructorToUse;
 			synchronized (bd.constructorArgumentLock) {
+				// 获得构造方法 constructorToUse
 				constructorToUse = (Constructor<?>) bd.resolvedConstructorOrFactoryMethod;
 				if (constructorToUse == null) {
 					final Class<?> clazz = bd.getBeanClass();
+					// 如果是接口，则抛出异常
 					if (clazz.isInterface()) {
 						throw new BeanInstantiationException(clazz, "Specified class is an interface");
 					}
 					try {
+						// 从clazz中，获得构造方法
 						if (System.getSecurityManager() != null) {
 							constructorToUse = AccessController.doPrivileged(
 									(PrivilegedExceptionAction<Constructor<?>>) clazz::getDeclaredConstructor);
 						} else {
 							constructorToUse = clazz.getDeclaredConstructor();
 						}
+						// 标记resolvedConstructorOrFactoryMethod属性
 						bd.resolvedConstructorOrFactoryMethod = constructorToUse;
 					} catch (Throwable ex) {
 						throw new BeanInstantiationException(clazz, "No default constructor found", ex);
 					}
 				}
 			}
+			// 通过BeanUtils直接使用构造器实例化bean对象
 			return BeanUtils.instantiateClass(constructorToUse);
 		} else {
+			// 通过CGLIB创建子类对象
 			// Must generate CGLIB subclass.
 			return instantiateWithMethodInjection(bd, beanName, owner);
 		}
@@ -102,17 +109,20 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 	@Override
 	public Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner,
 							  final Constructor<?> ctor, Object... args) {
-
+		// 没有覆盖，则直接使用反射实例化即可
 		if (!bd.hasMethodOverrides()) {
 			if (System.getSecurityManager() != null) {
 				// use own privileged to change accessibility (when security is on)
+				// 设置构造方法，可访问
 				AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
 					ReflectionUtils.makeAccessible(ctor);
 					return null;
 				});
 			}
+			// 通过BeanUtils直接使用构造器对象实例化bean对象
 			return BeanUtils.instantiateClass(ctor, args);
 		} else {
+			// CGLIB创建bean对象
 			return instantiateWithMethodInjection(bd, beanName, owner, ctor, args);
 		}
 	}
