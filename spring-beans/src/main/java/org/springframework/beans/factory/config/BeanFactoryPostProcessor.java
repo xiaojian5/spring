@@ -46,6 +46,8 @@ import org.springframework.beans.BeansException;
 public interface BeanFactoryPostProcessor {
 
 	/**
+	 * 工作于BeanDefinition加载完成之后，Bean实例化之前，其主要作用就是对加载的BeanDefinition进行修改<br/>
+	 * 注意：在该方法中不能进行Bean的实例化工作，因为这样会导致Bean过早实例化，产生严重的后果
 	 * Modify the application context's internal bean factory after its standard
 	 * initialization. All bean definitions will have been loaded, but no beans
 	 * will have been instantiated yet. This allows for overriding or adding

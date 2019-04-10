@@ -30,14 +30,16 @@ package org.springframework.beans.factory;
  *
  * @author Juergen Hoeller
  * @author Chris Beams
- * @since 2.0
  * @see BeanNameAware
  * @see BeanFactoryAware
  * @see InitializingBean
+ * @since 2.0
  */
 public interface BeanClassLoaderAware extends Aware {
 
 	/**
+	 * 将BeanClassLoader提供给bean实例回调<br/>
+	 * 在bean属性填充之后、初始化回调之前回调<br/>
 	 * Callback that supplies the bean {@link ClassLoader class loader} to
 	 * a bean instance.
 	 * <p>Invoked <i>after</i> the population of normal bean properties but
@@ -45,6 +47,7 @@ public interface BeanClassLoaderAware extends Aware {
 	 * {@link InitializingBean InitializingBean's}
 	 * {@link InitializingBean#afterPropertiesSet()}
 	 * method or a custom init-method.
+	 *
 	 * @param classLoader the owning class loader
 	 */
 	void setBeanClassLoader(ClassLoader classLoader);
