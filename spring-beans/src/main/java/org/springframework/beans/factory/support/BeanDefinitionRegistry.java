@@ -65,6 +65,7 @@ public interface BeanDefinitionRegistry extends AliasRegistry {
 			throws BeanDefinitionStoreException;
 
 	/**
+	 * 移除注册表中已注册的BeanDefinition实例<br/>
 	 * Remove the BeanDefinition for the given name.
 	 *
 	 * @param beanName the name of the bean instance to register
@@ -73,6 +74,7 @@ public interface BeanDefinitionRegistry extends AliasRegistry {
 	void removeBeanDefinition(String beanName) throws NoSuchBeanDefinitionException;
 
 	/**
+	 * 从注册表中取得指定的BeanDefinition实例<br/>
 	 * Return the BeanDefinition for the given bean name.
 	 *
 	 * @param beanName name of the bean to find a definition for
@@ -82,6 +84,7 @@ public interface BeanDefinitionRegistry extends AliasRegistry {
 	BeanDefinition getBeanDefinition(String beanName) throws NoSuchBeanDefinitionException;
 
 	/**
+	 * 判断BeanDefinition是否已经注册<br/>
 	 * Check if this registry contains a bean definition with the given name.
 	 *
 	 * @param beanName the name of the bean to look for
@@ -90,6 +93,7 @@ public interface BeanDefinitionRegistry extends AliasRegistry {
 	boolean containsBeanDefinition(String beanName);
 
 	/**
+	 * 返回注册表中BeanDefinition实例的beanName<br/>
 	 * Return the names of all beans defined in this registry.
 	 *
 	 * @return the names of all beans defined in this registry,
@@ -98,6 +102,7 @@ public interface BeanDefinitionRegistry extends AliasRegistry {
 	String[] getBeanDefinitionNames();
 
 	/**
+	 * 返回注册表中BeanDefinition实例的数量<br/>
 	 * Return the number of beans defined in the registry.
 	 *
 	 * @return the number of beans defined in the registry
@@ -105,6 +110,7 @@ public interface BeanDefinitionRegistry extends AliasRegistry {
 	int getBeanDefinitionCount();
 
 	/**
+	 * 判断beanName(标识)是否被占用<br/>
 	 * Determine whether the given bean name is already in use within this registry,
 	 * i.e. whether there is a local bean or alias registered under this name.
 	 *

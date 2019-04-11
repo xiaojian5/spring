@@ -187,6 +187,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	private final Map<Class<?>, String[]> singletonBeanNamesByType = new ConcurrentHashMap<>(64);
 
 	/**
+	 * beanName集合<br/>
 	 * List of bean definition names, in registration order.
 	 */
 	private volatile List<String> beanDefinitionNames = new ArrayList<>(256);
@@ -1283,7 +1284,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			Object instanceCandidate;
 
 			if (matchingBeans.size() > 1) {
-			    // 确定给定bean autowire的候选者
+				// 确定给定bean autowire的候选者
 				// 按照@Primary和@priority的顺序
 				autowiredBeanName = determineAutowireCandidate(matchingBeans, descriptor);
 				if (autowiredBeanName == null) {
