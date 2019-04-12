@@ -182,7 +182,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		ignoreDependencyInterface(BeanNameAware.class);
 		ignoreDependencyInterface(BeanFactoryAware.class);
 		ignoreDependencyInterface(BeanClassLoaderAware.class);
-		System.out.println("AbstractAutowireCapableBeanFactory构造函数中，忽略实现接口BeanNameAware.class/BeanFactoryAware.class/BeanClassLoaderAware.class类的自动装配功能");
 	}
 
 	/**
