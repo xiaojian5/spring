@@ -68,12 +68,15 @@ public class DefaultDocumentLoader implements DocumentLoader {
 	 * @param inputSource    Resouce资源
 	 * @param entityResolver 实体解析器
 	 * @param errorHandler   处理加载Document过程中的错误处理器
-	 * @param validationMode 验证模式 在XmlValidationModeDetector已经分析
+	 * @param validationMode 验证模式
 	 * @param namespaceAware 是否支持命名空间，默认为false
 	 */
 	@Override
-	public Document loadDocument(InputSource inputSource, EntityResolver entityResolver,
-								 ErrorHandler errorHandler, int validationMode, boolean namespaceAware) throws Exception {
+	public Document loadDocument(InputSource inputSource,
+								 EntityResolver entityResolver,
+								 ErrorHandler errorHandler,
+								 int validationMode,
+								 boolean namespaceAware) throws Exception {
 		// 创建DocumentBuilderFactory
 		DocumentBuilderFactory factory = createDocumentBuilderFactory(validationMode, namespaceAware);
 		if (logger.isTraceEnabled()) {
