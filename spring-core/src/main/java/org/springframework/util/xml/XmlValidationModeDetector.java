@@ -175,7 +175,7 @@ public class XmlValidationModeDetector {
 			return line;
 		}
 		String currLine = line;
-		// 寻找有用信息
+		// 这里主要是为了消耗注释信息，使循环跳向下一行内容
 		while ((currLine = consume(currLine)) != null) {
 			// 当inComment标志位更新，并且返回信息不是以注释开始标志开始就返回currLine
 			if (!this.inComment && !currLine.trim().startsWith(START_COMMENT)) {

@@ -377,8 +377,8 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 		Set<Resource> result = new LinkedHashSet<>(16);
 		ClassLoader cl = getClassLoader();
 		// 根据ClassLoader来加载资源
-		// 如果PathMatchingResourcePatternResolver在初始化时，传入了ClassLoader，就用该ClassLoader的getResouce方法
-		// 否则调用ClassLoader的getResource方法
+		// 如果PathMatchingResourcePatternResolver在初始化时，设置了ClassLoader，就用该ClassLoader的getResouce方法
+		// 否则调用ClassLoader的getSystemResources方法
 		Enumeration<URL> resourceUrls = (cl != null ? cl.getResources(path) : ClassLoader.getSystemResources(path));
 		// 遍历集合将集合转换成UrlResource形式
 		// 如果path为空，这里就会返回项目中classes的路径，通过addAllClassLoaderJarRoots方法进行加载
@@ -602,13 +602,13 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 		 * 第一次循环rootDirEnd=26，也就是最后一个"/"
 		 * subString(prefixEnd,rootDirEnd)=com/dev/config/
 		 * 第二次循环已经不包含通配符了，跳出循环
-		 * 所以根路径为com/dev/config/
+		 * 所以根路径为classpath*:com/dev/config/
 		 */
 		while (rootDirEnd > prefixEnd && getPathMatcher().isPattern(location.substring(prefixEnd, rootDirEnd))) {
 			// 确定最后一个"/"位置的后一位，注意这里rootDirEnd-2是为了缩小搜索范围，提升速度
 			rootDirEnd = location.lastIndexOf('/', rootDirEnd - 2) + 1;
 		}
-		// 如果查找完后rootDir=0，则将prefixEnd赋值给rootDirEnd，也就是冒号的后一位
+		// 如果查找完后rootDirEnd=0，则将prefixEnd赋值给rootDirEnd，也就是冒号的后一位
 		if (rootDirEnd == 0) {
 			rootDirEnd = prefixEnd;
 		}

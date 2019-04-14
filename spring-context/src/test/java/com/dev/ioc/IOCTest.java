@@ -30,6 +30,7 @@ public class IOCTest {
 
 		System.out.println("name属性:" + multiConditionBean.getName());
 		System.out.println("gender属性:" + multiConditionBean.getGender());
+		System.out.println("placeHolderValue属性:" + multiConditionBean.getPlaceHolderValue());
 
 		System.out.println("xml形式注入bean调试过程结束");
 	}

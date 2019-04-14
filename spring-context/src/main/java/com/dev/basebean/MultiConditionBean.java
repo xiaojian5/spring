@@ -16,6 +16,16 @@ public class MultiConditionBean implements InitializingBean, BeanNameAware, Bean
 
 	private String gender;
 
+	private String placeHolderValue;
+
+	public void setPlaceHolderValue(String placeHolderValue) {
+		this.placeHolderValue = placeHolderValue;
+	}
+
+	public String getPlaceHolderValue() {
+		return placeHolderValue;
+	}
+
 	public void sayHello() {
 		System.out.println("Hello Aop");
 	}
