@@ -184,11 +184,11 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 				}
 			}
 		}
-		// 解析xml前置处理，该方法为空，主要留给用户自定义处理，增强扩展性
+		// 解析xml前置处理，该方法为空，主要留给用户自定义实现，增强扩展性
 		preProcessXml(root);
 		// 核心函数，进行xml解析
 		parseBeanDefinitions(root, this.delegate);
-		// 解析xml后置处理，该方法也为空，主要留给用户自定义处理，增强扩展性
+		// 解析xml后置处理，该方法也为空，主要留给用户自定义实现，增强扩展性
 		postProcessXml(root);
 		// 将delegate回到老的BeanDefinitionParserDelegate对象
 		this.delegate = parent;
@@ -224,7 +224,6 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 						parseDefaultElement(ele, delegate);
 						// 如果该节点使用非默认命名空间，则执行自定义解析
 					} else {
-						System.out.println("如果开启了aop:aspectj-autoproxy，会走自定义解析，生成AspectJAutoProxyBeanDefinitionParser解析器");
 						delegate.parseCustomElement(ele);
 					}
 				}

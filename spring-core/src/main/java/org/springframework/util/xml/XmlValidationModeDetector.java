@@ -193,7 +193,7 @@ public class XmlValidationModeDetector {
 	 */
 	@Nullable
 	private String consume(String line) {
-		// 如果inComment-true，则走endComent函数；false-startComment函数，初始时为false
+		// 如果inComment:true，则走endComent函数；false,则走startComment函数，初始时为false
 		// 因此这里会走startComment，返回注释位置的index[注释位置+1的index]
 		int index = (this.inComment ? endComment(line) : startComment(line));
 		// 如果index=-1，则表示没有注释信息，否则返回注释信息
@@ -221,7 +221,7 @@ public class XmlValidationModeDetector {
 	 * which is after the token or -1 if the token is not found.
 	 *
 	 * @param line               传入信息
-	 * @param token              注释开始标志
+	 * @param token              注释标志 [<!--或者-->]
 	 * @param inCommentIfPresent 是否是注释，默认在startComment中传入true
 	 */
 	private int commentToken(String line, String token, boolean inCommentIfPresent) {

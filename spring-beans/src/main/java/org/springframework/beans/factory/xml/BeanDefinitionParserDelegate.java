@@ -506,7 +506,7 @@ public class BeanDefinitionParserDelegate {
 			error("Bean name '" + foundName + "' is already used in this <beans> element", beanElement);
 		}
 
-		// 到这里说明不存在beanName是唯一的，将beanName和aliases加入usedNames中
+		// 到这里说明beanName是唯一的，将beanName和aliases加入usedNames中
 		this.usedNames.add(beanName);
 		this.usedNames.addAll(aliases);
 	}
