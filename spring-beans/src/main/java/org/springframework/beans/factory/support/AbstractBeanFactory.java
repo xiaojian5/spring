@@ -352,7 +352,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				 * GenericBeanDefinition的创建{@link BeanDefinitionReaderUtils#createBeanDefinition}方法
 				 */
 				final RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
-				// 检查合并的BeanDefinition
+				// 检查转换后的BeanDefinition
 				checkMergedBeanDefinition(mbd, beanName, args);
 
 				// Guarantee initialization of beans that the current bean depends on.
@@ -381,7 +381,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				// Create bean instance.
 				// 单例模式
 				/**
-				 * 这里有个已创建bean的重要方法createBean
+				 * 这里创建bean的重要方法createBean
 				 * {@link AbstractAutowireCapableBeanFactory#createBean(String, RootBeanDefinition, Object[])}
 				 */
 				if (mbd.isSingleton()) {
