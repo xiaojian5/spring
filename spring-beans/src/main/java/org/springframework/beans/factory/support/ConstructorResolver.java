@@ -146,6 +146,7 @@ class ConstructorResolver {
 					// 缓存中的构造参数
 					argsToUse = mbd.resolvedConstructorArguments;
 					if (argsToUse == null) {
+						// 获取缓存中的构造函数参数 包括可见字段
 						argsToResolve = mbd.preparedConstructorArguments;
 					}
 				}
@@ -221,7 +222,7 @@ class ConstructorResolver {
 				// 获取该构造函数的参数类型
 				Class<?>[] paramTypes = candidate.getParameterTypes();
 
-				// 如果已经找到选用的构造函数或者需要的参数个数小于当前构造函数参数个数，则break
+				// 如果已经找到选用的构造函数且需要的参数个数大于当前构造函数参数个数，则break
 				if (constructorToUse != null && argsToUse != null && argsToUse.length > paramTypes.length) {
 					// Already found greedy constructor that can be satisfied ->
 					// do not look any further, there are only less greedy constructors left.
@@ -459,7 +460,7 @@ class ConstructorResolver {
 		if (explicitArgs != null) {
 			argsToUse = explicitArgs;
 		} else {
-			// 没有指定，则尝试从配置文件中解析
+			// 没有指定，则尝试从缓存中获取
 			Object[] argsToResolve = null;
 			// 同步
 			synchronized (mbd.constructorArgumentLock) {

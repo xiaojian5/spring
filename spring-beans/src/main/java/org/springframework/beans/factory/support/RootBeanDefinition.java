@@ -86,6 +86,7 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	volatile Method factoryMethodToIntrospect;
 
 	/**
+	 * 构造函数的缓存锁
 	 * Common lock for the four constructor fields below.
 	 */
 	final Object constructorArgumentLock = new Object();
