@@ -475,7 +475,7 @@ class ConstructorResolver {
 				}
 			}
 			// 缓存中存在，则解析存储在BeanDefinition中的参数
-			// 如给定方法的构造函数 f(int ,int),通过测方法后就会把配置文件中的("1","1")转换为(1,1)
+			// 如给定方法的构造函数 f(int ,int),通过此方法后就会把配置文件中的("1","1")转换为(1,1)
 			// 缓存中的值可能是原始值，也可能是最终值
 			if (argsToResolve != null) {
 				argsToUse = resolvePreparedArguments(beanName, mbd, bw, factoryMethodToUse, argsToResolve, true);

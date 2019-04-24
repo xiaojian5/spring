@@ -1465,7 +1465,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	@Nullable
 	protected Class<?> resolveBeanClass(final RootBeanDefinition mbd, String beanName, final Class<?>... typesToMatch)
 			throws CannotLoadBeanClassException {
-
+		// TODO: 2019/4/23  还未详细分析这里
 		try {
 			if (mbd.hasBeanClass()) {
 				return mbd.getBeanClass();
