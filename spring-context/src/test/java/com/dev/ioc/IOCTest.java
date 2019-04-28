@@ -18,7 +18,7 @@ public class IOCTest {
 	 * xml形式注入bean
 	 */
 	@Test
-	public void testXmlIOC() {
+	public void xmlIOCTest() {
 
 		System.out.println("xml形式注入bean调试过程开始");
 		// classpath*:com/dev/config/*
@@ -39,7 +39,7 @@ public class IOCTest {
 	 * 注解扫描形式注入bean
 	 */
 	@Test
-	public void testAnnotationIOC() {
+	public void annotationIOCTest() {
 
 		System.out.println("注解扫描形式注入bean的调试过程开始");
 
@@ -57,5 +57,13 @@ public class IOCTest {
 
 		System.out.println("注解扫描形式注入bean的调试过程结束");
 
+	}
+
+	/**
+	 * 构造器循环依赖注入测试
+	 */
+	@Test
+	public void constructorCircleDependTest() {
+		new ClassPathXmlApplicationContext("classpath*:com/dev/config/circledepend.xml");
 	}
 }
