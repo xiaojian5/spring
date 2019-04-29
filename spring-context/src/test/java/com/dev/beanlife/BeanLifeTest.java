@@ -21,7 +21,7 @@ public class BeanLifeTest {
 		System.out.println("Spring容器初始化");
 		System.out.println("=====================================");
 
-		ApplicationContext context = new ClassPathXmlApplicationContext("com/dev/config/beanlife_xml.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/dev/config/beanlife/beanlife_xml.xml");
 
 		System.out.println("Spring容器初始化完毕");
 		System.out.println("=====================================");

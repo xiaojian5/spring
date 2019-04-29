@@ -6,7 +6,8 @@ import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.dev.basebean.MultiConditionBean;
+import com.dev.basebean.aware.UserDefinedAware;
+import com.dev.basebean.ioc.MultiConditionBean;
 import com.dev.basebean.circledepend.setter.SetterCircleDependA;
 
 /**
@@ -24,7 +25,7 @@ public class IOCTest {
 
 		System.out.println("xml形式注入bean调试过程开始");
 		// classpath*:com/dev/config/*
-		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:com/dev/config/multicondition.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:com/dev/config/ioc/multicondition.xml");
 
 		MultiConditionBean multiConditionBean = (MultiConditionBean) context.getBean("multiConditionBean");
 
@@ -45,7 +46,7 @@ public class IOCTest {
 
 		System.out.println("注解扫描形式注入bean的调试过程开始");
 
-		ApplicationContext context = new ClassPathXmlApplicationContext("com/dev/config/beanlife_annotation.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/dev/config/beanlife/beanlife_annotation.xml");
 
 		MultiConditionBean user = (MultiConditionBean) context.getBean("multiConditionBean");
 
@@ -66,7 +67,7 @@ public class IOCTest {
 	 */
 	@Test(expected = BeanCreationException.class)
 	public void constructorCircleDependTest() {
-		new ClassPathXmlApplicationContext("classpath*:com/dev/config/circledepend_constructor.xml");
+		new ClassPathXmlApplicationContext("classpath*:com/dev/config/circledepend/circledepend_constructor.xml");
 	}
 
 	/**
@@ -74,8 +75,18 @@ public class IOCTest {
 	 */
 	@Test
 	public void setterCircleDependTest() {
-		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:com/dev/config/circledepend_setter.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:com/dev/config/circledepend/circledepend_setter.xml");
 		SetterCircleDependA setterCircleDependA = (SetterCircleDependA) context.getBean("setterCircleDependA");
 		System.out.println(setterCircleDependA.getClass());
+	}
+
+	/**
+	 * Aware接口演示
+	 */
+	@Test
+	public void awareTest() {
+		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:com/dev/config/aware/aware.xml");
+		UserDefinedAware userDefinedAware = context.getBean(UserDefinedAware.class);
+		userDefinedAware.showMsg();
 	}
 }

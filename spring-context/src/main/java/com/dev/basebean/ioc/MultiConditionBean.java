@@ -1,4 +1,4 @@
-package com.dev.basebean;
+package com.dev.basebean.ioc;
 
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.BeanNameAware;

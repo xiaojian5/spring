@@ -7,7 +7,7 @@
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<context:property-placeholder location="classpath:com/dev/config/dev.properties"/>
-	<bean id="multiConditionBean" class="com.dev.basebean.MultiConditionBean"
+	<context:property-placeholder location="classpath:com/dev/config/ioc/dev.properties"/>
+	<bean id="multiConditionBean" class="com.dev.basebean.ioc.MultiConditionBean"
 		  p:name="测试用例" p:gender="性别" p:placeHolderValue="${dev.placeholder.value}" init-method="initMethod"/>
 </beans>
