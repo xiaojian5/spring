@@ -2,10 +2,12 @@ package com.dev.ioc;
 
 
 import org.junit.Test;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.dev.basebean.MultiConditionBean;
+import com.dev.basebean.circledepend.setter.SetterCircleDependA;
 
 /**
  * @author: Shawn Chen
@@ -60,10 +62,20 @@ public class IOCTest {
 	}
 
 	/**
-	 * 构造器循环依赖注入测试
+	 * 构造器循环依赖注入测试 会抛出BeanCreationException异常
+	 */
+	@Test(expected = BeanCreationException.class)
+	public void constructorCircleDependTest() {
+		new ClassPathXmlApplicationContext("classpath*:com/dev/config/circledepend_constructor.xml");
+	}
+
+	/**
+	 * setter循环依赖注入测试 不会抛出异常
 	 */
 	@Test
-	public void constructorCircleDependTest() {
-		new ClassPathXmlApplicationContext("classpath*:com/dev/config/circledepend.xml");
+	public void setterCircleDependTest() {
+		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:com/dev/config/circledepend_setter.xml");
+		SetterCircleDependA setterCircleDependA = (SetterCircleDependA) context.getBean("setterCircleDependA");
+		System.out.println(setterCircleDependA.getClass());
 	}
 }

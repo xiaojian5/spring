@@ -404,6 +404,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		// 这里会添加到正在创建bean的集合中
 		// 注意第一个条件，如果存在，则为false，直接短路
 		// 只有当第一个条件不存在[false]时，才会去进行添加操作
+		// singletonsCurrentlyInCreation集合处理循环依赖的重要点，对于正在创建的bean会被加载到该集合中
+		// 如果加载失败，则证明出现不能解决的循环依赖：构造函数注入循环依赖或非singleton域的循环依赖
 		if (!this.inCreationCheckExclusions.contains(beanName) && !this.singletonsCurrentlyInCreation.add(beanName)) {
 			throw new BeanCurrentlyInCreationException(beanName);
 		}

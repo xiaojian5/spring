@@ -44,6 +44,9 @@ import org.springframework.util.StringUtils;
 @SuppressWarnings("serial")
 public class MutablePropertyValues implements PropertyValues, Serializable {
 
+	/**
+	 * 存储属性对象  PropertyValue：name->value
+	 */
 	private final List<PropertyValue> propertyValueList;
 
 	@Nullable
