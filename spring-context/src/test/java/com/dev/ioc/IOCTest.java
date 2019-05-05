@@ -7,8 +7,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.dev.basebean.aware.UserDefinedAware;
-import com.dev.basebean.ioc.MultiConditionBean;
+import com.dev.basebean.beanpostprocessor.BeanPostProcessorBase;
 import com.dev.basebean.circledepend.setter.SetterCircleDependA;
+import com.dev.basebean.ioc.MultiConditionBean;
+
 
 /**
  * @author: Shawn Chen
@@ -39,30 +41,6 @@ public class IOCTest {
 	}
 
 	/**
-	 * 注解扫描形式注入bean
-	 */
-	@Test
-	public void annotationIOCTest() {
-
-		System.out.println("注解扫描形式注入bean的调试过程开始");
-
-		ApplicationContext context = new ClassPathXmlApplicationContext("com/dev/config/beanlife/beanlife_annotation.xml");
-
-		MultiConditionBean user = (MultiConditionBean) context.getBean("multiConditionBean");
-
-		user.setName("注解");
-		user.setGender("保密");
-
-		System.out.println("class name:" + user.getClass().getName());
-
-		System.out.println("name属性:" + user.getName());
-		System.out.println("gender属性:" + user.getGender());
-
-		System.out.println("注解扫描形式注入bean的调试过程结束");
-
-	}
-
-	/**
 	 * 构造器循环依赖注入测试 会抛出BeanCreationException异常
 	 */
 	@Test(expected = BeanCreationException.class)
@@ -88,5 +66,28 @@ public class IOCTest {
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:com/dev/config/aware/aware.xml");
 		UserDefinedAware userDefinedAware = context.getBean(UserDefinedAware.class);
 		userDefinedAware.showMsg();
+	}
+
+	/**
+	 * BeanPostProcessor演示
+	 * 这里用ClassPathXmlApplicationContext进行演示不能只单独使用UserDefinedBeanPostProcessor做演示，因为出现BeanPostProcessor类会优先进行创建，从而得不到演示效果
+	 * 其具体优先创建bean的点{@link org.springframework.context.support.PostProcessorRegistrationDelegate#registerBeanPostProcessors} 278行
+	 * 如果要单独使用UserDefinedBeanPostProcessor，则加载的方式必须发生变化才行
+	 */
+	@Test
+	public void beanPostProcessorTest() {
+
+	/*	ClassPathResource resource = new ClassPathResource("com/dev/config/beanpostprocessor/beanpostprocessor.xml");
+		DefaultListableBeanFactory factory = new DefaultListableBeanFactory();
+		XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(factory);
+		reader.loadBeanDefinitions(resource);
+		// 单独使用UserDefinedBeanPostProcessor必须手动进行注册，然后就必须手动new一个对象，这种方式并不友好。
+		UserDefinedBeanPostProcessor definedBeanPostProcessor = new UserDefinedBeanPostProcessor();
+		factory.addBeanPostProcessor(definedBeanPostProcessor);
+		UserDefinedBeanPostProcessor test = (UserDefinedBeanPostProcessor) factory.getBean("userDefinedBeanPostProcessor");
+		test.showMsg();*/
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/dev/config/beanpostprocessor/beanpostprocessor.xml");
+		BeanPostProcessorBase postProcessor = context.getBean(BeanPostProcessorBase.class);
+		System.out.println(postProcessor.getMsg());
 	}
 }
