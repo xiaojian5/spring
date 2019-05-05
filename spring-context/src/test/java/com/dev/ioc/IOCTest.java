@@ -9,7 +9,9 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.dev.basebean.aware.UserDefinedAware;
 import com.dev.basebean.beanpostprocessor.BeanPostProcessorBase;
 import com.dev.basebean.circledepend.setter.SetterCircleDependA;
+import com.dev.basebean.initializingbean.UserDefinedInitializingBean;
 import com.dev.basebean.ioc.MultiConditionBean;
+import com.dev.basebean.lifecycle.BeanLifeCycle;
 
 
 /**
@@ -89,5 +91,26 @@ public class IOCTest {
 		ApplicationContext context = new ClassPathXmlApplicationContext("com/dev/config/beanpostprocessor/beanpostprocessor.xml");
 		BeanPostProcessorBase postProcessor = context.getBean(BeanPostProcessorBase.class);
 		System.out.println(postProcessor.getMsg());
+	}
+
+	/**
+	 * InitializingBean测试
+	 */
+	@Test
+	public void initializingBeanTest() {
+		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:com/dev/config/initializingbean/initializingbean.xml");
+		UserDefinedInitializingBean initializingBean = context.getBean(UserDefinedInitializingBean.class);
+		System.out.println(initializingBean.getMsg());
+	}
+
+	/**
+	 * bean生命周期测试
+	 */
+	@Test
+	public void beanLifeCycleTest() {
+		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:com/dev/config/lifecycle/lifecycle.xml");
+		BeanLifeCycle beanLifeCycle = context.getBean(BeanLifeCycle.class);
+		System.out.println("msg=" + beanLifeCycle.getMsg());
+		((ClassPathXmlApplicationContext) context).close();
 	}
 }
