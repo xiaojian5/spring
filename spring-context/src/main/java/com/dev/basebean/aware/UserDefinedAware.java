@@ -26,7 +26,7 @@ public class UserDefinedAware implements BeanNameAware, BeanClassLoaderAware, Be
 
 	@Override
 	public void setBeanClassLoader(ClassLoader classLoader) {
-		System.out.println("调用了 BeanClassLoader 的 setBeanClassLoader 方法");
+		System.out.println("调用了 BeanClassLoaderAware 的 setBeanClassLoader 方法");
 		this.classLoader = classLoader;
 	}
 
