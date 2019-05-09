@@ -1,8 +1,5 @@
 package com.dev.basebean.ioc;
 
-import org.springframework.beans.factory.BeanClassLoaderAware;
-import org.springframework.beans.factory.BeanNameAware;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -11,7 +8,7 @@ import org.springframework.stereotype.Repository;
  * @description:
  */
 @Repository
-public class MultiConditionBean implements InitializingBean, BeanNameAware, BeanClassLoaderAware {
+public class MultiConditionBean {
 	private String name;
 
 	private String gender;
@@ -44,21 +41,6 @@ public class MultiConditionBean implements InitializingBean, BeanNameAware, Bean
 
 	public void setGender(String gender) {
 		this.gender = gender;
-	}
-
-	@Override
-	public void setBeanClassLoader(ClassLoader classLoader) {
-		System.out.println("Enter MultiConditionBean.setBeanClassLoader(ClassLoader classLoader)");
-	}
-
-	@Override
-	public void setBeanName(String name) {
-		System.out.println("Enter MultiConditionBean.setBeanName(String name)");
-	}
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		System.out.println("Enter MultiConditionBean.afterPropertiesSet()");
 	}
 
 	public void initMethod() {

@@ -113,4 +113,14 @@ public class IOCTest {
 		System.out.println("msg=" + beanLifeCycle.getMsg());
 		((ClassPathXmlApplicationContext) context).close();
 	}
+
+	/**
+	 * PropertyOverrideConfigurer测试
+	 */
+	@Test
+	public void propertyoverrideconfigurerTest() {
+		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:com/dev/config/propertyoverrideconfigurer/propertyoverride.xml");
+		MultiConditionBean conditionBean = context.getBean(MultiConditionBean.class);
+		System.out.println(conditionBean.getName());
+	}
 }

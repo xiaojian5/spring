@@ -88,14 +88,18 @@ public class GenericConversionService implements ConfigurableConversionService {
 
 	@Override
 	public void addConverter(Converter<?, ?> converter) {
+		// 获取ResolvableType 对象，基于converter.getClass()类
 		ResolvableType[] typeInfo = getRequiredTypeInfo(converter.getClass(), Converter.class);
+		// 如果找不到，并且converter是DecoratingProxy类型，则基于（DecoratingProxy）获取类
 		if (typeInfo == null && converter instanceof DecoratingProxy) {
 			typeInfo = getRequiredTypeInfo(((DecoratingProxy) converter).getDecoratedClass(), Converter.class);
 		}
+		// 如果获取不到，则抛出异常
 		if (typeInfo == null) {
 			throw new IllegalArgumentException("Unable to determine source type <S> and target type <T> for your " +
 													   "Converter [" + converter.getClass().getName() + "]; does the class parameterize those types?");
 		}
+		// 封装成ConverterAdapter对象，添加到converters中
 		addConverter(new ConverterAdapter(converter, typeInfo[0], typeInfo[1]));
 	}
 
@@ -107,7 +111,9 @@ public class GenericConversionService implements ConfigurableConversionService {
 
 	@Override
 	public void addConverter(GenericConverter converter) {
+		// 添加到converters中
 		this.converters.add(converter);
+		// 过期缓存
 		invalidateCache();
 	}
 
@@ -530,12 +536,15 @@ public class GenericConversionService implements ConfigurableConversionService {
 		private final Map<ConvertiblePair, ConvertersForPair> converters = new LinkedHashMap<>(36);
 
 		public void add(GenericConverter converter) {
+			// 获得convertibleTypes集合
 			Set<ConvertiblePair> convertibleTypes = converter.getConvertibleTypes();
+			// 如果convertibleTypes为null，且converter是ConditionalConverter类型，则添加到globalConverters集合中
 			if (convertibleTypes == null) {
 				Assert.state(converter instanceof ConditionalConverter,
 							 "Only conditional converters may return null convertible types");
 				this.globalConverters.add(converter);
 			} else {
+				// 遍历 依次添加到convertersForPair中
 				for (ConvertiblePair convertiblePair : convertibleTypes) {
 					ConvertersForPair convertersForPair = getMatchableConverters(convertiblePair);
 					convertersForPair.add(converter);
@@ -570,9 +579,13 @@ public class GenericConversionService implements ConfigurableConversionService {
 			// Search the full type hierarchy
 			List<Class<?>> sourceCandidates = getClassHierarchy(sourceType.getType());
 			List<Class<?>> targetCandidates = getClassHierarchy(targetType.getType());
+			// 遍历sourceCandidates数组
 			for (Class<?> sourceCandidate : sourceCandidates) {
+				// 遍历targetCandidates数组
 				for (Class<?> targetCandidate : targetCandidates) {
+					// 创建ConvertiblePair对象
 					ConvertiblePair convertiblePair = new ConvertiblePair(sourceCandidate, targetCandidate);
+					// 获得GenericConverter对象
 					GenericConverter converter = getRegisteredConverter(sourceType, targetType, convertiblePair);
 					if (converter != null) {
 						return converter;
@@ -587,6 +600,7 @@ public class GenericConversionService implements ConfigurableConversionService {
 														TypeDescriptor targetType, ConvertiblePair convertiblePair) {
 
 			// Check specifically registered converters
+			// 从converters中获得 converter
 			ConvertersForPair convertersForPair = this.converters.get(convertiblePair);
 			if (convertersForPair != null) {
 				GenericConverter converter = convertersForPair.getConverter(sourceType, targetType);
@@ -595,6 +609,7 @@ public class GenericConversionService implements ConfigurableConversionService {
 				}
 			}
 			// Check ConditionalConverters for a dynamic match
+			// 从 globalConverter 中获取匹配的 globalConverter
 			for (GenericConverter globalConverter : this.globalConverters) {
 				if (((ConditionalConverter) globalConverter).matches(sourceType, targetType)) {
 					return globalConverter;
