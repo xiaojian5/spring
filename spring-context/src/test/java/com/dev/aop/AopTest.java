@@ -4,7 +4,8 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.dev.basebean.ioc.MultiConditionBean;
+import com.dev.basebean.aop.UserDefinedAopAnnotationBean;
+import com.dev.basebean.aop.UserDefinedAopXmlBean;
 
 /**
  * @author: dengxin.chen
@@ -14,21 +15,23 @@ import com.dev.basebean.ioc.MultiConditionBean;
 public class AopTest {
 
 	/**
-	 * 基于配置形式的aop增强测试
+	 * 基于xml配置形式的aop测试
 	 */
 	@Test
-	public void testXmlAop() {
+	public void xmlAopTest() {
 
-		System.out.println("xml配置形式Aop调试开始");
+		System.out.println("基于xml配置形式Aop测试开始");
 
-		ApplicationContext context = new ClassPathXmlApplicationContext("com/dev/config/aop/aop_xml.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/dev/config/aop/xml_aop.xml");
 
-		MultiConditionBean user = (MultiConditionBean) context.getBean("multiConditionBean");
+		UserDefinedAopXmlBean userDefinedAopBean = context.getBean(UserDefinedAopXmlBean.class);
 
-		user.sayHello();
+		userDefinedAopBean.aopTest("aop test");
 
 		System.out.println();
-		System.out.println("xml配置形式Aop调试结束");
+		System.out.println("age=" + userDefinedAopBean.getAge() + " name=" + userDefinedAopBean.getName());
+		System.out.println();
+		System.out.println("基于xml配置形式Aop测试结束");
 
 	}
 
@@ -36,18 +39,18 @@ public class AopTest {
 	 * 基于注解形式的aop测试
 	 */
 	@Test
-	public void testAnnotationAop() {
+	public void annotationAopTest() {
 
-		System.out.println("注解形式Aop调试开始");
+		System.out.println("基于注解形式Aop测试开始");
 
-		ApplicationContext context = new ClassPathXmlApplicationContext("com/dev/config/aop/aop_annotation.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/dev/config/aop/annotation_aop.xml");
 
-		MultiConditionBean user = (MultiConditionBean) context.getBean("multiConditionBean");
+		UserDefinedAopAnnotationBean userDefinedAopAnnotationBean = context.getBean(UserDefinedAopAnnotationBean.class);
 
-		user.sayHello();
+		userDefinedAopAnnotationBean.aopTest("annotation aop test");
 
 		System.out.println();
-		System.out.println("注解形式Aop调试结束");
+		System.out.println("基于注解形式Aop测试结束");
 
 	}
 }

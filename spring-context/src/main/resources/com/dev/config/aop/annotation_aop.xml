@@ -7,5 +7,5 @@
 	<!--使用注解的模式实现aop-->
 	<!--不管使用xml配置形式还是注解形式这句配置是少不了的-->
 	<aop:aspectj-autoproxy/>
-	<bean:component-scan base-package="com.dev.*"/>
+	<bean:component-scan base-package="com.dev.basebean.aop"/>
 </beans>

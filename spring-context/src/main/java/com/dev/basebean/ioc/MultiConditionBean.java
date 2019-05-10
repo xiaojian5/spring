@@ -1,13 +1,10 @@
 package com.dev.basebean.ioc;
 
-import org.springframework.stereotype.Repository;
-
 /**
  * @author: Shawn Chen
  * @date: 2018/6/6
  * @description:
  */
-@Repository
 public class MultiConditionBean {
 	private String name;
 

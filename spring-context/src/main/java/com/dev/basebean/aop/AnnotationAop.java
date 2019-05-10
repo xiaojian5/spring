@@ -1,5 +1,8 @@
-package com.dev.aop;
+package com.dev.basebean.aop;
 
+import java.util.stream.Stream;
+
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -13,22 +16,24 @@ import org.springframework.stereotype.Component;
  */
 @Aspect
 @Component
-public class AnnotationUserAop {
+public class AnnotationAop {
 
-	@Pointcut("execution(* com.dev.basebean.ioc.MultiConditionBean.sayHello(..))")
+	@Pointcut("execution(* com.dev.basebean.aop.UserDefinedAopAnnotationBean.aopTest(..))")
 	private void pointcutMethod() {
 
 	}
 
 	@Before("pointcutMethod()")
-	public void beforeAdvice() {
+	public void beforeAdvice(JoinPoint joinPoint) {
 		System.out.println();
-		System.out.println("利用【注解】形式进行前置增强");
+		System.out.println("进入前置增强函数【注解形式】");
+		Object[] args = joinPoint.getArgs();
+		Stream.of(args).forEach(e -> System.out.println((String) e));
 	}
 
 	@After("pointcutMethod()")
 	public void afterAdvice() {
+		System.out.println("进入后置增强函数【注解形式】");
 		System.out.println();
-		System.out.println("利用【注解】形式进行后置增强");
 	}
 }
