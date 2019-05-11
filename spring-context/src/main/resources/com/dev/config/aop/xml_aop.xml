@@ -7,9 +7,6 @@
        http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-	<!--完全使用配置的模式实现aop-->
-	<aop:aspectj-autoproxy/>
-
 	<bean id="userDefinedAopXmlBean" class="com.dev.basebean.aop.UserDefinedAopXmlBean"
 		  p:name="测试aop" p:age="120"/>
 

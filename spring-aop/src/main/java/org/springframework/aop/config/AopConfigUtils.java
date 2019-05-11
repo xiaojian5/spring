@@ -40,8 +40,8 @@ import org.springframework.util.Assert;
  * @author Rob Harrop
  * @author Juergen Hoeller
  * @author Mark Fisher
- * @since 2.5
  * @see AopNamespaceUtils
+ * @since 2.5
  */
 public abstract class AopConfigUtils {
 
@@ -85,6 +85,7 @@ public abstract class AopConfigUtils {
 	public static BeanDefinition registerAspectJAutoProxyCreatorIfNecessary(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
 
+		// 注入AspectJAwareAdvisorAutoProxyCreator类，该类为aop的核心类
 		return registerOrEscalateApcAsRequired(AspectJAwareAdvisorAutoProxyCreator.class, registry, source);
 	}
 
@@ -120,6 +121,7 @@ public abstract class AopConfigUtils {
 
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 
+		// 首先判断beanDefinitionMap是否包含beanName=org.springframework.aop.config.internalAutoProxyCreator的BeanDefinition
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
 			BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {
@@ -132,10 +134,15 @@ public abstract class AopConfigUtils {
 			return null;
 		}
 
+		// 创建AspectJAwareAdvisorAutoProxyCreator的RootBeanDefinition
 		RootBeanDefinition beanDefinition = new RootBeanDefinition(cls);
 		beanDefinition.setSource(source);
+		// 设置高优先级顺序
 		beanDefinition.getPropertyValues().add("order", Ordered.HIGHEST_PRECEDENCE);
+		// 并将该BeanDefinition角色设置为Spring内部使用bean
 		beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+		// 注入BeanDefinition beanName=org.springframework.aop.config.internalAutoProxyCreator的BeanDefinition
+		//                    BeanDefinition=AspectJAwareAdvisorAutoProxyCreator
 		registry.registerBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME, beanDefinition);
 		return beanDefinition;
 	}

@@ -5,7 +5,6 @@
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 	<!--使用注解的模式实现aop-->
-	<!--不管使用xml配置形式还是注解形式这句配置是少不了的-->
 	<aop:aspectj-autoproxy/>
 	<bean:component-scan base-package="com.dev.basebean.aop"/>
 </beans>
