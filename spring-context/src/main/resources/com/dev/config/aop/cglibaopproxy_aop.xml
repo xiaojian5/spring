@@ -6,8 +6,9 @@
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+	<!--演示使用CglibAopProxy代理进行aop增强-->
 
-	<bean id="userDefinedAopXmlBean" class="com.dev.basebean.aop.UserDefinedAopXmlBean"
+	<bean id="userDefinedAopXmlBean" class="com.dev.basebean.aop.UserDefinedCglibAopProxy"
 		  p:name="测试aop" p:age="120"/>
 
 	<bean id="xmlAop" class="com.dev.basebean.aop.XmlAop"/>
@@ -17,7 +18,7 @@
 		<!--配置切面-->
 		<aop:aspect ref="xmlAop">
 			<!--配置切入点-->
-			<aop:pointcut id="testPoint" expression="execution(* com.dev.basebean.aop.UserDefinedAopXmlBean.aopTest(..) )"/>
+			<aop:pointcut id="testPoint" expression="execution(* com.dev.basebean.aop.UserDefinedCglibAopProxy.aopTest(..) )"/>
 
 			<!--配置前置增强-->
 			<aop:before method="beforeAdvice" pointcut-ref="testPoint" />
