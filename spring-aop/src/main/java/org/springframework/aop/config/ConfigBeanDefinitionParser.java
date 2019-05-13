@@ -252,9 +252,10 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 					aspectElement, aspectId, beanDefinitions, beanReferences, parserContext);
 			parserContext.pushContainingComponent(aspectComponentDefinition);
 
-			// 获取pointcut 切入点 属性
+			// 获取pointcut标签 切入点属性
 			List<Element> pointcuts = DomUtils.getChildElementsByTagName(aspectElement, POINTCUT);
 			for (Element pointcutElement : pointcuts) {
+				// 解析pointcut标签
 				parsePointcut(pointcutElement, parserContext);
 			}
 
@@ -356,15 +357,18 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 
 			// register the pointcut
 			// 创建名为adviceDefinition 的RootBeanDefinition
+			// 根据织入方式将<aop:before>、<aop:after>转换成名为adviceDef的RootBeanDefinition
 			AbstractBeanDefinition adviceDef = createAdviceDefinition(
 					adviceElement, parserContext, aspectName, order, methodDefinition, aspectFactoryDef,
 					beanDefinitions, beanReferences);
 
 			// configure the advisor
+			// 将名为adviceDef的RootBeanDefinition转换成名为advisorDefinition的RootBeanDefinition
 			RootBeanDefinition advisorDefinition = new RootBeanDefinition(AspectJPointcutAdvisor.class);
 			advisorDefinition.setSource(parserContext.extractSource(adviceElement));
 			advisorDefinition.getConstructorArgumentValues().addGenericArgumentValue(adviceDef);
 			// 是否有顺序属性
+			// 如果有order属性，则进行设置用用来控制切入方法优先级
 			if (aspectElement.hasAttribute(ORDER_PROPERTY)) {
 				advisorDefinition.getPropertyValues().add(
 						ORDER_PROPERTY, aspectElement.getAttribute(ORDER_PROPERTY));
@@ -372,6 +376,13 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 
 			// register the final advisor
 			// 注册org.springframework.aop.aspectj.AspectJPointcutAdvisor#0 bean
+			// 将BeanDefinition注册到DefaultListableBeanFactory中
+			// 跟一下代码就知道，这里又回到熟悉的流程中了
+			// 使用的是Class全路径+"#"+全局计数器的方式，
+			// 其中的Class全路径为org.springframework.aop.aspectj.AspectJPointcutAdvisor，
+			// 依次类推，每一个BeanName应当为org.springframework.aop.aspectj.AspectJPointcutAdvisor#0、
+			// org.springframework.aop.aspectj.AspectJPointcutAdvisor#1、
+			// org.springframework.aop.aspectj.AspectJPointcutAdvisor#2
 			parserContext.getReaderContext().registerWithGeneratedName(advisorDefinition);
 
 			return advisorDefinition;
