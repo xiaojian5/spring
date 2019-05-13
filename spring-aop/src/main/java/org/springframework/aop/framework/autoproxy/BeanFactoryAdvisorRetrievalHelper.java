@@ -66,10 +66,13 @@ public class BeanFactoryAdvisorRetrievalHelper {
 	 */
 	public List<Advisor> findAdvisorBeans() {
 		// Determine list of advisor bean names, if not cached already.
+		// 从缓存中取得切面相关beanName
 		String[] advisorNames = this.cachedAdvisorBeanNames;
+		// 如果集合为空
 		if (advisorNames == null) {
 			// Do not initialize FactoryBeans here: We need to leave all regular beans
 			// uninitialized to let the auto-proxy creator apply to them!
+			// 从工厂中获取切面相关beanName
 			advisorNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 					this.beanFactory, Advisor.class, true, false);
 			this.cachedAdvisorBeanNames = advisorNames;
@@ -78,6 +81,7 @@ public class BeanFactoryAdvisorRetrievalHelper {
 			return new ArrayList<>();
 		}
 
+		// 遍历advisor beanName 然后对切面bean进行初始化
 		List<Advisor> advisors = new ArrayList<>();
 		for (String name : advisorNames) {
 			if (isEligibleBean(name)) {

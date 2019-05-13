@@ -329,6 +329,7 @@ public abstract class MethodMatchers {
 
 		@Override
 		public boolean matches(Method method, Class<?> targetClass, boolean hasIntroductions) {
+			// 第一个判断好像有很大机会就是true
 			return (MethodMatchers.matches(this.mm1, method, targetClass, hasIntroductions) &&
 					MethodMatchers.matches(this.mm2, method, targetClass, hasIntroductions));
 		}

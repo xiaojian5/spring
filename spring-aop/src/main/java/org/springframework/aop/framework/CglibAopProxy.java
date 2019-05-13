@@ -686,6 +686,8 @@ class CglibAopProxy implements AopProxy, Serializable {
 				}
 				else {
 					// We need to create a method invocation...
+					// 通过代理执行具体增强方法
+					// 之前一直找不到调用入口，原来是字体调大了，没看到后面的proceed方法
 					retVal = new CglibMethodInvocation(proxy, target, method, args, targetClass, chain, methodProxy).proceed();
 				}
 				retVal = processReturnType(proxy, target, method, retVal);
