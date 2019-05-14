@@ -8,7 +8,7 @@
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 	<!--演示使用CglibAopProxy代理进行aop增强-->
 
-	<bean id="userDefinedAopXmlBean" class="com.dev.basebean.aop.UserDefinedCglibAopProxy"
+	<bean id="userDefinedCglibAopProxy" class="com.dev.basebean.aop.UserDefinedCglibAopProxy"
 		  p:name="测试aop" p:age="120"/>
 
 	<bean id="xmlAop" class="com.dev.basebean.aop.XmlAop"/>

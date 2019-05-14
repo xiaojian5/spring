@@ -293,6 +293,9 @@ public abstract class AopUtils {
 	 * @return whether the pointcut can apply on any method
 	 */
 	public static boolean canApply(Advisor advisor, Class<?> targetClass, boolean hasIntroductions) {
+		/**
+		 * 从通知器中获取类型过滤器ClassFilter，并调用matches方法进行匹配
+		 */
 		// 如果advisor为 InstroductionAdvisor则 通过IntroductionAdvisor进行处理
 		if (advisor instanceof IntroductionAdvisor) {
 			return ((IntroductionAdvisor) advisor).getClassFilter().matches(targetClass);
@@ -300,6 +303,7 @@ public abstract class AopUtils {
 		// 如果advisor为切面 则进行转换后，再处理
 		else if (advisor instanceof PointcutAdvisor) {
 			PointcutAdvisor pca = (PointcutAdvisor) advisor;
+			// 对普通类型的通知器进行处理
 			// 核心处理函数
 			return canApply(pca.getPointcut(), targetClass, hasIntroductions);
 		}
@@ -324,7 +328,7 @@ public abstract class AopUtils {
 		// 遍历candidateAdvisors
 		List<Advisor> eligibleAdvisors = new ArrayList<>();
 		for (Advisor candidate : candidateAdvisors) {
-			// 主要方法 canApply
+			// 筛选IntroductionAdvisor通知器 核心方法 canApply
 			if (candidate instanceof IntroductionAdvisor && canApply(candidate, clazz)) {
 				eligibleAdvisors.add(candidate);
 			}
@@ -335,6 +339,7 @@ public abstract class AopUtils {
 				// already processed
 				continue;
 			}
+			// 筛选普通类型的通知器
 			if (canApply(candidate, clazz, hasIntroductions)) {
 				eligibleAdvisors.add(candidate);
 			}

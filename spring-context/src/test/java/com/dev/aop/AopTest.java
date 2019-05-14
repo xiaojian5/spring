@@ -27,6 +27,8 @@ public class AopTest {
 
 		UserDefinedCglibAopProxy cglibAopProxy = context.getBean(UserDefinedCglibAopProxy.class);
 
+		System.out.println("proxy type=" + cglibAopProxy.getClass());
+
 		cglibAopProxy.aopTest("aop test");
 
 		System.out.println();
@@ -69,6 +71,8 @@ public class AopTest {
 		ApplicationContext context = new ClassPathXmlApplicationContext("com/dev/config/aop/jdkdynamicaopproxy_aop.xml");
 
 		JdkDynamicAopProxyInterface jdkDynamicAopProxyInterface = (JdkDynamicAopProxyInterface) context.getBean("aopInterface");
+
+		System.out.println("proxy type=" + jdkDynamicAopProxyInterface.getClass());
 
 		jdkDynamicAopProxyInterface.update();
 

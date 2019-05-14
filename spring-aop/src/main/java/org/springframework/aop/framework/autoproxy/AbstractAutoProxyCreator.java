@@ -264,6 +264,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			if (this.advisedBeans.containsKey(cacheKey)) {
 				return null;
 			}
+			// 判断beanClass是否为aop相关类
 			if (isInfrastructureClass(beanClass) || shouldSkip(beanClass, beanName)) {
 				this.advisedBeans.put(cacheKey, Boolean.FALSE);
 				return null;
@@ -273,6 +274,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		// Create proxy here if we have a custom TargetSource.
 		// Suppresses unnecessary default instantiation of the target bean:
 		// The TargetSource will handle target instances in a custom fashion.
+		// 如果自定义了目标源，则会走该分支提前创建代理类
 		TargetSource targetSource = getCustomTargetSource(beanClass, beanName);
 		if (targetSource != null) {
 			if (StringUtils.hasLength(beanName)) {
@@ -359,13 +361,14 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (StringUtils.hasLength(beanName) && this.targetSourcedBeans.contains(beanName)) {
 			return bean;
 		}
-		// 如果advisedBeans缓存中不存在该key，也就说该bean不是切面bean则，则直接返回
+		// 如果advisedBeans缓存中不存在该key，也就说该bean不是切面bean，则直接返回
 		if (Boolean.FALSE.equals(this.advisedBeans.get(cacheKey))) {
 			return bean;
 		}
-		// 判断是否是Aop相关的bean或者该bean是否应该被跳过
+		// 判断是否是Aop相关的bean或者该bean是否应该被跳过，则直接返回bean
 		// 总体这里就是判断是否为Aop相关bean
 		if (isInfrastructureClass(bean.getClass()) || shouldSkip(bean.getClass(), beanName)) {
+			// 将cacheKey进行缓存，供上面的if使用
 			this.advisedBeans.put(cacheKey, Boolean.FALSE);
 			return bean;
 		}
@@ -384,10 +387,14 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			Object proxy = createProxy(
 					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
 			this.proxyTypes.put(cacheKey, proxy.getClass());
+			// 返回代理对象，此时IOC容器输入bean，得到proxy
+			// 此时beanName对应的bean是代理对象，而非原始bean
+			// 代理对象在此生成
 			return proxy;
 		}
 
 		this.advisedBeans.put(cacheKey, Boolean.FALSE);
+		// specificInterceptors=null，直接返回
 		return bean;
 	}
 
@@ -489,12 +496,17 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.copyFrom(this);
 
+		/**
+		 * 默认配置下，或显示配置了proxy-target-class=false时，这里的isProxyTargetClass就为false
+		 */
 		if (!proxyFactory.isProxyTargetClass()) {
-			// 判断代理类是否为接口
+			// 判断是否是对目标类进行代理，如果是则设置proxyTargetClass属性为true，后续代理使用CGLIB
 			if (shouldProxyTargetClass(beanClass, beanName)) {
 				proxyFactory.setProxyTargetClass(true);
 			} else {
-				// 对接口进行处理
+				/**
+				 * 检查beanClass是否实现了接口，若未实现，则将proxyTargetClass是设置为true，同样后续走CGLIB进行代理
+				 */
 				evaluateProxyInterfaces(beanClass, proxyFactory);
 			}
 		}
