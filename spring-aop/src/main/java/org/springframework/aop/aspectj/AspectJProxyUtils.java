@@ -56,7 +56,9 @@ public abstract class AspectJProxyUtils {
 					break;
 				}
 			}
-			// 向advisor列表头添加DefaultPointcutAdvisor
+			// 向advisor列表头添加ExposeInvocationInterceptor
+			// 加入ExposeInvocationInterceptor的作用是暴露MethodInvocation对象到ThreadLocal中，如果其他地方需要当前的
+			// MethodInvocation则可以通过调用currenInvocation方法获取。
 			if (foundAspectJAdvice && !advisors.contains(ExposeInvocationInterceptor.ADVISOR)) {
 				advisors.add(0, ExposeInvocationInterceptor.ADVISOR);
 				return true;

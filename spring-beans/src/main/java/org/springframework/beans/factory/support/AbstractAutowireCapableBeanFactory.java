@@ -514,7 +514,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
 			// 实例化的前置处理
 			// 给BeanPostProcessor一个机会用来返回一个代理类而不是真正的实例类
-			// AOP的功能就是基于这个地方
+			// 注意这里实际上是让InstantiationAwareBeanPostProcessor在这一步有机会返回代理
+			// InstantiationAwareBeanPostProcessor虽然也继承BeanPostProcessor
+			//  这里也可以实现aop功能，但是前提是bean必须有自定义的TargetSource
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
 			if (bean != null) {
 				return bean;
@@ -526,6 +528,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		try {
 			// 创建Bean对象
+			// BeanPostProcessor在此函数中执行
 			Object beanInstance = doCreateBean(beanName, mbdToUse, args);
 			if (logger.isDebugEnabled()) {
 				logger.debug("Finished creating instance of bean '" + beanName + "'");
@@ -1081,6 +1084,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 				Class<?> targetType = determineTargetType(beanName, mbd);
 				if (targetType != null) {
+					// 注意这里的前后置处理是实现了InstantiationAwareBeanPostProcessor接口的对象
 					// 前置处理
 					bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);
 					if (bean != null) {

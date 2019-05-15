@@ -256,6 +256,13 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		return wrapIfNecessary(bean, beanName, cacheKey);
 	}
 
+	/**
+	 * 注意这里实现的是InstantiationAwareBeanPostProcessor#postProcessBeforeInstantiation
+	 * {@link InstantiationAwareBeanPostProcessor#postProcessBeforeInstantiation}
+	 * 这里要特别注意这里与BeanPostProcessor#postProcessBeforeInitialization稍微有点不一样，仔细看最后
+	 * BeanPostProcessor接口末尾为Initialization(初始化)
+	 * InstantiationAwareBeanPostProcessor接口末尾为Instantiation(实例化)
+	 */
 	@Override
 	public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) {
 		Object cacheKey = getCacheKey(beanClass, beanName);
@@ -271,6 +278,9 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			}
 		}
 
+		/**
+		 * 注意这里虽然可以创建代理，但前提是对应的bean需要有自定义的TargetSource
+		 */
 		// Create proxy here if we have a custom TargetSource.
 		// Suppresses unnecessary default instantiation of the target bean:
 		// The TargetSource will handle target instances in a custom fashion.
@@ -521,7 +531,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (advisorsPreFiltered()) {
 			proxyFactory.setPreFiltered(true);
 		}
-        // 这里为创建代理类核心
+		// 这里为创建代理类核心
 		return proxyFactory.getProxy(getProxyClassLoader());
 	}
 
