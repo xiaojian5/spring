@@ -3,9 +3,10 @@ package com.dev.basebean.ioc;
 /**
  * @author: Shawn Chen
  * @date: 2018/6/6
- * @description:
+ * @description: ioc 测试bean
  */
-public class MultiConditionBean {
+public class IocTestBean {
+
 	private String name;
 
 	private String gender;
@@ -41,6 +42,6 @@ public class MultiConditionBean {
 	}
 
 	public void initMethod() {
-		System.out.println("Enter MultiConditionBean.initMethod()");
+		System.out.println("Enter IocTestBean.initMethod()");
 	}
 }

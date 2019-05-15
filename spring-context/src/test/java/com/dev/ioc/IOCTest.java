@@ -10,8 +10,9 @@ import com.dev.basebean.aware.UserDefinedAware;
 import com.dev.basebean.beanpostprocessor.BeanPostProcessorBase;
 import com.dev.basebean.circledepend.setter.SetterCircleDependA;
 import com.dev.basebean.initializingbean.UserDefinedInitializingBean;
-import com.dev.basebean.ioc.MultiConditionBean;
+import com.dev.basebean.ioc.IocTestBean;
 import com.dev.basebean.lifecycle.BeanLifeCycle;
+import com.dev.basebean.lookupmethod.impl.ShowCar;
 
 
 /**
@@ -29,15 +30,19 @@ public class IOCTest {
 
 		System.out.println("xml形式注入bean调试过程开始");
 		// classpath*:com/dev/config/*
-		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:com/dev/config/ioc/multicondition.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:com/dev/config/ioc/ioc.xml");
 
-		MultiConditionBean multiConditionBean = (MultiConditionBean) context.getBean("multiConditionBean");
+		IocTestBean iocTestBean = (IocTestBean) context.getBean("iocTestBean");
 
-		System.out.println("class name:" + multiConditionBean.getClass().getName());
+		Object value = ((ClassPathXmlApplicationContext) context).getBeanFactory().getBeanDefinition("iocTestBean").getAttribute("metaKey");
 
-		System.out.println("name属性:" + multiConditionBean.getName());
-		System.out.println("gender属性:" + multiConditionBean.getGender());
-		System.out.println("placeHolderValue属性:" + multiConditionBean.getPlaceHolderValue());
+		System.out.println("<meta> value=" + value);
+
+		System.out.println("class name:" + iocTestBean.getClass().getName());
+
+		System.out.println("name属性:" + iocTestBean.getName());
+		System.out.println("gender属性:" + iocTestBean.getGender());
+		System.out.println("placeHolderValue属性:" + iocTestBean.getPlaceHolderValue());
 
 		System.out.println("xml形式注入bean调试过程结束");
 	}
@@ -120,7 +125,19 @@ public class IOCTest {
 	@Test
 	public void propertyoverrideconfigurerTest() {
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:com/dev/config/propertyoverrideconfigurer/propertyoverride.xml");
-		MultiConditionBean conditionBean = context.getBean(MultiConditionBean.class);
+		IocTestBean conditionBean = context.getBean(IocTestBean.class);
 		System.out.println(conditionBean.getName());
+	}
+
+	/**
+	 * lookup-method标签测试
+	 */
+	@Test
+	public void lookupmethodTest() {
+		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:com/dev/config/ioc/lookupmethod.xml");
+
+		ShowCar showCar = context.getBean(ShowCar.class);
+
+		showCar.showCarInfo();
 	}
 }

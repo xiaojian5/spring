@@ -450,7 +450,8 @@ public class BeanDefinitionParserDelegate {
 				try {
 					// 如果containingBean不为null
 					if (containingBean != null) {
-						// 生成唯一的beanName
+						// 生成唯一的beanName 这里根据Spring中提供的命名规则为当前bean生成对应的beanName
+						// 下同
 						beanName = BeanDefinitionReaderUtils.generateBeanName(
 								beanDefinition, this.readerContext.getRegistry(), true);
 					} else {
@@ -476,7 +477,7 @@ public class BeanDefinitionParserDelegate {
 					return null;
 				}
 			}
-			// 创建BeanDefinitionHolder对象
+			// 创建BeanDefinitionHolder对象 封装解析的相关信息
 			String[] aliasesArray = StringUtils.toStringArray(aliases);
 			return new BeanDefinitionHolder(beanDefinition, beanName, aliasesArray);
 		}
@@ -535,9 +536,9 @@ public class BeanDefinitionParserDelegate {
 		}
 
 		try {
-			// 创建承载属性的AbstractBeanDefinition对象
+			// 创建承载属性的AbstractBeanDefinition对象 这里的对象为GenericBeanDefinition
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
-			// 解析bean的各种默认属性
+			// 硬编码解析bean的各种默认属性 bean标签中的一些固定属性
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
 			// 提取description
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
@@ -590,7 +591,7 @@ public class BeanDefinitionParserDelegate {
 	 */
 	public AbstractBeanDefinition parseBeanDefinitionAttributes(Element ele, String beanName,
 																@Nullable BeanDefinition containingBean, AbstractBeanDefinition bd) {
-		// 如果有singleton属性则抛出异常，因为singleton属性已进行升级
+		// 如果有singleton属性则抛出异常，因为singleton属性已进行升级 使用scope属性即可
 		if (ele.hasAttribute(SINGLETON_ATTRIBUTE)) {
 			error("Old 1.x 'singleton' attribute in use - upgrade to 'scope' declaration", ele);
 			// 解析scope属性
@@ -611,6 +612,7 @@ public class BeanDefinitionParserDelegate {
 		if (isDefaultValue(lazyInit)) {
 			lazyInit = this.defaults.getLazyInit();
 		}
+		// 这里设置lazy-init属性，如果不指定lazy-init则，默认就为false，因为这里进行了一个比较
 		bd.setLazyInit(TRUE_VALUE.equals(lazyInit));
 
 		// 解析autowire属性
@@ -799,7 +801,7 @@ public class BeanDefinitionParserDelegate {
 				// 创建lookupOverride对象
 				LookupOverride override = new LookupOverride(methodName, beanRef);
 				override.setSource(extractSource(ele));
-				// 添加到MethodOverrides中国
+				// 添加到MethodOverrides中
 				overrides.addOverride(override);
 			}
 		}

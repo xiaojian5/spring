@@ -13,6 +13,6 @@
 			</list>
 		</property>
 	</bean>
-	<bean id="multiConditionBean" class="com.dev.basebean.ioc.MultiConditionBean"
+	<bean id="multiConditionBean" class="com.dev.basebean.ioc.IocTestBean"
 		  p:name="测试用例" p:gender="性别"/>
 </beans>
