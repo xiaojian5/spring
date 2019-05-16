@@ -503,7 +503,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Prepare method overrides.
 		try {
-			// 验证和准备覆盖方法
+			// 验证和准备覆盖方法 是否有重载方法 这里是针对lookup-method标签和replace-method标签的方法覆盖
 			mbdToUse.prepareMethodOverrides();
 		} catch (BeanDefinitionValidationException ex) {
 			throw new BeanDefinitionStoreException(mbdToUse.getResourceDescription(),
@@ -1693,11 +1693,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (pvs.isEmpty()) {
 			return;
 		}
-        // 设置BeanWrapperImpl的SecurityContext属性
+		// 设置BeanWrapperImpl的SecurityContext属性
 		if (System.getSecurityManager() != null && bw instanceof BeanWrapperImpl) {
 			((BeanWrapperImpl) bw).setSecurityContext(getAccessControlContext());
 		}
-        // MutablePropertyValues类型属性
+		// MutablePropertyValues类型属性
 		MutablePropertyValues mpvs = null;
 		// 原始类型
 		List<PropertyValue> original;
@@ -1739,7 +1739,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 属性值不需要转换
 			if (pv.isConverted()) {
 				deepCopy.add(pv);
-			// 属性值需要转换
+				// 属性值需要转换
 			} else {
 				String propertyName = pv.getName();
 				// 原始的属性值，即转换之前的属性值
@@ -1762,7 +1762,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 						pv.setConvertedValue(convertedValue);
 					}
 					deepCopy.add(pv);
-				// 属性是可转换的，且属性原始值是字符串类型，且属性的原始类型值不是动态生成的字符串，且属性的原始值不是集合或者数组类型
+					// 属性是可转换的，且属性原始值是字符串类型，且属性的原始类型值不是动态生成的字符串，且属性的原始值不是集合或者数组类型
 				} else if (convertible && originalValue instanceof TypedStringValue &&
 						!((TypedStringValue) originalValue).isDynamic() &&
 						!(convertedValue instanceof Collection || ObjectUtils.isArray(convertedValue))) {
