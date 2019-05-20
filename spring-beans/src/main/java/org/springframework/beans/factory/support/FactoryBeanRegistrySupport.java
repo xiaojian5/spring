@@ -189,7 +189,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 					throw pae.getException();
 				}
 			} else {
-				// 如果权限为空，则从Factory中获取Bean对象
+				// 如果权限为空，则从Factory中获取Bean对象 直接调getObject方法
 				object = factory.getObject();
 			}
 		} catch (FactoryBeanNotInitializedException ex) {

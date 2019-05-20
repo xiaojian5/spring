@@ -63,7 +63,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 		registerTransactionalEventListenerFactory(parserContext);
 		String mode = element.getAttribute("mode");
 		if ("aspectj".equals(mode)) {
-			// mode="aspectj"
+			// mode="aspectj" // 对aspectj方式进行事务切入进行支持
 			registerTransactionAspect(element, parserContext);
 			if (ClassUtils.isPresent("javax.transaction.Transactional", getClass().getClassLoader())) {
 				registerJtaTransactionAspect(element, parserContext);

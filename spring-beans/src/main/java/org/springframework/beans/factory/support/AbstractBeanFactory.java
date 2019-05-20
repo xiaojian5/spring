@@ -1740,6 +1740,14 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected Object getObjectForBeanInstance(
 			Object beanInstance, String name, String beanName, @Nullable RootBeanDefinition mbd) {
 
+		/**
+		 * 该函数主要工作：
+		 * #1.对FactoryBean正确性验证
+		 * #2.对非FactoryBean不做任何处理
+		 * #3.对bean进行转换
+		 * #4.将从Factory中解析bean的工作委托给getObjectFromFactoryBean
+		 */
+
 		// 如果name是工厂类的引用名称(name以"&"开头)
 		// Don't let calling code try to dereference the factory if the bean isn't a factory.
 		if (BeanFactoryUtils.isFactoryDereference(name)) {

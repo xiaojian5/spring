@@ -41,6 +41,9 @@ public class TxNamespaceHandler extends NamespaceHandlerSupport {
 
 	static final String TRANSACTION_MANAGER_ATTRIBUTE = "transaction-manager";
 
+	/**
+	 * <tx:annotation-driven/>标签在不指定transaction-manager属性的时候，则会默认寻找id为transactionManager的事务管理
+	 */
 	static final String DEFAULT_TRANSACTION_MANAGER_BEAN_NAME = "transactionManager";
 
 
@@ -52,7 +55,9 @@ public class TxNamespaceHandler extends NamespaceHandlerSupport {
 
 	@Override
 	public void init() {
+		// tx:advice标签解析器
 		registerBeanDefinitionParser("advice", new TxAdviceBeanDefinitionParser());
+		// <tx:annotation-driven/>标签解析器
 		registerBeanDefinitionParser("annotation-driven", new AnnotationDrivenBeanDefinitionParser());
 		registerBeanDefinitionParser("jta-transaction-manager", new JtaTransactionManagerBeanDefinitionParser());
 	}
