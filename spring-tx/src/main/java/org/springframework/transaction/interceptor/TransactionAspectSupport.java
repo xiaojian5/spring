@@ -286,8 +286,14 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 			final InvocationCallback invocation) throws Throwable {
 
 		// If the transaction attribute is null, the method is non-transactional.
+		/**
+		 * {@link TxAdviceBeanDefinitionParser#doParse}
+		 */
+		// 这里取取，之前在TxAdviceBeanDefinitionParser解析的值
 		TransactionAttributeSource tas = getTransactionAttributeSource();
+		// 根据方法与目标类，获取匹配的事务属性
 		final TransactionAttribute txAttr = (tas != null ? tas.getTransactionAttribute(method, targetClass) : null);
+		// 决定TransactionManager
 		final PlatformTransactionManager tm = determineTransactionManager(txAttr);
 		final String joinpointIdentification = methodIdentification(method, targetClass, txAttr);
 

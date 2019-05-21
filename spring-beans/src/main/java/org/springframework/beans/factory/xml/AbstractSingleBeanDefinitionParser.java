@@ -70,6 +70,7 @@ public abstract class AbstractSingleBeanDefinitionParser extends AbstractBeanDef
 		// 获取自定义标签中的class，这时候会去调自定义解析中的getBeanClass()
 		Class<?> beanClass = getBeanClass(element);
 		if (beanClass != null) {
+			// getRawBeanDefinition方法取得的值为beanDefinition，然后设置其beanClass属性
 			builder.getRawBeanDefinition().setBeanClass(beanClass);
 		}
 		else {

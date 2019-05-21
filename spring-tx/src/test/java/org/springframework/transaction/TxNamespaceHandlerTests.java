@@ -30,6 +30,8 @@ import org.springframework.transaction.interceptor.TransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionAttributeSource;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
+import com.dev.transaction.TransactionTest;
+
 import static org.junit.Assert.*;
 
 /**
@@ -100,9 +102,9 @@ public class TxNamespaceHandlerTests {
 	public void invokeTransactionalTest() {
 		ITestBean bean = getTransactionTestBean();
 		// 测试@Transactional注解的效果
-		bean.returnsThis();
+		//		bean.returnsThis();
 		// 测试原有xml配置的事务效果
-		//bean.getAge();
+		bean.getAge();
 	}
 
 	private ITestBean getTestBean() {
