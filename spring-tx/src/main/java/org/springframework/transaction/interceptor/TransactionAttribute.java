@@ -30,6 +30,7 @@ import org.springframework.transaction.TransactionDefinition;
  * @see DefaultTransactionAttribute
  * @see RuleBasedTransactionAttribute
  */
+// 事务属性 包含隔离级别，传播行为，是否只读等信息
 public interface TransactionAttribute extends TransactionDefinition {
 
 	/**

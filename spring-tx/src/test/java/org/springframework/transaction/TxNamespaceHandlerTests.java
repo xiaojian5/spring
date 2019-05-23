@@ -58,6 +58,7 @@ public class TxNamespaceHandlerTests {
 	@Test
 	public void isProxy() {
 		ITestBean bean = getTestBean();
+		System.out.println(bean.getClass());
 		assertTrue("testBean is not a proxy", AopUtils.isAopProxy(bean));
 	}
 

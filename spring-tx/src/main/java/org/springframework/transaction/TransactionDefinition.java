@@ -41,13 +41,16 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.transaction.support.DefaultTransactionDefinition
  * @see org.springframework.transaction.interceptor.TransactionAttribute
  */
+// 事务定义接口
 public interface TransactionDefinition {
 
+	// 7中事务传播类型
 	/**
 	 * Support a current transaction; create a new one if none exists.
 	 * Analogous to the EJB transaction attribute of the same name.
 	 * <p>This is typically the default setting of a transaction definition,
 	 * and typically defines a transaction synchronization scope.
+	 * 支持当前事务，如果当前没有事务，就新建一个事务，如果已存在一个事务，则加入到该事务中
 	 */
 	int PROPAGATION_REQUIRED = 0;
 
@@ -70,6 +73,7 @@ public interface TransactionDefinition {
 	 * @see org.springframework.transaction.support.AbstractPlatformTransactionManager#setTransactionSynchronization
 	 * @see org.springframework.transaction.support.AbstractPlatformTransactionManager#SYNCHRONIZATION_ON_ACTUAL_TRANSACTION
 	 */
+	// 支持当前事务，如果当前没有事务，就以非事务方式执行
 	int PROPAGATION_SUPPORTS = 1;
 
 	/**
@@ -78,6 +82,7 @@ public interface TransactionDefinition {
 	 * <p>Note that transaction synchronization within a {@code PROPAGATION_MANDATORY}
 	 * scope will always be driven by the surrounding transaction.
 	 */
+	// 支持当前事务，如果当前没有事务，则抛出异常
 	int PROPAGATION_MANDATORY = 2;
 
 	/**
@@ -93,6 +98,7 @@ public interface TransactionDefinition {
 	 * and resumed appropriately.
 	 * @see org.springframework.transaction.jta.JtaTransactionManager#setTransactionManager
 	 */
+	// 新建事务，如果当前存在事务，则把当前事务挂起
 	int PROPAGATION_REQUIRES_NEW = 3;
 
 	/**
@@ -108,6 +114,7 @@ public interface TransactionDefinition {
 	 * will be suspended and resumed appropriately.
 	 * @see org.springframework.transaction.jta.JtaTransactionManager#setTransactionManager
 	 */
+	// 以非事务方式执行操作，如果当前存在事务，就把当前事务挂起
 	int PROPAGATION_NOT_SUPPORTED = 4;
 
 	/**
@@ -116,6 +123,7 @@ public interface TransactionDefinition {
 	 * <p>Note that transaction synchronization is <i>not</i> available within a
 	 * {@code PROPAGATION_NEVER} scope.
 	 */
+	// 不支持事务，如果存在事务，则抛出异常
 	int PROPAGATION_NEVER = 5;
 
 	/**
@@ -129,6 +137,7 @@ public interface TransactionDefinition {
 	 * nested transactions as well.
 	 * @see org.springframework.jdbc.datasource.DataSourceTransactionManager
 	 */
+	// 如果当前存在事务，则在嵌套事务内执行，如果当前没有事务，则与PROPAGATION_REQUIRED执行类似的操作
 	int PROPAGATION_NESTED = 6;
 
 

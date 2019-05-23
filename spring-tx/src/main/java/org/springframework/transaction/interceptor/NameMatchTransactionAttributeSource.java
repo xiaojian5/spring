@@ -101,18 +101,23 @@ public class NameMatchTransactionAttributeSource implements TransactionAttribute
 	@Override
 	@Nullable
 	public TransactionAttribute getTransactionAttribute(Method method, @Nullable Class<?> targetClass) {
+		// 判断方法是否为用户级别
 		if (!ClassUtils.isUserLevelMethod(method)) {
 			return null;
 		}
 
 		// Look for direct name match.
+		// 首先通过方法名直接进行事务匹配 如果attr为空，再进行最合适的匹配
 		String methodName = method.getName();
 		TransactionAttribute attr = this.nameMap.get(methodName);
 
 		if (attr == null) {
 			// Look for most specific name match.
 			String bestNameMatch = null;
+			// 遍历事务属性
 			for (String mappedName : this.nameMap.keySet()) {
+				// 判断方法名与属性项是否匹配 如果找到了也就是bestNameMatch不为null，则bestNameMatch的长度需要小于等于mappedName的长度
+				// 这也可以理解如果bestNameMatch长度大于mappedName则肯定不能匹配
 				if (isMatch(methodName, mappedName) &&
 						(bestNameMatch == null || bestNameMatch.length() <= mappedName.length())) {
 					attr = this.nameMap.get(mappedName);
