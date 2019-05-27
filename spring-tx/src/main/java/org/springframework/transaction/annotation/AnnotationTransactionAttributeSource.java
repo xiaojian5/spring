@@ -66,6 +66,8 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 		ejb3Present = ClassUtils.isPresent("javax.ejb.TransactionAttribute", classLoader);
 	}
 
+	// 该属性会在AnnotationTransactionAttributeSource类初始化时赋值为true
+	// 表明spring只会对public的方法进行事务管理
 	private final boolean publicMethodsOnly;
 
 	private final Set<TransactionAnnotationParser> annotationParsers;
@@ -171,7 +173,9 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 	 */
 	@Nullable
 	protected TransactionAttribute determineTransactionAttribute(AnnotatedElement element) {
+		// 遍历事务解析器
 		for (TransactionAnnotationParser parser : this.annotationParsers) {
+			// 解析事务注解
 			TransactionAttribute attr = parser.parseTransactionAnnotation(element);
 			if (attr != null) {
 				return attr;

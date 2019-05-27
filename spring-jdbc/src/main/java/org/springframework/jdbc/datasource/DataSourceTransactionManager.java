@@ -235,9 +235,12 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 	@Override
 	protected Object doGetTransaction() {
 		DataSourceTransactionObject txObject = new DataSourceTransactionObject();
+		// 设置允许嵌套事务的保存点
 		txObject.setSavepointAllowed(isNestedTransactionAllowed());
+		// 如果当前线程已经记录了数据库连接，则直接使用
 		ConnectionHolder conHolder =
 				(ConnectionHolder) TransactionSynchronizationManager.getResource(obtainDataSource());
+		// false表示连接不是新创建的
 		txObject.setConnectionHolder(conHolder, false);
 		return txObject;
 	}

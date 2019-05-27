@@ -47,9 +47,11 @@ public class SpringTransactionAnnotationParser implements TransactionAnnotationP
 	@Override
 	@Nullable
 	public TransactionAttribute parseTransactionAnnotation(AnnotatedElement element) {
+	    // 这里找到事务注解
 		AnnotationAttributes attributes = AnnotatedElementUtils.findMergedAnnotationAttributes(
 				element, Transactional.class, false, false);
 		if (attributes != null) {
+			// 解析注解中相关事务属性
 			return parseTransactionAnnotation(attributes);
 		}
 		else {
@@ -62,6 +64,7 @@ public class SpringTransactionAnnotationParser implements TransactionAnnotationP
 	}
 
 	protected TransactionAttribute parseTransactionAnnotation(AnnotationAttributes attributes) {
+		// 注解中的属性都是封装在RuleBasedTransactionAttribute对象中的，xml配置形式也一样
 		RuleBasedTransactionAttribute rbta = new RuleBasedTransactionAttribute();
 
 		Propagation propagation = attributes.getEnum("propagation");
@@ -70,6 +73,7 @@ public class SpringTransactionAnnotationParser implements TransactionAnnotationP
 		rbta.setIsolationLevel(isolation.value());
 		rbta.setTimeout(attributes.getNumber("timeout").intValue());
 		rbta.setReadOnly(attributes.getBoolean("readOnly"));
+		// 这里可以看到，在注解上可以指定事务管理器 value属性上
 		rbta.setQualifier(attributes.getString("value"));
 
 		List<RollbackRuleAttribute> rollbackRules = new ArrayList<>();

@@ -37,6 +37,8 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
  * @author Juergen Hoeller
  * @since 2.0
  */
+// 事务空间解析器 在初始化的时候会将<tx:advice> TxAdviceBeanDefinitionParser 和 事务注解 AnnotationDrivenBeanDefinitionParser
+// 都进行注册
 public class TxNamespaceHandler extends NamespaceHandlerSupport {
 
 	static final String TRANSACTION_MANAGER_ATTRIBUTE = "transaction-manager";
@@ -46,7 +48,11 @@ public class TxNamespaceHandler extends NamespaceHandlerSupport {
 	 */
 	static final String DEFAULT_TRANSACTION_MANAGER_BEAN_NAME = "transactionManager";
 
-
+	/**
+	 * 这里就是返回事务管理器的名称 默认是transactionManager
+	 * @param element
+	 * @return
+	 */
 	static String getTransactionManagerName(Element element) {
 		return (element.hasAttribute(TRANSACTION_MANAGER_ATTRIBUTE) ?
 				element.getAttribute(TRANSACTION_MANAGER_ATTRIBUTE) : DEFAULT_TRANSACTION_MANAGER_BEAN_NAME);

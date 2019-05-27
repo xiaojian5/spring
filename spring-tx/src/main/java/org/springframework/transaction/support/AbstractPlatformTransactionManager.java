@@ -382,7 +382,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 						definition, transaction, true, newSynchronization, debugEnabled, suspendedResources);
 				// 调用供子类实现的模板方法doBegin来开启事务
 				doBegin(transaction, definition);
-				// 保存事务的一些上下文信息
+				// 同步事务状态
 				prepareSynchronization(status, definition);
 				return status;
 			}
