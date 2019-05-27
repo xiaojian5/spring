@@ -71,7 +71,8 @@ import org.springframework.util.StringUtils;
 public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements SingletonBeanRegistry {
 
 	/**
-	 * Cache of singleton objects: bean name to bean instance.
+	 * Cache of singleton objects: bean name to bean instance.<br/>
+	 * 一级缓存 <br/>
 	 * 存放的是单例 bean 的映射。
 	 * <p>
 	 * 对应关系为 bean name --> bean instance
@@ -80,6 +81,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 
 	/**
 	 * Cache of singleton factories: bean name to ObjectFactory.<br/>
+	 * 三级缓存 <br/>
 	 * 存放的是 ObjectFactory，可以理解为创建单例 bean 的 factory 。
 	 * <p>
 	 * 对应关系是 bean name --> ObjectFactory
@@ -88,6 +90,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 
 	/**
 	 * Cache of early singleton objects: bean name to bean instance.<br/>
+	 * 二级缓存 <br/>
 	 * 存放的是早期的 bean，对应关系也是 bean name --> bean instance。
 	 * <p>
 	 * 它与 {@link #singletonFactories} 区别在于 earlySingletonObjects 中存放的 bean 不一定是完整。
@@ -106,7 +109,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	private final Set<String> registeredSingletons = new LinkedHashSet<>(256);
 
 	/**
-	 * 正在创建中的单例 Bean 的名字的集合
+	 * 正在创建中的单例 Bean 的名字的集合 解决循环依赖需要此集合
 	 * Names of beans that are currently in creation.
 	 */
 	private final Set<String> singletonsCurrentlyInCreation =
@@ -161,7 +164,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 			Object oldObject = this.singletonObjects.get(beanName);
 			if (oldObject != null) {
 				throw new IllegalStateException("Could not register object [" + singletonObject +
-														"] under bean name '" + beanName + "': there is already object [" + oldObject + "] bound");
+						"] under bean name '" + beanName + "': there is already object [" + oldObject + "] bound");
 			}
 			addSingleton(beanName, singletonObject);
 		}
@@ -236,6 +239,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 						// 获取bean
 						singletonObject = singletonFactory.getObject();
 						// 将bean添加到earlySingletonObjects集合中
+						// 将三级缓存转换为二级缓存
 						this.earlySingletonObjects.put(beanName, singletonObject);
 						// 从singletonFactories中移除对应的
 						this.singletonFactories.remove(beanName);
@@ -266,8 +270,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 			if (singletonObject == null) {
 				if (this.singletonsCurrentlyInDestruction) {
 					throw new BeanCreationNotAllowedException(beanName,
-															  "Singleton bean creation not allowed while singletons of this factory are in destruction " +
-																	  "(Do not request a bean from a BeanFactory in a destroy method implementation!)");
+							"Singleton bean creation not allowed while singletons of this factory are in destruction " +
+									"(Do not request a bean from a BeanFactory in a destroy method implementation!)");
 				}
 				if (logger.isDebugEnabled()) {
 					logger.debug("Creating shared instance of singleton bean '" + beanName + "'");

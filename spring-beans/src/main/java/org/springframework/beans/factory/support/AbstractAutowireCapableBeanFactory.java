@@ -387,8 +387,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			final BeanFactory parent = this;
 			if (System.getSecurityManager() != null) {
 				bean = AccessController.doPrivileged((PrivilegedAction<Object>) () ->
-															 getInstantiationStrategy().instantiate(bd, null, parent),
-													 getAccessControlContext());
+								getInstantiationStrategy().instantiate(bd, null, parent),
+						getAccessControlContext());
 			} else {
 				bean = getInstantiationStrategy().instantiate(bd, null, parent);
 			}
@@ -495,6 +495,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// which cannot be stored in the shared merged bean definition.
 		// 确保此时的bean已经被解析了
 		// 如果获取的class属性不为null，则克隆该BeanDefinition，主要是因为动态解析的class无法保存到共享的BeanDefinition
+		// 该函数根据设置的class属性或根据className来解析Class
 		Class<?> resolvedClass = resolveBeanClass(mbd, beanName);
 		if (resolvedClass != null && !mbd.hasBeanClass() && mbd.getBeanClassName() != null) {
 			mbdToUse = new RootBeanDefinition(mbd);
@@ -507,7 +508,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			mbdToUse.prepareMethodOverrides();
 		} catch (BeanDefinitionValidationException ex) {
 			throw new BeanDefinitionStoreException(mbdToUse.getResourceDescription(),
-												   beanName, "Validation of method overrides failed", ex);
+					beanName, "Validation of method overrides failed", ex);
 		}
 
 		try {
@@ -523,7 +524,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}
 		} catch (Throwable ex) {
 			throw new BeanCreationException(mbdToUse.getResourceDescription(), beanName,
-											"BeanPostProcessor before instantiation of bean failed", ex);
+					"BeanPostProcessor before instantiation of bean failed", ex);
 		}
 
 		try {
@@ -590,7 +591,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				} catch (Throwable ex) {
 					throw new BeanCreationException(mbd.getResourceDescription(), beanName,
-													"Post-processing of merged bean definition failed", ex);
+							"Post-processing of merged bean definition failed", ex);
 				}
 				mbd.postProcessed = true;
 			}
@@ -598,13 +599,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Eagerly cache singletons to be able to resolve circular references
 		// even when triggered by lifecycle interfaces like BeanFactoryAware.
-		// 解决单例模式的循环依赖         // 单例模式   			运行循环依赖
-		boolean earlySingletonExposure = (mbd.isSingleton() && this.allowCircularReferences &&
-				isSingletonCurrentlyInCreation(beanName));// 当前单例bean是否正在被创建
+		// 解决单例模式的循环依赖
+		boolean earlySingletonExposure = (mbd.isSingleton() // 单例模式
+				                         && this.allowCircularReferences // 允许循环依赖
+				                         && isSingletonCurrentlyInCreation(beanName));// 当前单例bean是否正在被创建
 		if (earlySingletonExposure) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Eagerly caching bean '" + beanName +
-									 "' to allow for resolving potential circular references");
+						"' to allow for resolving potential circular references");
 			}
 			// 提前将创建的bean实例加入到singletonFactories中
 			// 为了后期避免循环依赖
@@ -647,12 +649,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					}
 					if (!actualDependentBeans.isEmpty()) {
 						throw new BeanCurrentlyInCreationException(beanName,
-																   "Bean with name '" + beanName + "' has been injected into other beans [" +
-																		   StringUtils.collectionToCommaDelimitedString(actualDependentBeans) +
-																		   "] in its raw version as part of a circular reference, but has eventually been " +
-																		   "wrapped. This means that said other beans do not use the final version of the " +
-																		   "bean. This is often the result of over-eager type matching - consider using " +
-																		   "'getBeanNamesOfType' with the 'allowEagerInit' flag turned off, for example.");
+								"Bean with name '" + beanName + "' has been injected into other beans [" +
+										StringUtils.collectionToCommaDelimitedString(actualDependentBeans) +
+										"] in its raw version as part of a circular reference, but has eventually been " +
+										"wrapped. This means that said other beans do not use the final version of the " +
+										"bean. This is often the result of over-eager type matching - consider using " +
+										"'getBeanNamesOfType' with the 'allowEagerInit' flag turned off, for example.");
 					}
 				}
 			}
@@ -744,7 +746,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (factoryBeanName != null) {
 			if (factoryBeanName.equals(beanName)) {
 				throw new BeanDefinitionStoreException(mbd.getResourceDescription(), beanName,
-													   "factory-bean reference points back to the same bean definition");
+						"factory-bean reference points back to the same bean definition");
 			}
 			// Check declared factory method return type on factory class.
 			factoryClass = getType(factoryBeanName);
@@ -1144,7 +1146,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		if (beanClass != null && !Modifier.isPublic(beanClass.getModifiers()) && !mbd.isNonPublicAccessAllowed()) {
 			throw new BeanCreationException(mbd.getResourceDescription(), beanName,
-											"Bean class isn't public, and non-public access not allowed: " + beanClass.getName());
+					"Bean class isn't public, and non-public access not allowed: " + beanClass.getName());
 		}
 
 		// 如果存在supplier回调，则使用给定的回调方法初始化策略
@@ -1297,7 +1299,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (System.getSecurityManager() != null) {
 				// 获得InstantiationStrategy对象，并使用它创建bean对象
 				beanInstance = AccessController.doPrivileged((PrivilegedAction<Object>) () -> getInstantiationStrategy().instantiate(mbd, beanName, parent),
-															 getAccessControlContext());
+						getAccessControlContext());
 			} else {
 				// 获得InstantiationStrategy对象，并使用它创建bean对象
 				beanInstance = getInstantiationStrategy().instantiate(mbd, beanName, parent);
@@ -1491,12 +1493,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				registerDependentBean(propertyName, beanName);
 				if (logger.isDebugEnabled()) {
 					logger.debug("Added autowiring by name from bean name '" + beanName +
-										 "' via property '" + propertyName + "' to bean named '" + propertyName + "'");
+							"' via property '" + propertyName + "' to bean named '" + propertyName + "'");
 				}
 			} else {
 				if (logger.isTraceEnabled()) {
 					logger.trace("Not autowiring property '" + propertyName + "' of bean '" + beanName +
-										 "' by name: no matching bean found");
+							"' by name: no matching bean found");
 				}
 			}
 		}
@@ -1553,7 +1555,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 						registerDependentBean(autowiredBeanName, beanName);
 						if (logger.isDebugEnabled()) {
 							logger.debug("Autowiring by type from bean name '" + beanName + "' via property '" +
-												 propertyName + "' to bean named '" + autowiredBeanName + "'");
+									propertyName + "' to bean named '" + autowiredBeanName + "'");
 						}
 					}
 					// 清空autowiredBeanNames数组
@@ -1673,7 +1675,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 						(!isSimple && dependencyCheck == RootBeanDefinition.DEPENDENCY_CHECK_OBJECTS);
 				if (unsatisfied) {
 					throw new UnsatisfiedDependencyException(mbd.getResourceDescription(), beanName, pd.getName(),
-															 "Set this property value or disable dependency checking for this bean.");
+							"Set this property value or disable dependency checking for this bean.");
 				}
 			}
 		}
@@ -1954,11 +1956,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (initMethod == null) {
 			if (mbd.isEnforceInitMethod()) {
 				throw new BeanDefinitionValidationException("Couldn't find an init method named '" +
-																	initMethodName + "' on bean with name '" + beanName + "'");
+						initMethodName + "' on bean with name '" + beanName + "'");
 			} else {
 				if (logger.isDebugEnabled()) {
 					logger.debug("No default init method named '" + initMethodName +
-										 "' found on bean with name '" + beanName + "'");
+							"' found on bean with name '" + beanName + "'");
 				}
 				// Ignore non-existent default lifecycle methods.
 				return;
