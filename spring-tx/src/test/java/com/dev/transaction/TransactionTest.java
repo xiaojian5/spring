@@ -26,6 +26,9 @@ public class TransactionTest {
 		transactionTestBean.getAge();
 	}
 
+	/**
+	 * 基于注解的事务测试
+	 */
 	@Test
 	public void transactionAnnotationTest() {
 
