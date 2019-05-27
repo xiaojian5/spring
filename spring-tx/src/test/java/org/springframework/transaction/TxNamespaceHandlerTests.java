@@ -30,8 +30,6 @@ import org.springframework.transaction.interceptor.TransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionAttributeSource;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
-import com.dev.transaction.TransactionTest;
-
 import static org.junit.Assert.*;
 
 /**
