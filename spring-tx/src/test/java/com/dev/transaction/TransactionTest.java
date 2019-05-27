@@ -14,15 +14,28 @@ import com.dev.basebean.transaction.TransactionTestBean;
 public class TransactionTest {
 
 	/**
-	 * 事务测试
+	 * 基于xml事务测试
 	 */
 	@Test
-	public void transactionTest() {
+	public void transactionXmlTest() {
 
-		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:org/springframework/transaction/TransactionTest.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:org/springframework/transaction/transaction_xml.xml");
 
 		TransactionTestBean transactionTestBean = context.getBean(TransactionTestBean.class);
 
 		transactionTestBean.getAge();
+	}
+
+	@Test
+	public void transactionAnnotationTest() {
+
+		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:org/springframework/transaction/transaction_annotation.xml");
+
+		TransactionTestBean transactionTestBean = context.getBean(TransactionTestBean.class);
+
+		transactionTestBean.setAge(12);
+
+		System.out.println("age=" + transactionTestBean.getAge());
+
 	}
 }
