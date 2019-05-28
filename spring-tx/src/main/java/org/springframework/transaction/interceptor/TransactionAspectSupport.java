@@ -308,13 +308,13 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 			try {
 				// This is an around advice: Invoke the next interceptor in the chain.
 				// This will normally result in a target object being invoked.
-				// 调用下一个拦截链
+				// 执行目标方法
 				retVal = invocation.proceedWithInvocation();
 			}
 			catch (Throwable ex) {
 				// target invocation exception
 				//  回滚事务
-				// 从这里捕获异常也可以得出：为什么业务方法里不能catch异常，否则事务不会回滚，如果要catch也要在这里抛出来
+				// 从这里捕获异常也可以得出：为什么业务方法里不能catch异常，否则事务不会回滚，如果要catch也要将异常抛出来
 				// 然后这里进行捕获，进行回滚
 				completeTransactionAfterThrowing(txInfo, ex);
 				throw ex;
@@ -523,6 +523,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				}
 			}
 		}
+		// 记录事务状态并返回事务信息
 		return prepareTransactionInfo(tm, txAttr, joinpointIdentification, status);
 	}
 
@@ -588,14 +589,16 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 	 * @param ex throwable encountered
 	 */
 	protected void completeTransactionAfterThrowing(@Nullable TransactionInfo txInfo, Throwable ex) {
+		// 判断当前是否存在事务
 		if (txInfo != null && txInfo.getTransactionStatus() != null) {
 			if (logger.isTraceEnabled()) {
 				logger.trace("Completing transaction for [" + txInfo.getJoinpointIdentification() +
 						"] after exception: " + ex);
 			}
-			// spring在回滚的时候需要判断异常的类型
+			// spring在回滚的时候需要判断异常的类型 也就是判断是否满足回滚条件
 			if (txInfo.transactionAttribute != null && txInfo.transactionAttribute.rollbackOn(ex)) {
 				try {
+					// 回滚处理
 					txInfo.getTransactionManager().rollback(txInfo.getTransactionStatus());
 				}
 				catch (TransactionSystemException ex2) {
@@ -612,6 +615,8 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				// We don't roll back on this exception.
 				// Will still roll back if TransactionStatus.isRollbackOnly() is true.
 				try {
+					// 如果不能处理异常，则会进行提交
+					// 但如果rollbackOnly为true，仍然会进行回滚
 					txInfo.getTransactionManager().commit(txInfo.getTransactionStatus());
 				}
 				catch (TransactionSystemException ex2) {
