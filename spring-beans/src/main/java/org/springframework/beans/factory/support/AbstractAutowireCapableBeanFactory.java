@@ -632,21 +632,28 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// 循环依赖处理
 		if (earlySingletonExposure) {
-			// 获取earlySingletonReference
+			// 获取earlySingletonReference 注意这里getSingleton传递的值为false
+			// 在为false的情况下，三级缓存是不会转换成二级缓存的
 			Object earlySingletonReference = getSingleton(beanName, false);
 			// 只有在循环依赖的情况下，earlySingletonReference才不会为null
 			if (earlySingletonReference != null) {
 				// 如果exposedObject没有在初始化方法中改变，也就是没有被增强
 				if (exposedObject == bean) {
 					exposedObject = earlySingletonReference;
-				} else if (!this.allowRawInjectionDespiteWrapping && hasDependentBean(beanName)) { // 处理依赖
+				// 检测依赖
+				} else if (!this.allowRawInjectionDespiteWrapping && hasDependentBean(beanName)) {
+					// 获取依赖bean的集合
 					String[] dependentBeans = getDependentBeans(beanName);
 					Set<String> actualDependentBeans = new LinkedHashSet<>(dependentBeans.length);
+					// 遍历依赖
 					for (String dependentBean : dependentBeans) {
+						// 这里其实就是将三个缓存全部清除掉，前提是dependentBean代表的bean还未创建
 						if (!removeSingletonIfCreatedForTypeCheckOnly(dependentBean)) {
 							actualDependentBeans.add(dependentBean);
 						}
 					}
+					// actualDependentBeans不为空，则表示当前bean创建后其依赖的bean未创建完成，也就是存在循环依赖
+					// 因为bean创建后其所依赖的bean一定已经创建完成
 					if (!actualDependentBeans.isEmpty()) {
 						throw new BeanCurrentlyInCreationException(beanName,
 								"Bean with name '" + beanName + "' has been injected into other beans [" +
@@ -1144,6 +1151,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// 解析bean，将bean类名解析为class引用
 		Class<?> beanClass = resolveBeanClass(mbd, beanName);
 
+		// 检测类是否可访问
 		if (beanClass != null && !Modifier.isPublic(beanClass.getModifiers()) && !mbd.isNonPublicAccessAllowed()) {
 			throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 					"Bean class isn't public, and non-public access not allowed: " + beanClass.getName());
@@ -1176,7 +1184,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 		// 已经解析好了，直接注入即可
 		if (resolved) {
-			// autowire自动注入，调用构造函数自动注入
+			// 构造函数自动注入
 			if (autowireNecessary) {
 				return autowireConstructor(beanName, mbd, null, null);
 			} else {
@@ -1193,6 +1201,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (ctors != null ||
 				mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_CONSTRUCTOR ||
 				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) {
+			// 构造函数自动注入
 			return autowireConstructor(beanName, mbd, ctors, args);
 		}
 

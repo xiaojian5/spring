@@ -134,7 +134,7 @@ class ConstructorResolver {
 		// 如果getBean()已传递，则直接使用
 		if (explicitArgs != null) {
 			argsToUse = explicitArgs;
-		} else {
+		} else { // getBean方法没有指定参数，则首先尝试从缓存中获取构造参数
 			// 尝试从缓存中获取
 			Object[] argsToResolve = null;
 			// 同步
@@ -146,7 +146,7 @@ class ConstructorResolver {
 					// 缓存中的构造参数
 					argsToUse = mbd.resolvedConstructorArguments;
 					if (argsToUse == null) {
-						// 获取缓存中的构造函数参数 包括可见字段
+						// 获取缓存中的构造函数参数 包括可见字段 配置的构造函数
 						argsToResolve = mbd.preparedConstructorArguments;
 					}
 				}
@@ -167,6 +167,7 @@ class ConstructorResolver {
 			if (candidates == null) {
 				Class<?> beanClass = mbd.getBeanClass();
 				try {
+					// 判断是否允许获取非公有的构造函数
 					candidates = (mbd.isNonPublicAccessAllowed() ?
 							beanClass.getDeclaredConstructors() : beanClass.getConstructors());
 				} catch (Throwable ex) {
@@ -175,7 +176,7 @@ class ConstructorResolver {
 															"] from ClassLoader [" + beanClass.getClassLoader() + "] failed", ex);
 				}
 			}
-			// 创建bean
+			// 如果只存在一个构造函数，则直接创建bean 注入这里的构造条件是无参数的
 			if (candidates.length == 1 && explicitArgs == null && !mbd.hasConstructorArgumentValues()) {
 				Constructor<?> uniqueCandidate = candidates[0];
 				if (uniqueCandidate.getParameterCount() == 0) {
@@ -189,7 +190,7 @@ class ConstructorResolver {
 				}
 			}
 
-			// 是否需要解析构造器
+			// 到该分支，则表示需要解析构造器
 			// Need to resolve the constructor.
 			boolean autowiring = (chosenCtors != null ||
 					mbd.getResolvedAutowireMode() == AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR);
@@ -202,6 +203,7 @@ class ConstructorResolver {
 			} else {
 				// 从BeanDefinition中获取构造参数，也就是从配置文件中提取构造参数
 				ConstructorArgumentValues cargs = mbd.getConstructorArgumentValues();
+				// 用于承载解析后的构造函数参数的值
 				resolvedValues = new ConstructorArgumentValues();
 				// 解析构造函数的参数
 				// 将该bean的构造函数参数解析为resolvedValues对象，其中会涉及到其他bean
