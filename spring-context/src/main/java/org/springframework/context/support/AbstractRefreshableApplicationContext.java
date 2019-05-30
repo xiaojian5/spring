@@ -235,6 +235,8 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * @see DefaultListableBeanFactory#setAllowEagerClassLoading
 	 */
 	protected void customizeBeanFactory(DefaultListableBeanFactory beanFactory) {
+		// 这里只是对允许覆盖和允许循环依赖的属性进行了判空处理，如果不为空，则进行设置
+		// 这里主要是留给子类覆盖使用，因为这两个属性值在后续的类中是有声明的，并且都为true
 		if (this.allowBeanDefinitionOverriding != null) {
 			beanFactory.setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);
 		}

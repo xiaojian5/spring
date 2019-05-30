@@ -266,7 +266,7 @@ class ConstructorResolver {
 					}
 				} else {
 					// Explicit arguments given -> arguments length must match exactly.
-					// 构造函数中没有参数，则continue
+					// 构造函数参数个数与传入参数个数不相等，则continue
 					if (paramTypes.length != explicitArgs.length) {
 						continue;
 					}

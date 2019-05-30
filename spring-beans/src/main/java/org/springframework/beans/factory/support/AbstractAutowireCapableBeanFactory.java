@@ -669,7 +669,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Register bean as disposable.
 		try {
-			// 注册bean
+			// 注册bean的销毁方法
 			registerDisposableBeanIfNecessary(beanName, bean, mbd);
 		} catch (BeanDefinitionValidationException ex) {
 			throw new BeanCreationException(
@@ -1492,7 +1492,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		String[] propertyNames = unsatisfiedNonSimpleProperties(mbd, bw);
 		// 遍历propertyName数组
 		for (String propertyName : propertyNames) {
-			// 如果容器中包含指定名称的bean，则将该bean注入到bean中
+			// 如果容器中包含指定名称的bean，则将该bean注入到bean中 这里就是setter形式的属性注入(对象类型)
 			if (containsBean(propertyName)) {
 				// 初始化相关bean
 				Object bean = getBean(propertyName);
