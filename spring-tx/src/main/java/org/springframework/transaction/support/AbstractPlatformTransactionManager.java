@@ -391,7 +391,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 				throw ex;
 			}
 		}
-		// 到该分支说明事务的传播行为为PROPAGATION_SUPPORTS、	NOT_SUPPORTED或NEVER,这几种情况对于当前无事务的逻辑都是直接运行
+		// 到该分支说明事务的传播行为为PROPAGATION_SUPPORTS、NOT_SUPPORTED或NEVER,这几种情况对于当前无事务的逻辑都是直接运行
 		else {
 			// Create "empty" transaction: no actual transaction, but potentially synchronization.
 			if (definition.getIsolationLevel() != TransactionDefinition.ISOLATION_DEFAULT && logger.isWarnEnabled()) {
@@ -579,6 +579,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 
 
 	/**
+	 * 本方法做的事情，主要就是抓取当前事务资源、事务基本信息以及事务回调transaction synchronization等
+	 * 赋值到SuspendedResourcesHolder对象中
 	 * Suspend the given transaction. Suspends transaction synchronization first,
 	 * then delegates to the {@code doSuspend} template method.
 	 * @param transaction the current transaction object
@@ -590,13 +592,20 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 */
 	@Nullable
 	protected final SuspendedResourcesHolder suspend(@Nullable Object transaction) throws TransactionException {
+		// 首先检查线程是否激活，其实就是去读TransactionSynchronizationManager中当前线程绑定的TransactionSynchronization集合是否为null
 		if (TransactionSynchronizationManager.isSynchronizationActive()) {
+			// 遍历TransactionSynchronization，对其都调用suspend方法
 			List<TransactionSynchronization> suspendedSynchronizations = doSuspendSynchronization();
 			try {
 				Object suspendedResources = null;
 				if (transaction != null) {
+					// 挂起当前事务，由具体的TxMgr子类实现
 					suspendedResources = doSuspend(transaction);
 				}
+				/**
+				 * 将当前线程绑定的事务名、是否只读、隔离级别、是否有实际事务等信息抓取出来
+				 * 封装到SuspendedResourcesHolder对象中
+				 */
 				String name = TransactionSynchronizationManager.getCurrentTransactionName();
 				TransactionSynchronizationManager.setCurrentTransactionName(null);
 				boolean readOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();
@@ -610,12 +619,14 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			}
 			catch (RuntimeException | Error ex) {
 				// doSuspend failed - original transaction is still active...
+				// 恢复transaction synchronization。
 				doResumeSynchronization(suspendedSynchronizations);
 				throw ex;
 			}
 		}
 		else if (transaction != null) {
 			// Transaction active but no synchronization active.
+			// 挂起当前事务
 			Object suspendedResources = doSuspend(transaction);
 			return new SuspendedResourcesHolder(suspendedResources);
 		}
@@ -641,14 +652,17 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 		if (resourcesHolder != null) {
 			Object suspendedResources = resourcesHolder.suspendedResources;
 			if (suspendedResources != null) {
+				// 恢复挂起的事务资源，由具体的TxMgr子类实现
 				doResume(transaction, suspendedResources);
 			}
 			List<TransactionSynchronization> suspendedSynchronizations = resourcesHolder.suspendedSynchronizations;
 			if (suspendedSynchronizations != null) {
+				// 还原挂起的事务信息
 				TransactionSynchronizationManager.setActualTransactionActive(resourcesHolder.wasActive);
 				TransactionSynchronizationManager.setCurrentTransactionIsolationLevel(resourcesHolder.isolationLevel);
 				TransactionSynchronizationManager.setCurrentTransactionReadOnly(resourcesHolder.readOnly);
 				TransactionSynchronizationManager.setCurrentTransactionName(resourcesHolder.name);
+				// 恢复挂起的transaction synchronization
 				doResumeSynchronization(suspendedSynchronizations);
 			}
 		}
@@ -676,16 +690,20 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * @return the List of suspended TransactionSynchronization objects
 	 */
 	private List<TransactionSynchronization> doSuspendSynchronization() {
+		// 返回一个不可变的TransactionSynchronization快照
 		List<TransactionSynchronization> suspendedSynchronizations =
 				TransactionSynchronizationManager.getSynchronizations();
+		// 遍历 逐一挂起
 		for (TransactionSynchronization synchronization : suspendedSynchronizations) {
 			synchronization.suspend();
 		}
+		// 清理之后除非重新init否则无法再register新的transaction synchronization了
 		TransactionSynchronizationManager.clearSynchronization();
 		return suspendedSynchronizations;
 	}
 
 	/**
+	 * 重新初始化当前线程维护的synchronization集合，逐一对这些synchronization调用resume方法并加入到集合中
 	 * Reactivate transaction synchronization for the current thread
 	 * and resume all given synchronizations.
 	 * @param suspendedSynchronizations a List of TransactionSynchronization objects
@@ -710,12 +728,14 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 */
 	@Override
 	public final void commit(TransactionStatus status) throws TransactionException {
+		// 如果事务已经完成，则抛出异常
 		if (status.isCompleted()) {
 			throw new IllegalTransactionStateException(
 					"Transaction is already completed - do not call commit or rollback more than once per transaction");
 		}
 
 		DefaultTransactionStatus defStatus = (DefaultTransactionStatus) status;
+		// 是否手动控制回滚
 		if (defStatus.isLocalRollbackOnly()) {
 			if (defStatus.isDebug()) {
 				logger.debug("Transactional code has requested rollback");
@@ -724,6 +744,12 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			return;
 		}
 
+		/**
+		 * shouldCommitOnGlobalRollbackOnly默认实现是false
+		 * 这里判断的语义就是如果发现事务被标记为全局回滚并且不应该提交事务的话，则进行回滚
+		 *
+		 * isGlobalRollbackOnly中的判断是去读status中transaction对象的ConnectionHolder的rollbackOnly标志位
+		 */
 		if (!shouldCommitOnGlobalRollbackOnly() && defStatus.isGlobalRollbackOnly()) {
 			if (defStatus.isDebug()) {
 				logger.debug("Global transaction is marked as rollback-only but transactional code requested commit");
@@ -760,7 +786,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 					// 清楚保存点信息
 					status.releaseHeldSavepoint();
 				}
-				// 新的事务 独立事务
+				// 最外层事务边界
 				else if (status.isNewTransaction()) {
 					if (status.isDebug()) {
 						logger.debug("Initiating transaction commit");
@@ -859,6 +885,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 					// 如果有保存点，则会回退到保存点
 					status.rollbackToHeldSavepoint();
 				}
+				// 在最外层事务边界进行回滚
 				else if (status.isNewTransaction()) {
 					if (status.isDebug()) {
 						logger.debug("Initiating transaction rollback");
