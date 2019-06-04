@@ -87,6 +87,10 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 	@Nullable
 	private ConfigurableEnvironment environment;
 
+	/**
+	 * 必须配置的属性集合
+	 * 在{@link ServletConfigPropertyValues}中，会校验是否有对应的属性
+	 */
 	private final Set<String> requiredProperties = new HashSet<>(4);
 
 
@@ -99,6 +103,7 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 	 * driven by a ServletConfig instance.
 	 * @param property name of the required property
 	 */
+	// 添加必须的属性配置
 	protected final void addRequiredProperty(String property) {
 		this.requiredProperties.add(property);
 	}
@@ -110,6 +115,7 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 	 * @throws IllegalArgumentException if environment is not assignable to
 	 * {@code ConfigurableEnvironment}
 	 */
+	// 实现EnvironmentAware接口，自动注入
 	@Override
 	public void setEnvironment(Environment environment) {
 		Assert.isInstanceOf(ConfigurableEnvironment.class, environment, "ConfigurableEnvironment required");
@@ -121,8 +127,10 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 	 * <p>If none specified, a default environment will be initialized via
 	 * {@link #createEnvironment()}.
 	 */
+	// 实现EnvironmentCapable接口
 	@Override
 	public ConfigurableEnvironment getEnvironment() {
+		// 如果environment为空，主动创建
 		if (this.environment == null) {
 			this.environment = createEnvironment();
 		}
