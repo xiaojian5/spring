@@ -301,6 +301,9 @@ public class ContextLoader {
 					// The context has not yet been refreshed -> provide services such as
 					// setting the parent context, setting the application context id, etc
 					// 无父类容器，则进行加载和设置
+					/**
+					 * 一般情况下，业务容器不会有父容器，除非进行设置
+					 */
 					if (cwac.getParent() == null) {
 						// The context instance was injected without an explicit parent ->
 						// determine parent for root web application context, if any.
@@ -311,7 +314,7 @@ public class ContextLoader {
 					configureAndRefreshWebApplicationContext(cwac, servletContext);
 				}
 			}
-			// 记录在servletContext中
+			// 设置ApplicationContext到servletContext中
 			servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, this.context);
 
 			// 记录到currentContext或currentContextPerThread中
@@ -350,7 +353,7 @@ public class ContextLoader {
 	 * @see ConfigurableWebApplicationContext
 	 */
 	protected WebApplicationContext createWebApplicationContext(ServletContext sc) {
-		// 获得context类
+		// 获得context类 默认类型为XmlWebApplicationContext
 		Class<?> contextClass = determineContextClass(sc);
 		// 判断context类是否符合ConfigurableWebApplicationContext类型，如果不是该类型，则抛出异常
 		if (!ConfigurableWebApplicationContext.class.isAssignableFrom(contextClass)) {
@@ -371,6 +374,13 @@ public class ContextLoader {
 	 * @see org.springframework.web.context.support.XmlWebApplicationContext
 	 */
 	protected Class<?> determineContextClass(ServletContext servletContext) {
+		/*
+		 * 读取用户自定义配置，比如：
+		 * <context-param>
+		 *     <param-name>contextClass</param-name>
+		 *     <param-value>XXXConfigWebApplicationContext</param-value>
+		 * </context-param>
+		 */
 		// 获得参数contextClass的值
 		String contextClassName = servletContext.getInitParameter(CONTEXT_CLASS_PARAM);
 		// 如果contextClassName非空，则直接通过反射获取该类
@@ -426,7 +436,7 @@ public class ContextLoader {
 		if (env instanceof ConfigurableWebEnvironment) {
 			((ConfigurableWebEnvironment) env).initPropertySources(sc, null);
 		}
-        // 执行自定义初始化
+		// 执行自定义初始化
 		customizeContext(sc, wac);
 		// 刷新 context，执行初始化，这里就会执行Spring的初始化
 		/**
