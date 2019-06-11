@@ -41,6 +41,17 @@ import org.springframework.web.servlet.handler.MappedInterceptor;
  */
 class InterceptorsBeanDefinitionParser implements BeanDefinitionParser {
 
+	/**
+	 * 对<mvc:interceptor/>标签的解析
+	 * <mvc:interceptors>
+	 *     <mvc:interceptor>
+	 *         <mvc:mapping path="/interceptor/**" />
+	 *         <mvc:exclude-mapping path="/interceptor/b/*" />
+	 *         <bean class="com.elim.learn.spring.mvc.interceptor.MyInterceptor" />
+	 *     </mvc:interceptor>
+	 * </mvc:interceptors>
+	 *
+	 */
 	@Override
 	@Nullable
 	public BeanDefinition parse(Element element, ParserContext context) {
