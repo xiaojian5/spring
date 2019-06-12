@@ -41,6 +41,16 @@ public class RequestMappingInfoHandlerMethodMappingNamingStrategy
 
 	@Override
 	public String getName(HandlerMethod handlerMethod, RequestMappingInfo mapping) {
+		/**
+		 * 比较好理解，分成两种情况。
+		 * 情况一，如果 Mapping 已经配置名字，则直接返回。
+		 * 例如，@RequestMapping(name = "login", value = "user/login") 注解的方法，
+		 * 它对应的 Mapping 的名字就是 "login" 。
+		 * 情况二，如果 Mapping 未配置名字，则使用使用类名大写 + "#" + 方法名。
+		 * 例如，@RequestMapping(value = "user/login") 注解的方法，
+		 * 假设它所在的类为LoginController，对应的方法名为login ，则它对应的Mapping的名字就是LOGINCONTROLLER#login 。
+		 */
+
 		// 如果mapping.name不为空，则直接使用mapping的名字
 		if (mapping.getName() != null) {
 			return mapping.getName();

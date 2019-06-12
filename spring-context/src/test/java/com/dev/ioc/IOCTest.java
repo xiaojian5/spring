@@ -10,6 +10,7 @@ import com.dev.basebean.aware.UserDefinedAware;
 import com.dev.basebean.beanpostprocessor.BeanPostProcessorBase;
 import com.dev.basebean.circledepend.setter.SetterCircleDependA;
 import com.dev.basebean.initializingbean.UserDefinedInitializingBean;
+import com.dev.basebean.ioc.AnnotationIocTestBean;
 import com.dev.basebean.ioc.IocTestBean;
 import com.dev.basebean.lifecycle.BeanLifeCycle;
 import com.dev.basebean.lookupmethod.impl.ShowCar;
@@ -45,6 +46,23 @@ public class IOCTest {
 		System.out.println("placeHolderValue属性:" + iocTestBean.getPlaceHolderValue());
 
 		System.out.println("xml形式注入bean调试过程结束");
+	}
+
+	/**
+	 * 注解形式注入bean
+	 */
+	@Test
+	public void annotationIOCTest() {
+
+		System.out.println("注解形式注入bean调试过程开始");
+
+		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:com/dev/config/ioc/annotation_ioc.xml");
+
+		AnnotationIocTestBean annotationIocTestBean = context.getBean(AnnotationIocTestBean.class);
+
+		annotationIocTestBean.sayHello();
+
+		System.out.println("注解形式注入bean调试过程结束");
 	}
 
 	/**

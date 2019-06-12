@@ -85,8 +85,10 @@ public class AnnotationMetadataReadingVisitor extends ClassMetadataReadingVisito
 
 	@Override
 	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+	    // 取出注解类名，添加到annotationSet集合中
 		String className = Type.getType(desc).getClassName();
 		this.annotationSet.add(className);
+		// 实例化注解类
 		return new AnnotationAttributesReadingVisitor(
 				className, this.attributesMap, this.metaAnnotationMap, this.classLoader);
 	}

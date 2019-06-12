@@ -61,7 +61,9 @@ final class SimpleMetadataReader implements MetadataReader {
 			is.close();
 		}
 
+		// 新建一个注解读取类
 		AnnotationMetadataReadingVisitor visitor = new AnnotationMetadataReadingVisitor(classLoader);
+		// 该方法会对注解进行读取
 		classReader.accept(visitor, ClassReader.SKIP_DEBUG);
 
 		this.annotationMetadata = visitor;

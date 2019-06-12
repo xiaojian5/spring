@@ -103,7 +103,7 @@ public final class RequestMethodsRequestCondition extends AbstractRequestConditi
 		if (CorsUtils.isPreFlightRequest(request)) {
 			return matchPreFlight(request);
 		}
-
+        // 若为空的情况下，则直接返回自身 @RequestMapping(value="/test/test")
 		if (getMethods().isEmpty()) {
 			if (RequestMethod.OPTIONS.name().equals(request.getMethod()) &&
 					!DispatcherType.ERROR.equals(request.getDispatcherType())) {

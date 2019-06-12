@@ -570,6 +570,7 @@ public class ClassReader {
         // Parse num_element_value_pairs and element_value_pairs and visit these values.
         currentAnnotationOffset =
             readElementValues(
+            		// 读取注解
                 classVisitor.visitAnnotation(annotationDescriptor, /* visible = */ true),
                 currentAnnotationOffset,
                 /* named = */ true,

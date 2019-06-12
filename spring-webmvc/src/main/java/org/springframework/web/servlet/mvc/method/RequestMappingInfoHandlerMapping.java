@@ -190,7 +190,7 @@ public abstract class RequestMappingInfoHandlerMapping extends AbstractHandlerMe
 		if (helper.isEmpty()) {
 			return null;
 		}
-
+        // 方法错误
 		if (helper.hasMethodsMismatch()) {
 			Set<String> methods = helper.getAllowedMethods();
 			if (HttpMethod.OPTIONS.matches(request.getMethod())) {
@@ -199,7 +199,7 @@ public abstract class RequestMappingInfoHandlerMapping extends AbstractHandlerMe
 			}
 			throw new HttpRequestMethodNotSupportedException(request.getMethod(), methods);
 		}
-
+        // 可消费的content-type错误
 		if (helper.hasConsumesMismatch()) {
 			Set<MediaType> mediaTypes = helper.getConsumableMediaTypes();
 			MediaType contentType = null;
@@ -213,12 +213,12 @@ public abstract class RequestMappingInfoHandlerMapping extends AbstractHandlerMe
 			}
 			throw new HttpMediaTypeNotSupportedException(contentType, new ArrayList<>(mediaTypes));
 		}
-
+        // 可生产的content-type错误
 		if (helper.hasProducesMismatch()) {
 			Set<MediaType> mediaTypes = helper.getProducibleMediaTypes();
 			throw new HttpMediaTypeNotAcceptableException(new ArrayList<>(mediaTypes));
 		}
-
+        // 参数错误
 		if (helper.hasParamsMismatch()) {
 			List<String[]> conditions = helper.getParamConditions();
 			throw new UnsatisfiedServletRequestParameterException(conditions, request.getParameterMap());

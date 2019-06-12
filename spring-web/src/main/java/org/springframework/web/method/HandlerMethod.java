@@ -72,21 +72,39 @@ public class HandlerMethod {
 
 	private final Class<?> beanType;
 
+	/**
+	 * 方法
+	 */
 	private final Method method;
 
 	private final Method bridgedMethod;
 
+	/**
+	 * 方法参数数组
+	 */
 	private final MethodParameter[] parameters;
 
+	/**
+	 * 响应的状态码 {@link ResponseStatus#code()}
+	 */
 	@Nullable
 	private HttpStatus responseStatus;
 
+	/**
+	 * 响应状态码原因 {@link ResponseStatus#reason()}
+	 */
 	@Nullable
 	private String responseStatusReason;
 
+	/**
+	 * 解析至那个HandlerMethod对象
+	 */
 	@Nullable
 	private HandlerMethod resolvedFromHandlerMethod;
 
+	/**
+	 * 父接口的方法的方法参数注解数组
+	 */
 	@Nullable
 	private volatile List<Annotation[][]> interfaceParameterAnnotations;
 
@@ -104,6 +122,7 @@ public class HandlerMethod {
 		this.beanType = ClassUtils.getUserClass(bean);
 		this.method = method;
 		this.bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
+		// 初始化parameters属性
 		this.parameters = initMethodParameters();
 		evaluateResponseStatus();
 		this.description = initDescription(this.beanType, this.method);
@@ -135,17 +154,23 @@ public class HandlerMethod {
 		Assert.hasText(beanName, "Bean name is required");
 		Assert.notNull(beanFactory, "BeanFactory is required");
 		Assert.notNull(method, "Method is required");
+		// 将beanName赋值给bean属性，说明beanFactory+bean的方式，获得handler对象
 		this.bean = beanName;
 		this.beanFactory = beanFactory;
+		// 初始化beanType
 		Class<?> beanType = beanFactory.getType(beanName);
 		if (beanType == null) {
 			throw new IllegalStateException("Cannot resolve bean type for bean with name '" + beanName + "'");
 		}
 		this.beanType = ClassUtils.getUserClass(beanType);
+		// 初始化method、bridgeMethod属性
 		this.method = method;
 		this.bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
+		// 初始化parameters属性
 		this.parameters = initMethodParameters();
+		// 初始化responseStatus、responseStatusReason属性
 		evaluateResponseStatus();
+		// 初始化描述
 		this.description = initDescription(this.beanType, this.method);
 	}
 
@@ -187,6 +212,7 @@ public class HandlerMethod {
 	private MethodParameter[] initMethodParameters() {
 		int count = this.bridgedMethod.getParameterCount();
 		MethodParameter[] result = new MethodParameter[count];
+		// 遍历 逐个解析参数类型
 		for (int i = 0; i < count; i++) {
 			HandlerMethodParameter parameter = new HandlerMethodParameter(i);
 			GenericTypeResolver.resolveParameterType(parameter, this.beanType);
@@ -333,11 +359,13 @@ public class HandlerMethod {
 	 */
 	public HandlerMethod createWithResolvedBean() {
 		Object handler = this.bean;
+		// 如果bean是String类型，则获取对应的handler对象，
 		if (this.bean instanceof String) {
 			Assert.state(this.beanFactory != null, "Cannot resolve bean name without BeanFactory");
 			String beanName = (String) this.bean;
 			handler = this.beanFactory.getBean(beanName);
 		}
+		// 否则直接创建HandlerMethod对象
 		return new HandlerMethod(this, handler);
 	}
 
