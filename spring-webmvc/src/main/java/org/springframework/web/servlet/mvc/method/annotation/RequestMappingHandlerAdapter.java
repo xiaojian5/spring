@@ -652,6 +652,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		List<HandlerMethodArgumentResolver> resolvers = new ArrayList<>();
 
 		// Annotation-based argument resolution
+		// 这里设置useDefaultResolution属性 第一次为false
 		resolvers.add(new RequestParamMethodArgumentResolver(getBeanFactory(), false));
 		resolvers.add(new RequestParamMapMethodArgumentResolver());
 		resolvers.add(new PathVariableMethodArgumentResolver());
@@ -685,6 +686,12 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		}
 
 		// Catch-all
+		// 再次设置useDefaultResolution属性 这里为true
+		/**
+		 * 优先将待有@RequestParam注解的请求参数给第一个RequestParamMethodArgumentResolver对象；
+		 * 其次，给中间省略的一大片参数解析器试试能不能解析；
+		 * 最后，使用第二个RequestParamMethodArgumentResolver兜底，处理剩余的情况
+		 */
 		resolvers.add(new RequestParamMethodArgumentResolver(getBeanFactory(), true));
 		resolvers.add(new ServletModelAttributeMethodProcessor(true));
 

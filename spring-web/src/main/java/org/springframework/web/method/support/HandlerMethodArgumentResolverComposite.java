@@ -45,6 +45,9 @@ public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgu
 
 	private final List<HandlerMethodArgumentResolver> argumentResolvers = new LinkedList<>();
 
+	/**
+	 * MethodParameter与HandlerMethodArgumentResolver的映射，做缓存
+	 */
 	private final Map<MethodParameter, HandlerMethodArgumentResolver> argumentResolverCache =
 			new ConcurrentHashMap<>(256);
 
@@ -116,13 +119,15 @@ public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgu
 	@Nullable
 	public Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception {
-
+        // 现获取解析对象
 		HandlerMethodArgumentResolver resolver = getArgumentResolver(parameter);
+		// 获取不到，则抛出异常
 		if (resolver == null) {
 			throw new IllegalArgumentException(
 					"Unsupported parameter type [" + parameter.getParameterType().getName() + "]." +
 							" supportsParameter should be called first.");
 		}
+		// 执行解析
 		return resolver.resolveArgument(parameter, mavContainer, webRequest, binderFactory);
 	}
 
@@ -132,9 +137,12 @@ public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgu
 	 */
 	@Nullable
 	private HandlerMethodArgumentResolver getArgumentResolver(MethodParameter parameter) {
+		// 优先从缓存中获取parameter对应的HandlerMethodArgumentResolver对象
 		HandlerMethodArgumentResolver result = this.argumentResolverCache.get(parameter);
 		if (result == null) {
+			// 缓存中获取不到，则遍历argumentResolvers数组
 			for (HandlerMethodArgumentResolver methodArgumentResolver : this.argumentResolvers) {
+				// 如果支持，则添加到缓存中
 				if (methodArgumentResolver.supportsParameter(parameter)) {
 					result = methodArgumentResolver;
 					this.argumentResolverCache.put(parameter, result);

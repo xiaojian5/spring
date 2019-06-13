@@ -78,6 +78,10 @@ public class RequestParamMethodArgumentResolver extends AbstractNamedValueMethod
 
 	private static final TypeDescriptor STRING_TYPE_DESCRIPTOR = TypeDescriptor.valueOf(String.class);
 
+	/**
+	 * 是否使用默认解决
+	 * {@link #supportsParameter(MethodParameter)}
+	 */
 	private final boolean useDefaultResolution;
 
 
@@ -123,26 +127,43 @@ public class RequestParamMethodArgumentResolver extends AbstractNamedValueMethod
 	 */
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
+		// 有@RequestParam注解的情况
 		if (parameter.hasParameterAnnotation(RequestParam.class)) {
+			// 如果是map类型，则@RequestParam注解必须要有name属性
+			/**
+			 * @RequestMapping("/hello5")
+			 * public String hello5(@RequestParam(name = "map") Map<String, Object> map) {
+			 *     return "666";
+			 * }
+			 * GET /hello4?map={"name": "yyyy", age: 20} 的 map 参数
+			 * 这里所说的name属性就是map，这样name与age就会加入map中
+			 */
 			if (Map.class.isAssignableFrom(parameter.nestedIfOptional().getNestedParameterType())) {
 				RequestParam requestParam = parameter.getParameterAnnotation(RequestParam.class);
 				return (requestParam != null && StringUtils.hasText(requestParam.name()));
 			}
+			// 其他默认支持
 			else {
 				return true;
 			}
 		}
 		else {
+			// 如果有@RequestPart注解，返回false
 			if (parameter.hasParameterAnnotation(RequestPart.class)) {
 				return false;
 			}
+			// 获得参数，如果出现内嵌的情况
 			parameter = parameter.nestedIfOptional();
+			// 如果Multipart参数，则返回true，表示支持
 			if (MultipartResolutionDelegate.isMultipartArgument(parameter)) {
 				return true;
 			}
+			// 如果开启useDefaultResolution功能，则判断是否为普通类型
 			else if (this.useDefaultResolution) {
+				// 如果开启useDefaultResolution功能，则判断是否为普通类型
 				return BeanUtils.isSimpleProperty(parameter.getNestedParameterType());
 			}
+			// 其他，不支持
 			else {
 				return false;
 			}
