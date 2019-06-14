@@ -44,6 +44,9 @@ import org.springframework.web.servlet.RequestToViewNameTranslator;
  */
 public class ViewNameMethodReturnValueHandler implements HandlerMethodReturnValueHandler {
 
+	/**
+	 * 重定向的表达式数组
+	 */
 	@Nullable
 	private String[] redirectPatterns;
 
@@ -71,20 +74,24 @@ public class ViewNameMethodReturnValueHandler implements HandlerMethodReturnValu
 	@Override
 	public boolean supportsReturnType(MethodParameter returnType) {
 		Class<?> paramType = returnType.getParameterType();
+		// 判断返回值类型是否为void或者字符串
 		return (void.class == paramType || CharSequence.class.isAssignableFrom(paramType));
 	}
 
 	@Override
 	public void handleReturnValue(@Nullable Object returnValue, MethodParameter returnType,
 			ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception {
-
+        // 如果是String类型
 		if (returnValue instanceof CharSequence) {
+			// 设置视图名到mavContainer中
 			String viewName = returnValue.toString();
 			mavContainer.setViewName(viewName);
+			// 如果是重定向，则标记到mavContainer中
 			if (isRedirectViewName(viewName)) {
 				mavContainer.setRedirectModelScenario(true);
 			}
 		}
+		// 如果是非String类型，且非Void，则抛出异常
 		else if (returnValue != null) {
 			// should not happen
 			throw new UnsupportedOperationException("Unexpected return type: " +
@@ -101,7 +108,10 @@ public class ViewNameMethodReturnValueHandler implements HandlerMethodReturnValu
 	 * reference; "false" otherwise.
 	 */
 	protected boolean isRedirectViewName(String viewName) {
-		return (PatternMatchUtils.simpleMatch(this.redirectPatterns, viewName) || viewName.startsWith("redirect:"));
+		// 如果符合redirectPatterns表达式
+		return (PatternMatchUtils.simpleMatch(this.redirectPatterns, viewName)
+				|| viewName.startsWith("redirect:"));// 以redirect:开头
+		// 这就是为什么转发的时候需要以redirect:开头
 	}
 
 }

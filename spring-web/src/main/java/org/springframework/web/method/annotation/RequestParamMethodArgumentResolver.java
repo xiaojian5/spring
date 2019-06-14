@@ -181,6 +181,7 @@ public class RequestParamMethodArgumentResolver extends AbstractNamedValueMethod
 	protected Object resolveName(String name, MethodParameter parameter, NativeWebRequest request) throws Exception {
 		HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
 
+		// HttpServletRequest情况下的MultipartFile和Part情况
 		if (servletRequest != null) {
 			Object mpArg = MultipartResolutionDelegate.resolveMultipartArgument(name, parameter, servletRequest);
 			if (mpArg != MultipartResolutionDelegate.UNRESOLVABLE) {
@@ -188,6 +189,7 @@ public class RequestParamMethodArgumentResolver extends AbstractNamedValueMethod
 			}
 		}
 
+		// MutipartHttpServletRequest情况下的MultipartFile的情况
 		Object arg = null;
 		MultipartRequest multipartRequest = request.getNativeRequest(MultipartRequest.class);
 		if (multipartRequest != null) {
@@ -196,6 +198,7 @@ public class RequestParamMethodArgumentResolver extends AbstractNamedValueMethod
 				arg = (files.size() == 1 ? files.get(0) : files);
 			}
 		}
+		// 普通参数的获取
 		if (arg == null) {
 			String[] paramValues = request.getParameterValues(name);
 			if (paramValues != null) {
@@ -277,6 +280,7 @@ public class RequestParamMethodArgumentResolver extends AbstractNamedValueMethod
 
 	private static class RequestParamNamedValueInfo extends NamedValueInfo {
 
+		// 在无@RequestMapping时，返回的RequestParamNamedValueInfo对象，name属性为"",required属性默认为false
 		public RequestParamNamedValueInfo() {
 			super("", false, ValueConstants.DEFAULT_NONE);
 		}
