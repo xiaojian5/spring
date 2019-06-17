@@ -34,6 +34,7 @@ import javax.servlet.ServletContextListener;
  * @see #setContextInitializers
  * @see org.springframework.web.WebApplicationInitializer
  */
+// 业务容器初始化，在spring-mvc初始化时，会先初始化业务容器
 public class ContextLoaderListener extends ContextLoader implements ServletContextListener {
 
 	/**
