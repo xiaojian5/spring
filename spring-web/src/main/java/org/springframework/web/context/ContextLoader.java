@@ -424,6 +424,14 @@ public class ContextLoader {
 		// 设置context的ServletContext属性
 		wac.setServletContext(sc);
 		// 设置context的配置文件地址
+		/**
+		 *  <init-param>
+		 *      <param-name>contextConfigLocation</param-name>
+		 *      <param-value>/WEB-INF/spring-servlet.xml</param-value>
+		 *  </init-param>
+		 */
+		// 这里就是获取contextConfigLocation属性的值，然后设置到XmlWebApplicationContext中
+		// 后期在spring ioc时，读取该xml文件，进行bean的初始化
 		String configLocationParam = sc.getInitParameter(CONFIG_LOCATION_PARAM);
 		if (configLocationParam != null) {
 			wac.setConfigLocation(configLocationParam);
