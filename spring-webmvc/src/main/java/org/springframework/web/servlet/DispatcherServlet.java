@@ -684,8 +684,10 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * we default to no exception resolver.
 	 */
 	private void initHandlerExceptionResolvers(ApplicationContext context) {
+		// 置空handlerExceptionResolvers处理器
 		this.handlerExceptionResolvers = null;
 
+		// 自动扫描所有的HandlerExceptionResolver类型
 		if (this.detectAllHandlerExceptionResolvers) {
 			// Find all HandlerExceptionResolvers in the ApplicationContext, including ancestor contexts.
 			Map<String, HandlerExceptionResolver> matchingBeans = BeanFactoryUtils
@@ -696,6 +698,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				AnnotationAwareOrderComparator.sort(this.handlerExceptionResolvers);
 			}
 		}
+		// 获得名字为handlerExceptionResolver的bean
 		else {
 			try {
 				HandlerExceptionResolver her =
@@ -709,6 +712,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		// Ensure we have at least some HandlerExceptionResolvers, by registering
 		// default HandlerExceptionResolvers if no other resolvers are found.
+		// 如果未获得异常处理器，则通过默认配置获取
 		if (this.handlerExceptionResolvers == null) {
 			this.handlerExceptionResolvers = getDefaultStrategies(context, HandlerExceptionResolver.class);
 			if (logger.isTraceEnabled()) {

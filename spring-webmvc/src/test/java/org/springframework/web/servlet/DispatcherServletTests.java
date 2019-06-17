@@ -68,6 +68,7 @@ import static org.mockito.Mockito.*;
  * @author Rob Harrop
  * @author Sam Brannen
  */
+// DispatcherServlet主要单元测试 web容器初始化
 public class DispatcherServletTests {
 
 	private static final String URL_KNOWN_ONLY_PARENT = "/knownOnlyToParent.do";
@@ -101,6 +102,7 @@ public class DispatcherServletTests {
 		return servletConfig.getServletContext();
 	}
 
+	// web容器初始化过程
 	@Test
 	public void configuredDispatcherServlets() {
 		assertTrue("Correct namespace",

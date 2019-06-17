@@ -138,6 +138,7 @@ import org.springframework.web.util.WebUtils;
  * @see #setContextInitializerClasses
  * @see #setNamespace
  */
+// 负责web容器的初始化
 @SuppressWarnings("serial")
 public abstract class FrameworkServlet extends HttpServletBean implements ApplicationContextAware {
 
@@ -528,7 +529,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		long startTime = System.currentTimeMillis();
 
 		try {
-			// 初始化webApplicationContext对象
+			// 初始化web容器 webApplicationContext对象
 			this.webApplicationContext = initWebApplicationContext();
 			// 空实现，供子类自定义实现
 			initFrameworkServlet();

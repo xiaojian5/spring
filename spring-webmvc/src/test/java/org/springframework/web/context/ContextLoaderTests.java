@@ -59,6 +59,9 @@ import static org.junit.Assert.*;
  */
 public class ContextLoaderTests {
 
+	/**
+	 * 业务容器初始化过程单元测试
+	 */
 	@Test
 	public void testContextLoaderListenerWithDefaultContext() {
 		MockServletContext sc = new MockServletContext("");

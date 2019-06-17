@@ -879,12 +879,17 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 	 */
 	@Bean
 	public HandlerExceptionResolver handlerExceptionResolver() {
+		// 创建HandlerExceptionResolver数组
 		List<HandlerExceptionResolver> exceptionResolvers = new ArrayList<>();
+		// 添加配置HandlerExceptionResolver到exceptionResolvers中
 		configureHandlerExceptionResolvers(exceptionResolvers);
+		// 如果exceptionResolvers为空，则添加默认HandlerExceptionResolver数组
 		if (exceptionResolvers.isEmpty()) {
 			addDefaultHandlerExceptionResolvers(exceptionResolvers);
 		}
+		// 子类定义的HandlerExceptionResolver数组到exceptionResolvers中
 		extendHandlerExceptionResolvers(exceptionResolvers);
+		// 创建HandlerExceptionResolverComposite数组
 		HandlerExceptionResolverComposite composite = new HandlerExceptionResolverComposite();
 		composite.setOrder(0);
 		composite.setExceptionResolvers(exceptionResolvers);

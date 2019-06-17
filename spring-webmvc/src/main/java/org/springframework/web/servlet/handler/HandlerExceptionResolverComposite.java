@@ -35,9 +35,15 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public class HandlerExceptionResolverComposite implements HandlerExceptionResolver, Ordered {
 
+	/**
+	 * resolvers数组
+	 */
 	@Nullable
 	private List<HandlerExceptionResolver> resolvers;
 
+	/**
+	 * 优先级，最低
+	 */
 	private int order = Ordered.LOWEST_PRECEDENCE;
 
 
@@ -74,6 +80,7 @@ public class HandlerExceptionResolverComposite implements HandlerExceptionResolv
 	public ModelAndView resolveException(
 			HttpServletRequest request, HttpServletResponse response, @Nullable Object handler, Exception ex) {
 
+		// 遍历handlerExceptionResolver数组，逐个处理异常，如果成功，则返回ModelAndView对象
 		if (this.resolvers != null) {
 			for (HandlerExceptionResolver handlerExceptionResolver : this.resolvers) {
 				ModelAndView mav = handlerExceptionResolver.resolveException(request, response, handler, ex);

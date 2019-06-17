@@ -100,7 +100,7 @@ public class ContextLoaderListener extends ContextLoader implements ServletConte
 	 */
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-		// 初始化 WebApplicationContext
+		// 初始化业务容器 WebApplicationContext
 		initWebApplicationContext(event.getServletContext());
 	}
 

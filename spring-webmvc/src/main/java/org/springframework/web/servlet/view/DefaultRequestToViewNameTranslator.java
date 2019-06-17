@@ -167,7 +167,9 @@ public class DefaultRequestToViewNameTranslator implements RequestToViewNameTran
 	 */
 	@Override
 	public String getViewName(HttpServletRequest request) {
+		// 获取请求路径
 		String lookupPath = this.urlPathHelper.getLookupPathForRequest(request);
+		// 获得视图名
 		return (this.prefix + transformPath(lookupPath) + this.suffix);
 	}
 
@@ -182,15 +184,19 @@ public class DefaultRequestToViewNameTranslator implements RequestToViewNameTran
 	@Nullable
 	protected String transformPath(String lookupPath) {
 		String path = lookupPath;
+		// 移除开头的"/"
 		if (this.stripLeadingSlash && path.startsWith(SLASH)) {
 			path = path.substring(1);
 		}
+		// 移除末尾的"/"
 		if (this.stripTrailingSlash && path.endsWith(SLASH)) {
 			path = path.substring(0, path.length() - 1);
 		}
+		// 移除扩展名
 		if (this.stripExtension) {
 			path = StringUtils.stripFilenameExtension(path);
 		}
+		// 替换分隔符
 		if (!SLASH.equals(this.separator)) {
 			path = StringUtils.replace(path, SLASH, this.separator);
 		}

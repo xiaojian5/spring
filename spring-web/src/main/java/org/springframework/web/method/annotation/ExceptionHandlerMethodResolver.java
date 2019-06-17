@@ -60,8 +60,11 @@ public class ExceptionHandlerMethodResolver {
 	 * @param handlerType the type to introspect
 	 */
 	public ExceptionHandlerMethodResolver(Class<?> handlerType) {
+		// 遍历@ExceptionHandler注解的方法
 		for (Method method : MethodIntrospector.selectMethods(handlerType, EXCEPTION_HANDLER_METHODS)) {
+			// 遍历处理异常集合
 			for (Class<? extends Throwable> exceptionType : detectExceptionMappings(method)) {
+				// 添加到mappedMethods中
 				addExceptionMapping(exceptionType, method);
 			}
 		}
@@ -75,7 +78,9 @@ public class ExceptionHandlerMethodResolver {
 	@SuppressWarnings("unchecked")
 	private List<Class<? extends Throwable>> detectExceptionMappings(Method method) {
 		List<Class<? extends Throwable>> result = new ArrayList<>();
+		// 从方法上的@ExceptionHandler注解中，获得所处理的异常，添加到result中
 		detectAnnotationExceptionMappings(method, result);
+		// 如果获取不到，则从方法参数中，获得所处理的异常，添加到result中
 		if (result.isEmpty()) {
 			for (Class<?> paramType : method.getParameterTypes()) {
 				if (Throwable.class.isAssignableFrom(paramType)) {
@@ -83,6 +88,7 @@ public class ExceptionHandlerMethodResolver {
 				}
 			}
 		}
+		// 如果找不到，则抛出异常
 		if (result.isEmpty()) {
 			throw new IllegalStateException("No exception types mapped to " + method);
 		}
@@ -96,7 +102,9 @@ public class ExceptionHandlerMethodResolver {
 	}
 
 	private void addExceptionMapping(Class<? extends Throwable> exceptionType, Method method) {
+		// 添加到mappedMethods集合中
 		Method oldMethod = this.mappedMethods.put(exceptionType, method);
+		// 如果已存在，说明冲突，则抛出异常
 		if (oldMethod != null && !oldMethod.equals(method)) {
 			throw new IllegalStateException("Ambiguous @ExceptionHandler method mapped for [" +
 					exceptionType + "]: {" + oldMethod + ", " + method + "}");
@@ -130,7 +138,9 @@ public class ExceptionHandlerMethodResolver {
 	 */
 	@Nullable
 	public Method resolveMethodByThrowable(Throwable exception) {
+		// 首先获取异常对应的方法
 		Method method = resolveMethodByExceptionType(exception.getClass());
+		// 如果获取不到，则使用异常cause对应的方法
 		if (method == null) {
 			Throwable cause = exception.getCause();
 			if (cause != null) {
@@ -148,7 +158,9 @@ public class ExceptionHandlerMethodResolver {
 	 */
 	@Nullable
 	public Method resolveMethodByExceptionType(Class<? extends Throwable> exceptionType) {
+		// 首先从缓存中获取
 		Method method = this.exceptionLookupCache.get(exceptionType);
+		// 缓存中不存在，则从mappedMethods中获取，并添加到exceptionLookupCache中
 		if (method == null) {
 			method = getMappedMethod(exceptionType);
 			this.exceptionLookupCache.put(exceptionType, method);
