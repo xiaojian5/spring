@@ -169,6 +169,14 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 				// 空实现，预留给子类覆盖
 				initBeanWrapper(bw);
 				// 以spring的方式将pvs注入到该BeanWrapper对象中
+				/**
+				 *  <init-param>
+				 *         <param-name>contextConfigLocation</param-name>
+				 *         <param-value>/WEB-INF/spring-servlet.xml</param-value>
+				 *  </init-param>
+				 */
+				// 在设置属性的是否会将contextConfigLocation属性，通过反射设置到contextConfigLocation属性上
+				// 这里有点绕，需要通过debug深入查看
 				bw.setPropertyValues(pvs, true);
 			}
 			catch (BeansException ex) {

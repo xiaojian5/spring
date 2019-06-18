@@ -18,6 +18,7 @@ package org.springframework.web.servlet;
 
 import java.io.IOException;
 import java.util.Locale;
+
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -49,6 +50,7 @@ import org.springframework.web.context.ServletContextAwareBean;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.StandardServletEnvironment;
 import org.springframework.web.context.support.StaticWebApplicationContext;
+import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartResolver;
@@ -86,13 +88,14 @@ public class DispatcherServletTests {
 		complexConfig.addInitParameter("publishContext", "false");
 		complexConfig.addInitParameter("class", "notWritable");
 		complexConfig.addInitParameter("unknownParam", "someValue");
-
+		complexConfig.addInitParameter(ContextLoader.CONFIG_LOCATION_PARAM,
+							"/org/springframework/web/context/WEB-INF/empty-servlet.xml");
 		simpleDispatcherServlet = new DispatcherServlet();
 		simpleDispatcherServlet.setContextClass(SimpleWebApplicationContext.class);
 		simpleDispatcherServlet.init(servletConfig);
 
 		complexDispatcherServlet = new DispatcherServlet();
-		complexDispatcherServlet.setContextClass(ComplexWebApplicationContext.class);
+		complexDispatcherServlet.setContextClass(XmlWebApplicationContext.class);
 		complexDispatcherServlet.setNamespace("test");
 		complexDispatcherServlet.addRequiredProperty("publishContext");
 		complexDispatcherServlet.init(complexConfig);
@@ -106,17 +109,17 @@ public class DispatcherServletTests {
 	@Test
 	public void configuredDispatcherServlets() {
 		assertTrue("Correct namespace",
-				("simple" + FrameworkServlet.DEFAULT_NAMESPACE_SUFFIX).equals(simpleDispatcherServlet.getNamespace()));
+				   ("simple" + FrameworkServlet.DEFAULT_NAMESPACE_SUFFIX).equals(simpleDispatcherServlet.getNamespace()));
 		assertTrue("Correct attribute", (FrameworkServlet.SERVLET_CONTEXT_PREFIX + "simple").equals(
 				simpleDispatcherServlet.getServletContextAttributeName()));
 		assertTrue("Context published", simpleDispatcherServlet.getWebApplicationContext() ==
-				getServletContext().getAttribute(FrameworkServlet.SERVLET_CONTEXT_PREFIX + "simple"));
+										getServletContext().getAttribute(FrameworkServlet.SERVLET_CONTEXT_PREFIX + "simple"));
 
 		assertTrue("Correct namespace", "test".equals(complexDispatcherServlet.getNamespace()));
 		assertTrue("Correct attribute", (FrameworkServlet.SERVLET_CONTEXT_PREFIX + "complex").equals(
 				complexDispatcherServlet.getServletContextAttributeName()));
 		assertTrue("Context not published",
-				getServletContext().getAttribute(FrameworkServlet.SERVLET_CONTEXT_PREFIX + "complex") == null);
+				   getServletContext().getAttribute(FrameworkServlet.SERVLET_CONTEXT_PREFIX + "complex") == null);
 
 		simpleDispatcherServlet.destroy();
 		complexDispatcherServlet.destroy();
@@ -221,7 +224,7 @@ public class DispatcherServletTests {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		ComplexWebApplicationContext.MockMultipartResolver multipartResolver =
 				(ComplexWebApplicationContext.MockMultipartResolver) complexDispatcherServlet.getWebApplicationContext()
-						.getBean("multipartResolver");
+																							 .getBean("multipartResolver");
 		MultipartHttpServletRequest multipartRequest = multipartResolver.resolveMultipart(request);
 		complexDispatcherServlet.service(multipartRequest, response);
 		multipartResolver.cleanupMultipart(multipartRequest);
@@ -237,7 +240,7 @@ public class DispatcherServletTests {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		ComplexWebApplicationContext.MockMultipartResolver multipartResolver =
 				(ComplexWebApplicationContext.MockMultipartResolver) complexDispatcherServlet.getWebApplicationContext()
-						.getBean("multipartResolver");
+																							 .getBean("multipartResolver");
 		MultipartHttpServletRequest multipartRequest = multipartResolver.resolveMultipart(request);
 		complexDispatcherServlet.service(new HttpServletRequestWrapper(multipartRequest), response);
 		multipartResolver.cleanupMultipart(multipartRequest);
@@ -287,8 +290,7 @@ public class DispatcherServletTests {
 			complexDispatcherServlet.service(request, response);
 			assertEquals(200, response.getStatus());
 			assertTrue("forwarded to failed", "failed1.jsp".equals(response.getForwardedUrl()));
-		}
-		catch (ServletException ex) {
+		} catch (ServletException ex) {
 			fail("Should not have thrown ServletException: " + ex.getMessage());
 		}
 	}
@@ -407,8 +409,7 @@ public class DispatcherServletTests {
 		try {
 			complexDispatcherServlet.service(request, response);
 			assertTrue("Not forwarded", response.getForwardedUrl() == null);
-		}
-		catch (ServletException ex) {
+		} catch (ServletException ex) {
 			fail("Should not have thrown ServletException: " + ex.getMessage());
 		}
 	}
@@ -421,8 +422,7 @@ public class DispatcherServletTests {
 		try {
 			complexDispatcherServlet.service(request, response);
 			assertTrue("Correct response", response.getStatus() == HttpServletResponse.SC_FORBIDDEN);
-		}
-		catch (ServletException ex) {
+		} catch (ServletException ex) {
 			fail("Should not have thrown ServletException: " + ex.getMessage());
 		}
 	}
@@ -508,7 +508,7 @@ public class DispatcherServletTests {
 		complexDispatcherServlet.service(request, response);
 
 		assertFalse("Matched through parent controller/handler pair: not response=" + response.getStatus(),
-				response.getStatus() == HttpServletResponse.SC_NOT_FOUND);
+					response.getStatus() == HttpServletResponse.SC_NOT_FOUND);
 	}
 
 	@Test
@@ -563,8 +563,7 @@ public class DispatcherServletTests {
 		try {
 			complexDispatcherServlet.service(request, response);
 			fail("Should have thrown ServletException");
-		}
-		catch (ServletException ex) {
+		} catch (ServletException ex) {
 			// expected
 			assertTrue(ex.getMessage().contains("No adapter for handler"));
 		}
@@ -583,8 +582,7 @@ public class DispatcherServletTests {
 		try {
 			complexDispatcherServlet.service(request, response);
 			fail("Should have thrown ServletException");
-		}
-		catch (ServletException ex) {
+		} catch (ServletException ex) {
 			// expected
 			assertTrue(ex.getMessage().contains("failed0"));
 		}
@@ -724,8 +722,7 @@ public class DispatcherServletTests {
 		try {
 			complexDispatcherServlet.service(request, response);
 			fail("Should have thrown ServletException");
-		}
-		catch (ServletException ex) {
+		} catch (ServletException ex) {
 			ex.printStackTrace();
 		}
 	}
@@ -803,10 +800,10 @@ public class DispatcherServletTests {
 		try {
 			servlet.setEnvironment(new DummyEnvironment());
 			fail("expected IllegalArgumentException for non-configurable Environment");
+		} catch (IllegalArgumentException ex) {
 		}
-		catch (IllegalArgumentException ex) {
+		class CustomServletEnvironment extends StandardServletEnvironment {
 		}
-		class CustomServletEnvironment extends StandardServletEnvironment { }
 		@SuppressWarnings("serial")
 		DispatcherServlet custom = new DispatcherServlet() {
 			@Override
@@ -854,7 +851,7 @@ public class DispatcherServletTests {
 		DispatcherServlet servlet = new DispatcherServlet();
 		servlet.setContextClass(SimpleWebApplicationContext.class);
 		getServletContext().setInitParameter(ContextLoader.GLOBAL_INITIALIZER_CLASSES_PARAM,
-				TestWebContextInitializer.class.getName() + "," + OtherWebContextInitializer.class.getName());
+											 TestWebContextInitializer.class.getName() + "," + OtherWebContextInitializer.class.getName());
 		servlet.init(servletConfig);
 		assertEquals("true", getServletContext().getAttribute("initialized"));
 		assertEquals("true", getServletContext().getAttribute("otherInitialized"));
@@ -865,7 +862,7 @@ public class DispatcherServletTests {
 		DispatcherServlet servlet = new DispatcherServlet();
 		servlet.setContextClass(SimpleWebApplicationContext.class);
 		getServletContext().setInitParameter(ContextLoader.GLOBAL_INITIALIZER_CLASSES_PARAM,
-				TestWebContextInitializer.class.getName());
+											 TestWebContextInitializer.class.getName());
 		servlet.setContextInitializerClasses(OtherWebContextInitializer.class.getName());
 		servlet.init(servletConfig);
 		assertEquals("true", getServletContext().getAttribute("initialized"));
