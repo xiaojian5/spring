@@ -903,7 +903,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// 获取请求方法
+		// 获取请求方法的类型
 		HttpMethod httpMethod = HttpMethod.resolve(request.getMethod());
 		// 处理PATCH请求
 		if (httpMethod == HttpMethod.PATCH || httpMethod == null) {
@@ -1022,7 +1022,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 */
 	protected final void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+        // 记录当前时间，用于计算web请求的处理时间
 		long startTime = System.currentTimeMillis();
 		// 记录异常
 		Throwable failureCause = null;
@@ -1056,7 +1056,9 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 			if (requestAttributes != null) {
 				requestAttributes.requestCompleted();
 			}
+			// 请求打印日志，并且其日志级别为DEBUG
 			logResult(request, response, failureCause, asyncManager);
+			// 发布ServletRequestHandlerEvent事件
 			publishRequestHandledEvent(request, response, startTime, failureCause);
 		}
 	}
@@ -1171,10 +1173,11 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 
 	private void publishRequestHandledEvent(HttpServletRequest request, HttpServletResponse response,
 			long startTime, @Nullable Throwable failureCause) {
-
+        // 如果开启事件发布
 		if (this.publishEvents && this.webApplicationContext != null) {
 			// Whether or not we succeeded, publish an event.
 			long processingTime = System.currentTimeMillis() - startTime;
+			// 创建ServletRequestHandledEvent事件，并进行发布
 			this.webApplicationContext.publishEvent(
 					new ServletRequestHandledEvent(this,
 							request.getRequestURI(), request.getRemoteAddr(),

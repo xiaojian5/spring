@@ -933,6 +933,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	@Override
 	protected void doService(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// 打印日志请求，并且日志级别为DEBUG
 		logRequest(request);
 
 		// Keep a snapshot of the request attributes in case of an include,
@@ -966,7 +967,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 
 		try {
-			// 执行请求的分发
+			// 执行请求分发 DispatcherServlet的核心流程
 			doDispatch(request, response);
 		}
 		finally {

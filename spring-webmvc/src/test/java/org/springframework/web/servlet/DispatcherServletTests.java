@@ -105,7 +105,9 @@ public class DispatcherServletTests {
 		return servletConfig.getServletContext();
 	}
 
-	// web容器初始化过程
+	/**
+	 * web容器初始化过程单元测试，主要调试点在setup方法中
+	 */
 	@Test
 	public void configuredDispatcherServlets() {
 		assertTrue("Correct namespace",
@@ -125,6 +127,9 @@ public class DispatcherServletTests {
 		complexDispatcherServlet.destroy();
 	}
 
+	/**
+	 * 非法请求单元测试
+	 */
 	@Test
 	public void invalidRequest() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest(getServletContext(), "GET", "/invalid.do");
