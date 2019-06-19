@@ -516,15 +516,15 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 		String lookupPath = this.urlPathHelper.getLookupPathForRequest(request);
 		// 遍历adapterInterceptors数组，获得请求匹配的拦截器
 		for (HandlerInterceptor interceptor : this.adaptedInterceptors) {
-			// 需要匹配，若路径匹配，则添加到chain中
+			// 若Interceptor类型为MappedInterceptor，则需进行路径匹配
 			if (interceptor instanceof MappedInterceptor) {
 				MappedInterceptor mappedInterceptor = (MappedInterceptor) interceptor;
-				// 匹配
+				// 进行路径匹配匹配
 				if (mappedInterceptor.matches(lookupPath, this.pathMatcher)) {
 					chain.addInterceptor(mappedInterceptor.getInterceptor());
 				}
 			}
-			// 无需匹配，则直接添加到chain中
+			//  不是MappedInterceptor则无需匹配，则直接添加到chain中
 			else {
 				chain.addInterceptor(interceptor);
 			}

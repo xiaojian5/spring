@@ -153,7 +153,7 @@ public class HandlerExecutionChain {
 		// 获得拦截器数组
 		HandlerInterceptor[] interceptors = getInterceptors();
 		if (!ObjectUtils.isEmpty(interceptors)) {
-			// 遍历
+			// 遍历  拦截器的前置处理为顺序执行的
 			for (int i = 0; i < interceptors.length; i++) {
 				HandlerInterceptor interceptor = interceptors[i];
 				// 前置处理
@@ -162,13 +162,14 @@ public class HandlerExecutionChain {
 					// 注意这里不是触发当前拦截器已完成的逻辑，而是触发[0,interceptorIndex]这几个拦截器已完成
 					// 的逻辑（不包括当前这个拦截器）,并且是按照倒序执行的
 					triggerAfterCompletion(request, response, null);
-					// 处理失败，返回false
+					// 有拦截器处理失败，则返回false，从而使handle处理不能继续进行下去，实现拦截
 					return false;
 				}
 				// 标记interceptor的位置
 				this.interceptorIndex = i;
 			}
 		}
+		// 只有拦截器全部执行成功，才会返回true
 		return true;
 	}
 
@@ -178,7 +179,7 @@ public class HandlerExecutionChain {
 	 */
 	void applyPostHandle(HttpServletRequest request, HttpServletResponse response, @Nullable ModelAndView mv)
 			throws Exception {
-        // 获得拦截器数组
+        // 获得拦截器数组 后置处理倒序执行
 		HandlerInterceptor[] interceptors = getInterceptors();
 		if (!ObjectUtils.isEmpty(interceptors)) {
 			for (int i = interceptors.length - 1; i >= 0; i--) {

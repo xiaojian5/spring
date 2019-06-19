@@ -160,6 +160,7 @@ public final class MappedInterceptor implements HandlerInterceptor {
 		if (!ObjectUtils.isEmpty(this.excludePatterns)) {
 			// 遍历excludePatterns 匹配则返回false表示不执行
 			for (String pattern : this.excludePatterns) {
+				// 这里表示的是exclude标签中的路径，如果匹配其中的路径，当然是不执行
 				if (pathMatcherToUse.match(pattern, lookupPath)) {
 					return false;
 				}
@@ -171,6 +172,7 @@ public final class MappedInterceptor implements HandlerInterceptor {
 		}
 		// 如果includePatterns不为空，如果路径匹配，则返回true
 		for (String pattern : this.includePatterns) {
+			// include标签的的属性，匹配才能返回true
 			if (pathMatcherToUse.match(pattern, lookupPath)) {
 				return true;
 			}
