@@ -88,14 +88,16 @@ public class DispatcherServletTests {
 		complexConfig.addInitParameter("publishContext", "false");
 		complexConfig.addInitParameter("class", "notWritable");
 		complexConfig.addInitParameter("unknownParam", "someValue");
-		complexConfig.addInitParameter(ContextLoader.CONFIG_LOCATION_PARAM,
-							"/org/springframework/web/context/WEB-INF/empty-servlet.xml");
+		/*complexConfig.addInitParameter(ContextLoader.CONFIG_LOCATION_PARAM,
+							"/org/springframework/web/context/WEB-INF/empty-servlet.xml");*/
 		simpleDispatcherServlet = new DispatcherServlet();
 		simpleDispatcherServlet.setContextClass(SimpleWebApplicationContext.class);
 		simpleDispatcherServlet.init(servletConfig);
 
 		complexDispatcherServlet = new DispatcherServlet();
-		complexDispatcherServlet.setContextClass(XmlWebApplicationContext.class);
+		// 在执行web容器初始化单元测试的时候，可以将contextClass 改成XmlWebApplicationContext，或者不赋值
+		// 并且将上面注释打开
+		complexDispatcherServlet.setContextClass(ComplexWebApplicationContext.class);
 		complexDispatcherServlet.setNamespace("test");
 		complexDispatcherServlet.addRequiredProperty("publishContext");
 		complexDispatcherServlet.init(complexConfig);
@@ -139,6 +141,9 @@ public class DispatcherServletTests {
 		assertTrue("correct error code", response.getStatus() == HttpServletResponse.SC_NOT_FOUND);
 	}
 
+	/**
+	 * 存在Handler请求的单元测试，关注initHandlerMappings方法，获得HandlerMapping
+	 */
 	@Test
 	public void requestHandledEvent() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest(getServletContext(), "GET", "/locale.do");
@@ -162,6 +167,9 @@ public class DispatcherServletTests {
 		assertEquals(0, listener.counter);
 	}
 
+	/**
+	 * *****该单元测试内容比较完成，包含了拦截器的相关操作，详细Debug*****
+	 */
 	@Test
 	public void parameterizableViewController() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest(getServletContext(), "GET", "/view.do");

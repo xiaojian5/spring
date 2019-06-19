@@ -36,6 +36,7 @@ import org.springframework.util.ObjectUtils;
  * @since 20.06.2003
  * @see HandlerInterceptor
  */
+// 处理器执行链
 public class HandlerExecutionChain {
 
 	private static final Log logger = LogFactory.getLog(HandlerExecutionChain.class);

@@ -604,6 +604,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		this.handlerMappings = null;
 
 		// 如果开启探测功能，则扫描已注册的HandlerMapping的bean，添加到handlerMappings中
+		// 默认开启检测功能，该值默认为true
 		if (this.detectAllHandlerMappings) {
 			// Find all HandlerMappings in the ApplicationContext, including ancestor contexts.
 			// 扫描已注册的HandlerMapping的bean
@@ -1026,16 +1027,20 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		HttpServletRequest processedRequest = request;
+		// 处理器执行链对象
 		HandlerExecutionChain mappedHandler = null;
 		boolean multipartRequestParsed = false;
 
 		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
 
 		try {
+			// 视图对象
 			ModelAndView mv = null;
+			// 异常记录对象
 			Exception dispatchException = null;
 
 			try {
+				// 检查是否是上传请求
 				processedRequest = checkMultipart(request);
 				multipartRequestParsed = (processedRequest != request);
 
@@ -1069,7 +1074,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				}
 
 				// Actually invoke the handler.
-				// 调用处理器逻辑
+				// 调用处理器逻辑 真正的调用handler，并返回视图，这里一般会调用我们定义的Controller方法
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
 				if (asyncManager.isConcurrentHandlingStarted()) {
@@ -1079,10 +1084,11 @@ public class DispatcherServlet extends FrameworkServlet {
 				// 如果controller未返回view名称，则生成默认的view名称
 				applyDefaultViewName(processedRequest, mv);
 
-				// 执行拦截器preHandle方法
+				// 执行拦截器postHandle方法
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
 			}
 			catch (Exception ex) {
+				// 这里仅仅记录了异常 会在processDispatchResult函数中处理
 				dispatchException = ex;
 			}
 			catch (Throwable err) {
@@ -1090,10 +1096,11 @@ public class DispatcherServlet extends FrameworkServlet {
 				// making them available for @ExceptionHandler methods and other scenarios.
 				dispatchException = new NestedServletException("Handler dispatch failed", err);
 			}
-			// 解析并渲染视图
+			// 解析并渲染视图 正常的、异常的都会在此进行处理
 			processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
 		}
 		catch (Exception ex) {
+			// 触发拦截器已完成
 			triggerAfterCompletion(processedRequest, response, mappedHandler, ex);
 		}
 		catch (Throwable err) {
@@ -1109,6 +1116,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			}
 			else {
 				// Clean up any resources used by a multipart request.
+				// 如果是上传请求，需要清理资源
 				if (multipartRequestParsed) {
 					cleanupMultipart(processedRequest);
 				}
@@ -1178,6 +1186,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		// 已完成处理拦截器
 		if (mappedHandler != null) {
+			// 在拦截器正常执行完后，还是会触发已完成动作
 			mappedHandler.triggerAfterCompletion(request, response, null);
 		}
 	}
@@ -1408,7 +1417,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		// 使用viewName获得view对象
 		if (viewName != null) {
 			// We need to resolve the view name.
-			// 解析视图
+			// 解析视图通过viewName
 			view = resolveViewName(viewName, mv.getModelInternal(), locale, request);
 			// 获取不到，则抛出异常
 			if (view == null) {

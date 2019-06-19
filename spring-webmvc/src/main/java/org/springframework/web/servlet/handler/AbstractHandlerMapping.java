@@ -336,6 +336,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	 * @param mappedInterceptors an empty list to add {@link MappedInterceptor} instances to
 	 */
 	protected void detectMappedInterceptors(List<HandlerInterceptor> mappedInterceptors) {
+		// 这里就是扫描interceptor
 		// 扫描已注册的MappedInterceptor的bean，添加到mappedInterceptors中
 		// MappedInterceptor会根据请求路径做匹配，是否进行拦截
 		mappedInterceptors.addAll(
@@ -380,12 +381,15 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	 * @see WebRequestHandlerInterceptorAdapter
 	 */
 	protected HandlerInterceptor adaptInterceptor(Object interceptor) {
+		// 如果是HandlerInterceptor，则直接返回
 		if (interceptor instanceof HandlerInterceptor) {
 			return (HandlerInterceptor) interceptor;
 		}
+		// 如果是WebRequestInterceptor，则封装成WebRequestHandlerInterceptorAdapter对象返回
 		else if (interceptor instanceof WebRequestInterceptor) {
 			return new WebRequestHandlerInterceptorAdapter((WebRequestInterceptor) interceptor);
 		}
+		// 错误类型 抛出异常
 		else {
 			throw new IllegalArgumentException("Interceptor type not supported: " + interceptor.getClass().getName());
 		}
@@ -431,6 +435,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 		Object handler = getHandlerInternal(request);
 		// 获得不到，则使用默认处理器
 		if (handler == null) {
+			// 默认处理器一般为null
 			handler = getDefaultHandler();
 		}
 		// 如果还是获取不到，则返回null
