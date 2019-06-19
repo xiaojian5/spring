@@ -61,7 +61,7 @@ public class HandlerExecutionChain {
 
 	/**
 	 * 已执行{@link HandlerInterceptor#preHandle(HttpServletRequest, HttpServletResponse, Object)}的位置
-	 * 主要用于实现{@link #applyPostHandle(HttpServletRequest, HttpServletResponse, ModelAndView)}的逻辑
+	 * 主要用于实现{@link #triggerAfterCompletion(HttpServletRequest, HttpServletResponse, Exception)}的逻辑
 	 */
 	private int interceptorIndex = -1;
 
