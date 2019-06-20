@@ -54,6 +54,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
@@ -164,21 +165,24 @@ public class HandlerMethodAnnotationDetectionTests {
 //		assertNotNull(chain);
 		MockHttpServletResponse response1 = new MockHttpServletResponse();
 		dispatcherServlet.service(request2,response1);
-		ModelAndView mav = handlerAdapter.handle(request2, new MockHttpServletResponse(), chain2.getHandler());
+		System.out.println(response1.getContentAsString());
+		assertEquals("hello sping mvc",response1.getContentAsString());
+		/*ModelAndView mav = handlerAdapter.handle(request2, new MockHttpServletResponse(), chain2.getHandler());
 		assertEquals("model attr1:", dateFormat.parse(dateA), mav.getModel().get("attr1"));
 		assertEquals("model attr2:", dateFormat.parse(dateB), mav.getModel().get("attr2"));
 
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		exceptionResolver.resolveException(request, response, chain.getHandler(), new Exception("failure"));
 		assertEquals("text/plain;charset=ISO-8859-1", response.getHeader("Content-Type"));
-		assertEquals("failure", response.getContentAsString());
+		assertEquals("failure", response.getContentAsString());*/
 	}
 
 
 	/**
 	 * SIMPLE CASE
 	 */
-	@Controller
+//	@Controller
+	@RestController
 	static class SimpleController {
 
 		/*@InitBinder
