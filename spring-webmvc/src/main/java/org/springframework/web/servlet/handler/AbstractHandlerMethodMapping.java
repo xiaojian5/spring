@@ -216,10 +216,11 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		// 遍历bean
 		for (String beanName : getCandidateBeanNames()) {
 			if (!beanName.startsWith(SCOPED_TARGET_NAME_PREFIX)) {
-				// 处理bean
+				// 处理bean 判断bean是否为处理器，如果是，则扫描处理器方法
 				processCandidateBean(beanName);
 			}
 		}
+		// 目前该方法仅仅打印了日志
 		handlerMethodsInitialized(getHandlerMethods());
 	}
 
@@ -550,16 +551,37 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 */
 	class MappingRegistry {
 
+		/**
+		 * 注册表
+		 * key:Mapping
+		 */
 		private final Map<T, MappingRegistration<T>> registry = new HashMap<>();
 
+		/**
+		 * 注册表
+		 * key:Mapping
+		 */
 		private final Map<T, HandlerMethod> mappingLookup = new LinkedHashMap<>();
 
+		/**
+		 * 直接URL的映射
+		 * key:直接URL
+		 * value:Mapping数组
+		 */
 		private final MultiValueMap<String, T> urlLookup = new LinkedMultiValueMap<>();
 
+		/**
+		 * Mapping的名字与HandlerMethod的映射
+		 * key：Mapping的名字
+		 * value:HandlerMethod数组
+		 */
 		private final Map<String, List<HandlerMethod>> nameLookup = new ConcurrentHashMap<>();
 
 		private final Map<HandlerMethod, CorsConfiguration> corsLookup = new ConcurrentHashMap<>();
 
+		/**
+		 * 读写锁
+		 */
 		private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
 		/**
@@ -647,7 +669,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 		private void assertUniqueMethodMapping(HandlerMethod newHandlerMethod, T mapping) {
 			HandlerMethod handlerMethod = this.mappingLookup.get(mapping);
-			// 存在且不相等，则说明不唯一
+			// 这里说明存在两个相同的请求方法，则抛出异常
 			if (handlerMethod != null && !handlerMethod.equals(newHandlerMethod)) {
 				throw new IllegalStateException(
 						"Ambiguous mapping. Cannot map '" +	newHandlerMethod.getBean() + "' method \n" +

@@ -71,6 +71,9 @@ public class HandlerMethodMappingTests {
 	}
 
 
+	/**
+	 * 该映射表明spring mvc中不能注册两个相同的method(可简单理解为两个相同的 api url)
+	 */
 	@Test(expected = IllegalStateException.class)
 	public void registerDuplicates() {
 		this.mapping.registerMapping("foo", this.handler, this.method1);
@@ -244,7 +247,6 @@ public class HandlerMethodMappingTests {
 		assertNotNull(config);
 		assertEquals("http://" + beanName.hashCode() + this.method1.getName(), config.getAllowedOrigins().get(0));
 	}
-
 
 
 	private static class MyHandlerMethodMapping extends AbstractHandlerMethodMapping<String> {

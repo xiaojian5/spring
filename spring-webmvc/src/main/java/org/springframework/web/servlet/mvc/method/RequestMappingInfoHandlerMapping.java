@@ -111,7 +111,9 @@ public abstract class RequestMappingInfoHandlerMapping extends AbstractHandlerMe
 	protected void handleMatch(RequestMappingInfo info, String lookupPath, HttpServletRequest request) {
 		super.handleMatch(info, lookupPath, request);
 
+		// 最佳路径
 		String bestPattern;
+		// 路径上的变量集合
 		Map<String, String> uriVariables;
 
 		Set<String> patterns = info.getPatternsCondition().getPatterns();
@@ -126,6 +128,7 @@ public abstract class RequestMappingInfoHandlerMapping extends AbstractHandlerMe
 
 		request.setAttribute(BEST_MATCHING_PATTERN_ATTRIBUTE, bestPattern);
 
+		// 设置MATRIX_VARIABLES_ATTRIBUTE属性到请求中
 		if (isMatrixVariableContentAvailable()) {
 			Map<String, MultiValueMap<String, String>> matrixVars = extractMatrixVariables(request, uriVariables);
 			request.setAttribute(HandlerMapping.MATRIX_VARIABLES_ATTRIBUTE, matrixVars);
