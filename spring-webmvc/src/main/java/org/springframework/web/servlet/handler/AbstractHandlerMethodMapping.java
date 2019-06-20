@@ -559,14 +559,15 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 		/**
 		 * 注册表
-		 * key:Mapping
+		 * key:Mapping 映射 可理解为api url
+		 * value:HandlerMethod对象
 		 */
 		private final Map<T, HandlerMethod> mappingLookup = new LinkedHashMap<>();
 
 		/**
 		 * 直接URL的映射
 		 * key:直接URL
-		 * value:Mapping数组
+		 * value:Mapping 映射
 		 */
 		private final MultiValueMap<String, T> urlLookup = new LinkedMultiValueMap<>();
 
@@ -682,7 +683,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			// 遍历mapping对应的路径
 			List<String> urls = new ArrayList<>(1);
 			for (String path : getMappingPathPatterns(mapping)) {
-				// 非**模式路径
+				// 非/*模式路径
 				if (!getPathMatcher().isPattern(path)) {
 					urls.add(path);
 				}

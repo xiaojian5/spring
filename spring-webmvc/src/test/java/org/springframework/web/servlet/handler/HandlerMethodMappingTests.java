@@ -72,7 +72,7 @@ public class HandlerMethodMappingTests {
 
 
 	/**
-	 * 该映射表明spring mvc中不能注册两个相同的method(可简单理解为两个相同的 api url)
+	 * 该单元测试表明spring mvc中不能注册两个相同的method(可简单理解为两个相同的 api url)
 	 */
 	@Test(expected = IllegalStateException.class)
 	public void registerDuplicates() {

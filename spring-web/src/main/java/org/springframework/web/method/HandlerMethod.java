@@ -124,6 +124,7 @@ public class HandlerMethod {
 		this.bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
 		// 初始化parameters属性
 		this.parameters = initMethodParameters();
+		// 检测是否有@ResponseStatus注解
 		evaluateResponseStatus();
 		this.description = initDescription(this.beanType, this.method);
 	}

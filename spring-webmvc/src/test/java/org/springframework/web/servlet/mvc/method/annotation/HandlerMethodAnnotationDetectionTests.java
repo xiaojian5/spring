@@ -19,7 +19,12 @@ package org.springframework.web.servlet.mvc.method.annotation;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.servlet.ServletException;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -35,6 +40,9 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.mock.web.test.MockHttpServletRequest;
 import org.springframework.mock.web.test.MockHttpServletResponse;
+import org.springframework.mock.web.test.MockServletConfig;
+import org.springframework.mock.web.test.MockServletContext;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
@@ -46,9 +54,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.support.GenericWebApplicationContext;
+import org.springframework.web.context.support.XmlWebApplicationContext;
+import org.springframework.web.servlet.ComplexWebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.SimpleWebApplicationContext;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import static org.junit.Assert.*;
 
@@ -60,35 +74,37 @@ import static org.junit.Assert.*;
  * @author Rossen Stoyanchev
  * @author Sam Brannen
  */
-@RunWith(Parameterized.class)
+// 注意，这里使用了@RunWith注解，配合@Parameters注解，会自动进行构造函数的创建，注意这里构造函数入参也是两个
+// 这里会依次使用	@Parameters注解中的值进行测试
+//@RunWith(Parameterized.class)
 public class HandlerMethodAnnotationDetectionTests {
 
 	@Parameters(name = "controller [{0}], auto-proxy [{1}]")
 	public static Object[][] handlerTypes() {
-		return new Object[][] {
-				{ SimpleController.class, true }, // CGLIB proxy
-				{ SimpleController.class, false },
+		return new Object[][]{
+				{SimpleController.class, true}, // CGLIB proxy
+				{SimpleController.class, false},
 
-				{ AbstractClassController.class, true }, // CGLIB proxy
-				{ AbstractClassController.class, false },
+				{AbstractClassController.class, true}, // CGLIB proxy
+				{AbstractClassController.class, false},
 
-				{ ParameterizedAbstractClassController.class, true }, // CGLIB proxy
-				{ ParameterizedAbstractClassController.class, false },
+				{ParameterizedAbstractClassController.class, true}, // CGLIB proxy
+				{ParameterizedAbstractClassController.class, false},
 
-				{ ParameterizedSubclassOverridesDefaultMappings.class, true }, // CGLIB proxy
-				{ ParameterizedSubclassOverridesDefaultMappings.class, false },
+				{ParameterizedSubclassOverridesDefaultMappings.class, true}, // CGLIB proxy
+				{ParameterizedSubclassOverridesDefaultMappings.class, false},
 
 				// TODO [SPR-9517] Enable ParameterizedSubclassDoesNotOverrideConcreteImplementationsFromGenericAbstractSuperclass test cases
 				// { ParameterizedSubclassDoesNotOverrideConcreteImplementationsFromGenericAbstractSuperclass.class, true }, // CGLIB proxy
 				// { ParameterizedSubclassDoesNotOverrideConcreteImplementationsFromGenericAbstractSuperclass.class, false },
 
-				{ InterfaceController.class, true }, // JDK dynamic proxy
-				{ InterfaceController.class, false },
+				{InterfaceController.class, true}, // JDK dynamic proxy
+				{InterfaceController.class, false},
 
-				{ ParameterizedInterfaceController.class, false }, // no AOP
+				{ParameterizedInterfaceController.class, false}, // no AOP
 
-				{ SupportClassController.class, true }, // CGLIB proxy
-				{ SupportClassController.class, false }
+				{SupportClassController.class, true}, // CGLIB proxy
+				{SupportClassController.class, false}
 		};
 	}
 
@@ -98,14 +114,18 @@ public class HandlerMethodAnnotationDetectionTests {
 
 	private ExceptionHandlerExceptionResolver exceptionResolver = new ExceptionHandlerExceptionResolver();
 
+	private DispatcherServlet dispatcherServlet=new DispatcherServlet();
 
-	public HandlerMethodAnnotationDetectionTests(Class<?> controllerType, boolean useAutoProxy) {
-		GenericWebApplicationContext context = new GenericWebApplicationContext();
-		context.registerBeanDefinition("controller", new RootBeanDefinition(controllerType));
+	private final MockServletConfig servletConfig = new MockServletConfig(new MockServletContext(), "simple");
+
+	//Class<?> controllerType, boolean useAutoProxy
+	public HandlerMethodAnnotationDetectionTests() throws ServletException {
+
+		/*context.registerBeanDefinition("controller", new RootBeanDefinition(SimpleController.class));
 		context.registerBeanDefinition("handlerMapping", new RootBeanDefinition(RequestMappingHandlerMapping.class));
 		context.registerBeanDefinition("handlerAdapter", new RootBeanDefinition(RequestMappingHandlerAdapter.class));
 		context.registerBeanDefinition("exceptionResolver", new RootBeanDefinition(ExceptionHandlerExceptionResolver.class));
-		if (useAutoProxy) {
+		if (true) {
 			DefaultAdvisorAutoProxyCreator autoProxyCreator = new DefaultAdvisorAutoProxyCreator();
 			autoProxyCreator.setBeanFactory(context.getBeanFactory());
 			context.getBeanFactory().addBeanPostProcessor(autoProxyCreator);
@@ -116,12 +136,17 @@ public class HandlerMethodAnnotationDetectionTests {
 		this.handlerMapping = context.getBean(RequestMappingHandlerMapping.class);
 		this.handlerAdapter = context.getBean(RequestMappingHandlerAdapter.class);
 		this.exceptionResolver = context.getBean(ExceptionHandlerExceptionResolver.class);
-		context.close();
+		context.close();*/
 	}
-
 
 	@Test
 	public void testRequestMappingMethod() throws Exception {
+		MockServletConfig complexConfig = new MockServletConfig(servletConfig.getServletContext());
+		complexConfig.addInitParameter(ContextLoader.CONFIG_LOCATION_PARAM,
+				"/org/springframework/web/context/WEB-INF/empty-servlet.xml");
+		GenericWebApplicationContext context = new GenericWebApplicationContext();
+		dispatcherServlet.setContextClass(XmlWebApplicationContext.class);
+		dispatcherServlet.init(complexConfig);
 		String datePattern = "MM:dd:yyyy";
 		SimpleDateFormat dateFormat = new SimpleDateFormat(datePattern);
 		String dateA = "11:01:2011";
@@ -131,12 +156,15 @@ public class HandlerMethodAnnotationDetectionTests {
 		request.setParameter("datePattern", datePattern);
 		request.addHeader("header1", dateA);
 		request.addHeader("header2", dateB);
+		MockHttpServletRequest request2 = new MockHttpServletRequest("POST", "/path3/path4");
+		request2.setParameter("input", "hello sping mvc");
 
 		HandlerExecutionChain chain = handlerMapping.getHandler(request);
-		assertNotNull(chain);
-
-		ModelAndView mav = handlerAdapter.handle(request, new MockHttpServletResponse(), chain.getHandler());
-
+		HandlerExecutionChain chain2 = handlerMapping.getHandler(request2);
+//		assertNotNull(chain);
+		MockHttpServletResponse response1 = new MockHttpServletResponse();
+		dispatcherServlet.service(request2,response1);
+		ModelAndView mav = handlerAdapter.handle(request2, new MockHttpServletResponse(), chain2.getHandler());
 		assertEquals("model attr1:", dateFormat.parse(dateA), mav.getModel().get("attr1"));
 		assertEquals("model attr2:", dateFormat.parse(dateB), mav.getModel().get("attr2"));
 
@@ -153,7 +181,7 @@ public class HandlerMethodAnnotationDetectionTests {
 	@Controller
 	static class SimpleController {
 
-		@InitBinder
+		/*@InitBinder
 		public void initBinder(WebDataBinder dataBinder, @RequestParam("datePattern") String pattern) {
 			CustomDateEditor dateEditor = new CustomDateEditor(new SimpleDateFormat(pattern), false);
 			dataBinder.registerCustomEditor(Date.class, dateEditor);
@@ -162,12 +190,18 @@ public class HandlerMethodAnnotationDetectionTests {
 		@ModelAttribute
 		public void initModel(@RequestHeader("header1") Date date, Model model) {
 			model.addAttribute("attr1", date);
-		}
+		}*/
 
-		@RequestMapping(value="/path1/path2", method=RequestMethod.POST)
+		@RequestMapping(value = "/path1/path2", method = RequestMethod.POST)
 		@ModelAttribute("attr2")
 		public Date handle(@RequestHeader("header2") Date date) throws Exception {
 			return date;
+		}
+
+		// 新增一个接口
+		@RequestMapping(value = "/path3/path4", method = RequestMethod.POST)
+		public String newHandle(String input) {
+			return input;
 		}
 
 		@ExceptionHandler(Exception.class)
@@ -187,7 +221,7 @@ public class HandlerMethodAnnotationDetectionTests {
 		@ModelAttribute
 		public abstract void initModel(Date date, Model model);
 
-		@RequestMapping(value="/path1/path2", method=RequestMethod.POST)
+		@RequestMapping(value = "/path1/path2", method = RequestMethod.POST)
 		@ModelAttribute("attr2")
 		public abstract Date handle(Date date, Model model) throws Exception;
 
@@ -236,7 +270,7 @@ public class HandlerMethodAnnotationDetectionTests {
 		@ModelAttribute
 		void initModel(@RequestHeader("header1") Date date, Model model);
 
-		@RequestMapping(value="/path1/path2", method=RequestMethod.POST)
+		@RequestMapping(value = "/path1/path2", method = RequestMethod.POST)
 		@ModelAttribute("attr2")
 		Date handle(@RequestHeader("header2") Date date, Model model) throws Exception;
 
@@ -285,7 +319,7 @@ public class HandlerMethodAnnotationDetectionTests {
 		@ModelAttribute
 		public abstract void initModel(B date, Model model);
 
-		@RequestMapping(value="/path1/path2", method=RequestMethod.POST)
+		@RequestMapping(value = "/path1/path2", method = RequestMethod.POST)
 		@ModelAttribute("attr2")
 		public abstract Date handle(C date, Model model) throws Exception;
 
@@ -429,7 +463,7 @@ public class HandlerMethodAnnotationDetectionTests {
 		@ModelAttribute
 		void initModel(B date, Model model);
 
-		@RequestMapping(value="/path1/path2", method=RequestMethod.POST)
+		@RequestMapping(value = "/path1/path2", method = RequestMethod.POST)
 		@ModelAttribute("attr2")
 		Date handle(C date, Model model) throws Exception;
 
@@ -460,7 +494,7 @@ public class HandlerMethodAnnotationDetectionTests {
 		}
 
 		@Override
-		@RequestMapping(value="/path1/path2", method=RequestMethod.POST)
+		@RequestMapping(value = "/path1/path2", method = RequestMethod.POST)
 		@ModelAttribute("attr2")
 		public Date handle(@RequestHeader("header2") Date date, Model model) throws Exception {
 			return date;
@@ -493,7 +527,7 @@ public class HandlerMethodAnnotationDetectionTests {
 			model.addAttribute("attr1", date);
 		}
 
-		@RequestMapping(value="/path2", method=RequestMethod.POST)
+		@RequestMapping(value = "/path2", method = RequestMethod.POST)
 		@ModelAttribute("attr2")
 		public Date handle(@RequestHeader("header2") Date date, Model model) throws Exception {
 			return date;
