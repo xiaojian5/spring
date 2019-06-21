@@ -77,7 +77,7 @@ import static org.junit.Assert.*;
  */
 // 注意，这里使用了@RunWith注解，配合@Parameters注解，会自动进行构造函数的创建，注意这里构造函数入参也是两个
 // 这里会依次使用	@Parameters注解中的值进行测试
-//@RunWith(Parameterized.class)
+@RunWith(Parameterized.class)
 public class HandlerMethodAnnotationDetectionTests {
 
 	@Parameters(name = "controller [{0}], auto-proxy [{1}]")
@@ -115,14 +115,9 @@ public class HandlerMethodAnnotationDetectionTests {
 
 	private ExceptionHandlerExceptionResolver exceptionResolver = new ExceptionHandlerExceptionResolver();
 
-	private DispatcherServlet dispatcherServlet=new DispatcherServlet();
-
-	private final MockServletConfig servletConfig = new MockServletConfig(new MockServletContext(), "simple");
-
-	//Class<?> controllerType, boolean useAutoProxy
-	public HandlerMethodAnnotationDetectionTests() throws ServletException {
-
-		/*context.registerBeanDefinition("controller", new RootBeanDefinition(SimpleController.class));
+	public HandlerMethodAnnotationDetectionTests(Class<?> controllerType, boolean useAutoProxy) throws ServletException {
+		GenericWebApplicationContext context = new GenericWebApplicationContext();
+		context.registerBeanDefinition("controller", new RootBeanDefinition(SimpleController.class));
 		context.registerBeanDefinition("handlerMapping", new RootBeanDefinition(RequestMappingHandlerMapping.class));
 		context.registerBeanDefinition("handlerAdapter", new RootBeanDefinition(RequestMappingHandlerAdapter.class));
 		context.registerBeanDefinition("exceptionResolver", new RootBeanDefinition(ExceptionHandlerExceptionResolver.class));
@@ -137,17 +132,11 @@ public class HandlerMethodAnnotationDetectionTests {
 		this.handlerMapping = context.getBean(RequestMappingHandlerMapping.class);
 		this.handlerAdapter = context.getBean(RequestMappingHandlerAdapter.class);
 		this.exceptionResolver = context.getBean(ExceptionHandlerExceptionResolver.class);
-		context.close();*/
+		context.close();
 	}
 
 	@Test
 	public void testRequestMappingMethod() throws Exception {
-		MockServletConfig complexConfig = new MockServletConfig(servletConfig.getServletContext());
-		complexConfig.addInitParameter(ContextLoader.CONFIG_LOCATION_PARAM,
-				"/org/springframework/web/context/WEB-INF/empty-servlet.xml");
-		GenericWebApplicationContext context = new GenericWebApplicationContext();
-		dispatcherServlet.setContextClass(XmlWebApplicationContext.class);
-		dispatcherServlet.init(complexConfig);
 		String datePattern = "MM:dd:yyyy";
 		SimpleDateFormat dateFormat = new SimpleDateFormat(datePattern);
 		String dateA = "11:01:2011";
@@ -157,35 +146,27 @@ public class HandlerMethodAnnotationDetectionTests {
 		request.setParameter("datePattern", datePattern);
 		request.addHeader("header1", dateA);
 		request.addHeader("header2", dateB);
-		MockHttpServletRequest request2 = new MockHttpServletRequest("POST", "/path3/path4");
-		request2.setParameter("input", "hello sping mvc");
 
 		HandlerExecutionChain chain = handlerMapping.getHandler(request);
-		HandlerExecutionChain chain2 = handlerMapping.getHandler(request2);
-//		assertNotNull(chain);
-		MockHttpServletResponse response1 = new MockHttpServletResponse();
-		dispatcherServlet.service(request2,response1);
-		System.out.println(response1.getContentAsString());
-		assertEquals("hello sping mvc",response1.getContentAsString());
-		/*ModelAndView mav = handlerAdapter.handle(request2, new MockHttpServletResponse(), chain2.getHandler());
+		assertNotNull(chain);
+		ModelAndView mav = handlerAdapter.handle(request, new MockHttpServletResponse(), chain.getHandler());
 		assertEquals("model attr1:", dateFormat.parse(dateA), mav.getModel().get("attr1"));
 		assertEquals("model attr2:", dateFormat.parse(dateB), mav.getModel().get("attr2"));
 
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		exceptionResolver.resolveException(request, response, chain.getHandler(), new Exception("failure"));
 		assertEquals("text/plain;charset=ISO-8859-1", response.getHeader("Content-Type"));
-		assertEquals("failure", response.getContentAsString());*/
+		assertEquals("failure", response.getContentAsString());
 	}
 
 
 	/**
 	 * SIMPLE CASE
 	 */
-//	@Controller
-	@RestController
+	@Controller
 	static class SimpleController {
 
-		/*@InitBinder
+		@InitBinder
 		public void initBinder(WebDataBinder dataBinder, @RequestParam("datePattern") String pattern) {
 			CustomDateEditor dateEditor = new CustomDateEditor(new SimpleDateFormat(pattern), false);
 			dataBinder.registerCustomEditor(Date.class, dateEditor);
@@ -194,7 +175,7 @@ public class HandlerMethodAnnotationDetectionTests {
 		@ModelAttribute
 		public void initModel(@RequestHeader("header1") Date date, Model model) {
 			model.addAttribute("attr1", date);
-		}*/
+		}
 
 		@RequestMapping(value = "/path1/path2", method = RequestMethod.POST)
 		@ModelAttribute("attr2")

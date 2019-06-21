@@ -859,7 +859,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 			logger.debug("Searching directory [" + dir.getAbsolutePath() +
 					"] for files matching pattern [" + fullPattern + "]");
 		}
-		System.out.println("PathMatchingResourcePatternResolver#doRetrieveMatchingFiles找到包下所有class文件（dir.listFiles()）");
+		// 找到包下所有class文件
 		File[] dirContents = dir.listFiles();
 		if (dirContents == null) {
 			if (logger.isWarnEnabled()) {

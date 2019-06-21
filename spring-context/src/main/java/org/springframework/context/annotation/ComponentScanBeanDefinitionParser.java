@@ -80,7 +80,7 @@ public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 	@Override
 	@Nullable
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
-		System.out.println("ComponentScanBeanDefinitionParser#parse解析扫描注解");
+		// 注解扫描流程
 		String basePackage = element.getAttribute(BASE_PACKAGE_ATTRIBUTE);
 		basePackage = parserContext.getReaderContext().getEnvironment().resolvePlaceholders(basePackage);
 		String[] basePackages = StringUtils.tokenizeToStringArray(basePackage,

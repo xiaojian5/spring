@@ -595,6 +595,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
+	 * 初始化HandlerMapping这个函数比较重要，在web容器初始化时调用，完成HandlerMethod的加载<br/>
 	 * Initialize the HandlerMappings used by this class.
 	 * <p>If no HandlerMapping beans are defined in the BeanFactory for this namespace,
 	 * we default to BeanNameUrlHandlerMapping.
@@ -1074,7 +1075,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				}
 
 				// Actually invoke the handler.
-				// 调用处理器逻辑 真正的调用handler，并返回视图，这里一般会调用我们定义的Controller方法
+				// 调用处理器逻辑 真正的调用handler，并返回视图，这里会调用我们定义的Controller方法
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
 				if (asyncManager.isConcurrentHandlingStarted()) {

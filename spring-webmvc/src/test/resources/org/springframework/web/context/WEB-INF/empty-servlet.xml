@@ -3,13 +3,10 @@
 
 <beans>
 
-	<!--<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 
 	<bean id="servletContextAwareBean" class="org.springframework.web.context.ServletContextAwareBean"/>
 
-	<bean id="servletConfigAwareBean" class="org.springframework.web.context.ServletConfigAwareBean"/>-->
-    <bean class="org.springframework.web.servlet.mvc.method.annotation.HandlerMethodAnnotationDetectionTests"/>
-
-    <bean class="org.springframework.web.servlet.mvc.method.annotation.HandlerMethodAnnotationDetectionTests.SimpleController"/>
+	<bean id="servletConfigAwareBean" class="org.springframework.web.context.ServletConfigAwareBean"/>
 
 </beans>

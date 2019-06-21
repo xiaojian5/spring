@@ -178,7 +178,7 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 	private NamedValueInfo updateNamedValueInfo(MethodParameter parameter, NamedValueInfo info) {
 		String name = info.name;
 		if (info.name.isEmpty()) {
-			// 如果@RequestParam的name为空，则直接使用参数名，所有在Controller中可以不添加该注解
+			// 如果@RequestParam的name为空，则直接使用参数名，所以在Controller中可以不添加该注解
 			name = parameter.getParameterName();
 			// 如果name为空，则抛出异常
 			if (name == null) {
