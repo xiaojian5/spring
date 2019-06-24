@@ -40,7 +40,7 @@ public class SpingMVCTest {
 		request.setParameter("input", "hello sping mvc");
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		dispatcherServlet.service(request, response);
-		Assert.assertEquals("hello sping mvc", response.getContentAsString());
+		Assert.assertEquals("\"hello sping mvc\"", response.getContentAsString());
 	}
 
 	/**
