@@ -14,6 +14,8 @@
 
 	<mvc:annotation-driven>
 		<mvc:message-converters>
+			<!--加入此转换器，避免String类型数据json化-->
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
 			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
 		</mvc:message-converters>
 	</mvc:annotation-driven>
