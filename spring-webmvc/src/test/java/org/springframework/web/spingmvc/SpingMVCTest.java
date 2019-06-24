@@ -40,6 +40,18 @@ public class SpingMVCTest {
 		request.setParameter("input", "hello sping mvc");
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		dispatcherServlet.service(request, response);
-		Assert.assertEquals("hello sping mvc",response.getContentAsString());
+		Assert.assertEquals("hello sping mvc", response.getContentAsString());
+	}
+
+	/**
+	 * 返回bean对象单元测试
+	 * 注意需要在springmvc配置文件中加入json转换器
+	 */
+	@Test
+	public void controllerBeanTest() throws ServletException, IOException {
+		MockHttpServletRequest request = new MockHttpServletRequest("POST", "/spring/mvc/test/get/bean");
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		dispatcherServlet.service(request, response);
+		Assert.assertEquals("{\"age\":10,\"userName\":\"testBean\"}", response.getContentAsString());
 	}
 }
