@@ -58,19 +58,39 @@ public class DefaultRequestToViewNameTranslator implements RequestToViewNameTran
 
 	private static final String SLASH = "/";
 
-
+	/**
+	 * 前缀
+ 	 */
 	private String prefix = "";
 
+	/**
+	 * 后缀
+	 */
 	private String suffix = "";
 
+	/**
+	 * 分隔符
+	 */
 	private String separator = SLASH;
 
+	/**
+	 * 是否移除开头{@link #SLASH}
+	 */
 	private boolean stripLeadingSlash = true;
 
+	/**
+	 * 是否移除末尾{@link #SLASH}
+	 */
 	private boolean stripTrailingSlash = true;
 
+	/**
+	 * 是否移除扩展名
+	 */
 	private boolean stripExtension = true;
 
+	/**
+	 * url路径工具类
+	 */
 	private UrlPathHelper urlPathHelper = new UrlPathHelper();
 
 

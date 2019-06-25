@@ -527,6 +527,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	private void initMultipartResolver(ApplicationContext context) {
 		try {
+			// 获得multipartResolver对应的MultipartResolver类型的bean
 			this.multipartResolver = context.getBean(MULTIPART_RESOLVER_BEAN_NAME, MultipartResolver.class);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Detected " + this.multipartResolver);
@@ -755,8 +756,10 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * namespace, we default to InternalResourceViewResolver.
 	 */
 	private void initViewResolvers(ApplicationContext context) {
+		// 置空viewResolver
 		this.viewResolvers = null;
 
+		// 自动扫描ViewResolver类型的bean
 		if (this.detectAllViewResolvers) {
 			// Find all ViewResolvers in the ApplicationContext, including ancestor contexts.
 			Map<String, ViewResolver> matchingBeans =
@@ -767,6 +770,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				AnnotationAwareOrderComparator.sort(this.viewResolvers);
 			}
 		}
+		// 获得名字为viewResolver的bean
 		else {
 			try {
 				ViewResolver vr = context.getBean(VIEW_RESOLVER_BEAN_NAME, ViewResolver.class);
@@ -779,6 +783,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		// Ensure we have at least one ViewResolver, by registering
 		// a default ViewResolver if no other resolvers are found.
+		// 如果上述分支未获取到，则通过默认配置获取ViewResolver类
 		if (this.viewResolvers == null) {
 			this.viewResolvers = getDefaultStrategies(context, ViewResolver.class);
 			if (logger.isTraceEnabled()) {

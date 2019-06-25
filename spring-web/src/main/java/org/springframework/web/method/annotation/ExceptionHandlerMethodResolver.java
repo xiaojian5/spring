@@ -44,14 +44,22 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ExceptionHandlerMethodResolver {
 
 	/**
+	 * MethodFilter对象，用于过滤带有@ExceptionHandler注解的方法<br/>
 	 * A filter for selecting {@code @ExceptionHandler} methods.
 	 */
 	public static final MethodFilter EXCEPTION_HANDLER_METHODS = method ->
 			AnnotatedElementUtils.hasAnnotation(method, ExceptionHandler.class);
 
-
+	/**
+	 * 已映射的方法
+	 * 在{@link #ExceptionHandlerMethodResolver(Class)}构造方法中初始化
+ 	 */
 	private final Map<Class<? extends Throwable>, Method> mappedMethods = new HashMap<>(16);
 
+	/**
+	 * 已匹配的方法
+	 * 在{@link #resolveMethod(Exception)}方法中初始化
+	 */
 	private final Map<Class<? extends Throwable>, Method> exceptionLookupCache = new ConcurrentReferenceHashMap<>(16);
 
 
@@ -174,11 +182,13 @@ public class ExceptionHandlerMethodResolver {
 	@Nullable
 	private Method getMappedMethod(Class<? extends Throwable> exceptionType) {
 		List<Class<? extends Throwable>> matches = new ArrayList<>();
+		// 遍历mappedMethods数组，进行异常匹配，添加matches集合中
 		for (Class<? extends Throwable> mappedException : this.mappedMethods.keySet()) {
 			if (mappedException.isAssignableFrom(exceptionType)) {
 				matches.add(mappedException);
 			}
 		}
+		// 将匹配的结果排序，选择第一个
 		if (!matches.isEmpty()) {
 			matches.sort(new ExceptionDepthComparator(exceptionType));
 			return this.mappedMethods.get(matches.get(0));

@@ -49,17 +49,29 @@ public abstract class AbstractHandlerExceptionResolver implements HandlerExcepti
 	/** Logger available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	/**
+	 * 顺序，最低优先级
+	 */
 	private int order = Ordered.LOWEST_PRECEDENCE;
 
+	/**
+	 * 匹配的处理器对象的集合
+	 */
 	@Nullable
 	private Set<?> mappedHandlers;
 
+	/**
+	 * 匹配的处理器类型的数组
+	 */
 	@Nullable
 	private Class<?>[] mappedHandlerClasses;
 
 	@Nullable
 	private Log warnLogger;
 
+	/**
+	 * 防止响应缓存
+	 */
 	private boolean preventResponseCaching = false;
 
 
@@ -146,6 +158,7 @@ public abstract class AbstractHandlerExceptionResolver implements HandlerExcepti
 					logger.debug("Resolved [" + ex + "]" + (result.isEmpty() ? "" : " to " + result));
 				}
 				// warnLogger with full stack trace (requires explicit config)
+				// 打印异常日志
 				logException(ex, request);
 			}
 			return result;
@@ -225,6 +238,7 @@ public abstract class AbstractHandlerExceptionResolver implements HandlerExcepti
 	 * @see #preventCaching
 	 */
 	protected void prepareResponse(Exception ex, HttpServletResponse response) {
+		// 如果要阻止响应缓存，需要设置preventResponseCaching为true
 		if (this.preventResponseCaching) {
 			preventCaching(response);
 		}

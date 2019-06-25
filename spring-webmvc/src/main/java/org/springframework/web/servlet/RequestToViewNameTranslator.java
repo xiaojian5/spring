@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.lang.Nullable;
 
 /**
+ * 请求到视图名转换的接口<br/>
  * Strategy interface for translating an incoming
  * {@link javax.servlet.http.HttpServletRequest} into a
  * logical view name when no view name is explicitly supplied.
