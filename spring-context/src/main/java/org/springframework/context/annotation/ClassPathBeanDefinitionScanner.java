@@ -275,13 +275,18 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 			// 根据注解解析出BeanDefinition
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
 			for (BeanDefinition candidate : candidates) {
+				// 通过ScopeMetadata对象设置BeanDefinition的scope属性
 				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);
+				// scope属性 默认为singleton
 				candidate.setScope(scopeMetadata.getScopeName());
+				// 生成beanName 看注解上是否对类进行了命名
 				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);
 				if (candidate instanceof AbstractBeanDefinition) {
+					// 设置BeanDefinition的默认属性
 					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName);
 				}
 				if (candidate instanceof AnnotatedBeanDefinition) {
+					// 处理BeanDefinition的公共属性
 					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate);
 				}
 				if (checkCandidate(beanName, candidate)) {

@@ -224,7 +224,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 						parseDefaultElement(ele, delegate);
 						// 如果该节点使用非默认命名空间，则执行自定义解析
 					} else {
-						// 非默认命名空间的解析会走该分支 比如 aop
+						// 非默认命名空间的解析会走该分支 比如 aop、注解注入bean
 						delegate.parseCustomElement(ele);
 					}
 				}

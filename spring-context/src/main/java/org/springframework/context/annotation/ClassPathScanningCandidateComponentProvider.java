@@ -496,6 +496,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 			}
 		}
 		for (TypeFilter tf : this.includeFilters) {
+            // 判断当前metadataReader的类型是否匹配
 			if (tf.match(metadataReader, getMetadataReaderFactory())) {
 				return isConditionMatch(metadataReader);
 			}
