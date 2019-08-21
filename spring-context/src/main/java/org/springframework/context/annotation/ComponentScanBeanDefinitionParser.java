@@ -81,14 +81,16 @@ public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 	@Nullable
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
 		// 注解扫描流程
+		// 获取扫描包的基础路径
 		String basePackage = element.getAttribute(BASE_PACKAGE_ATTRIBUTE);
 		basePackage = parserContext.getReaderContext().getEnvironment().resolvePlaceholders(basePackage);
 		String[] basePackages = StringUtils.tokenizeToStringArray(basePackage,
 				ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);
 
 		// Actually scan for bean definitions and register them.
-		// 注册一个ClassPathBeanDefinitionScanner类来扫描注解
+		// 生成ClassPathBeanDefinitionScanner对象进行扫描工作
 		ClassPathBeanDefinitionScanner scanner = configureScanner(parserContext, element);
+		// 扫描包含相关注解的类，返回BeanDefinitionHolder集合
 		Set<BeanDefinitionHolder> beanDefinitions = scanner.doScan(basePackages);
 		registerComponents(parserContext.getReaderContext(), beanDefinitions, element);
 

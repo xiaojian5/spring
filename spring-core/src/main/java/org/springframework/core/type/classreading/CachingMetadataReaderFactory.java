@@ -120,6 +120,7 @@ public class CachingMetadataReaderFactory extends SimpleMetadataReaderFactory {
 			// No synchronization necessary...
 			MetadataReader metadataReader = this.metadataReaderCache.get(resource);
 			if (metadataReader == null) {
+				// 这里是解析注解文件的核心，实际上是直接从class文件流中获取数据
 				metadataReader = super.getMetadataReader(resource);
 				this.metadataReaderCache.put(resource, metadataReader);
 			}
