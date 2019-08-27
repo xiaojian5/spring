@@ -175,7 +175,6 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 			Class<?> targetClass = (this.targetClass != null ? this.targetClass : this.method.getDeclaringClass());
 			// 调用具有三个参数的matches方法动态匹配目标方法
 			// 两个参数的matches方法用于匹配静态匹配
-			// 会议MethodInterceptor的isRuntime属性
 			if (dm.methodMatcher.matches(this.method, targetClass, this.arguments)) {
 				return dm.interceptor.invoke(this);
 			}

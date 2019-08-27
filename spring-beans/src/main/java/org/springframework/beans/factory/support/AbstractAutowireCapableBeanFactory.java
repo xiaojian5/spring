@@ -453,7 +453,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// 遍历BeanPostProcessor
 		for (BeanPostProcessor beanProcessor : getBeanPostProcessors()) {
 			// 进行处理
-			// TODO: 2019/4/2 具体处理过程需详细查看，这里先走大流程
+			// aop功能会在后置处理器中进行处理
 			Object current = beanProcessor.postProcessAfterInitialization(result, beanName);
 			// 返回为空，则返回传入的Object对象
 			if (current == null) {

@@ -61,7 +61,7 @@ public class AopTest {
 	 * 基于xml配置形式的接口实现aop测试
 	 * proxy-target-class属性值默认为false，表示使用JDK动态代理织入增强；
 	 * 当值为true时，表示使用CGLib动态代理织入增强；
-	 * 但是，即使设置为false，如果目标类没有声明接口，则Spring将自动使用CGLIB动态代理
+	 * 在使用CGlib进行增强时，如果代理类还是接口，仍然使用JDK动态代理
 	 */
 	@Test
 	public void xmlInterfaceAopTest() {
