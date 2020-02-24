@@ -13,6 +13,12 @@ public class IocTestBean {
 
 	private String placeHolderValue;
 
+//	IocTestBean(String name,String gender,String placeHolderValue){
+//		this.name=name;
+//		this.gender=gender;
+//		this.placeHolderValue=placeHolderValue;
+//	}
+
 	public void setPlaceHolderValue(String placeHolderValue) {
 		this.placeHolderValue = placeHolderValue;
 	}

@@ -62,18 +62,6 @@ public interface PropertyResolver {
 	String getProperty(String key, String defaultValue);
 
 	/**
-	 * 获取指定类型的属性值，找不到则返回null<br/>
-	 * Return the property value associated with the given key,
-	 * or {@code null} if the key cannot be resolved.
-	 *
-	 * @param key        the property name to resolve
-	 * @param targetType the expected type of the property value
-	 * @see #getRequiredProperty(String, Class)
-	 */
-	@Nullable
-	<T> T getProperty(String key, Class<T> targetType);
-
-	/**
 	 * 获取指定类型的属性值，找不到则返回默认值<br/>
 	 * Return the property value associated with the given key,
 	 * or {@code defaultValue} if the key cannot be resolved.
@@ -84,6 +72,18 @@ public interface PropertyResolver {
 	 * @see #getRequiredProperty(String, Class)
 	 */
 	<T> T getProperty(String key, Class<T> targetType, T defaultValue);
+
+	/**
+	 * 获取指定类型的属性值，找不到则返回null<br/>
+	 * Return the property value associated with the given key,
+	 * or {@code null} if the key cannot be resolved.
+	 *
+	 * @param key        the property name to resolve
+	 * @param targetType the expected type of the property value
+	 * @see #getRequiredProperty(String, Class)
+	 */
+	@Nullable
+	<T> T getProperty(String key, Class<T> targetType);
 
 	/**
 	 * 获取属性值，找不到则抛出异常IllegalStateException<br/>

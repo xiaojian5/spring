@@ -3,6 +3,8 @@ package com.dev.ioc;
 
 import org.junit.Test;
 import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -22,6 +24,12 @@ import com.dev.basebean.lookupmethod.impl.ShowCar;
  * @description:spring IOC调试初始化过程调试
  */
 public class IOCTest {
+	@Autowired
+	private IocTestBean iocTestBean;
+
+	public void setIocTestBean(IocTestBean iocTestBean){
+		this.iocTestBean = iocTestBean;
+	}
 
 	/**
 	 * xml形式注入bean
@@ -29,9 +37,14 @@ public class IOCTest {
 	@Test
 	public void xmlIOCTest() {
 
+
+
 		System.out.println("xml形式注入bean调试过程开始");
 		// classpath*:com/dev/config/*
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:com/dev/config/ioc/ioc.xml");
+
+		System.out.println(iocTestBean);
+//		((ClassPathXmlApplicationContext) context).getBeanFactory().registerSingleton();
 
 		IocTestBean iocTestBean = (IocTestBean) context.getBean("iocTestBean");
 
